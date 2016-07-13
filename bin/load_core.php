@@ -3,7 +3,7 @@
 if(empty($_COOKIE['PHPSESSID'])) unset($_COOKIE['PHPSESSID']); // fix empty sid value error
 
 define('SITE_URL','/');
-define('SITE_DIR',dirname(dirname(__file__)).'/');
+define('SITE_DIR',$_SERVER['DOCUMENT_ROOT'].SITE_URL);
 include SITE_DIR.'etc/base_config.php';
 include ETC_DIR.'config.php';
 include LIB_DIR.'basic_api.php';
@@ -41,6 +41,10 @@ if(!$_db->link)die('database error');//!!
 $_db->sql('set NAMES "utf8"');
 
 
+require SITE_DIR.'vendor/autoload.php';
+$_rmq = new \toecto\AMQPSimpleWrapper\AMQPSimpleWrapper(RMQ_USR, RMQ_PWD, RMQ_VHOST, RMQ_HOST);
+
+
 $_resource=array();
 $_user=restoreUser();
 $_base_types=resourceRestore('reactor_base_types');
@@ -56,6 +60,21 @@ if(!isset($_user['ip_allowed']))
 }
 
 include ETC_DIR.'autoexec.php';
+
+
+$_ab = new \Reactor\ABDriver\ABDriver($_rmq, 'ab_tests');
+$_ab->initUtm($_RGET);
+
+if (!isset($_ab->common_factors['city'])) {
+    $city = ipToCityData($_ab->common_factors['ip']);
+    $_ab->common_factors['city'] = $city['name'];
+}
+
+$_ab->startTest('buy_button_text', array('Купить', 'В корзину'));
+$_ab->startTest('generic', array('no'));
+$Gekkon->data['_ab'] = $_ab;
+
+
 
 if($_user['login']=='root')
 {
