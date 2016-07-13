@@ -1,7 +1,6 @@
 <?php
 
 class GroupRights {
-    
     protected $_db;
 
     public function __construct($_db) {
@@ -16,6 +15,7 @@ class GroupRights {
             join reactor_interface_action a on (r.fk_action = a.pk_action)
             join reactor_interface i on (a.fk_interface = pk_interface)
         ');
+
         return $this->_db->matr();
     }
 
@@ -38,14 +38,14 @@ class GroupRights {
         }
         $this->_db->sql('select pk_action from reactor_interface i
             join reactor_interface_action a on (i.pk_interface = a.fk_interface)
-            where i.name = "'.$interface.'" and a.name = "'.$action.'"'
+            where i.name = "' . $interface . '" and a.name = "' . $action . '"'
         );
         $pk = $this->_db->line();
         if (!empty($pk)) {
             $pk = $pk['pk_action'];
         }
         $this->cache[$interface][$action] = $pk;
+
         return $pk;
     }
-
 }

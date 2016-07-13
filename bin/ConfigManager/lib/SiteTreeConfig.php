@@ -1,7 +1,6 @@
 <?php
 
-class SiteTreeConfig
-{
+class SiteTreeConfig {
     public $_db;
 
     function __construct($_db) {
@@ -10,6 +9,7 @@ class SiteTreeConfig
 
     function getConfig() {
         $this->_db->sql('select * from site_tree order by fk_site_tree, pk_site_tree');
+
         return $this->buildTreeConfig($this->_db->matr());
     }
 
@@ -24,7 +24,7 @@ class SiteTreeConfig
                 $rez[] = $node;
             }
         }
+
         return $rez;
     }
-
 }

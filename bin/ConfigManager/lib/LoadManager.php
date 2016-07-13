@@ -1,7 +1,6 @@
 <?php
 
 class LoadManager {
-
     protected $_db;
     protected $mod_dir;
     protected $group_rights_file;
@@ -13,7 +12,7 @@ class LoadManager {
         $this->modules = new ModulesLoader($_db);
         $this->rollback = new RollbackTableManager($_db, VAR_DIR);
         $this->group_rights = new GroupRights($_db);
-        $this->group_rights_file = $mod_dir.'user_group_rights.php';
+        $this->group_rights_file = $mod_dir . 'user_group_rights.php';
     }
 
     public function load() {
@@ -25,7 +24,7 @@ class LoadManager {
     }
 
     protected function loadTree() {
-        $tree_config_file = $this->mod_dir.'site/site_tree_config_dump.php';
+        $tree_config_file = $this->mod_dir . 'site/site_tree_config_dump.php';
         if (is_file($tree_config_file)) {
             $data = $this->loadFile($tree_config_file);
             $this->site_tree->load($data);
@@ -35,20 +34,21 @@ class LoadManager {
     protected function loadModules($mod_dir) {
         $mod_action_relations = array();
         $modules = $this->getModulesList($mod_dir);
-        $mod_action_relations[] = $this->loadModule($mod_dir.'reactor/module_config_dump.php');
+        $mod_action_relations[] = $this->loadModule($mod_dir . 'reactor/module_config_dump.php');
         foreach ($modules as $mod_name) {
             if ($mod_name != 'reactor') {
-                $mod_action_relations[] = $this->loadModule($mod_dir.$mod_name.'/module_config_dump.php');
+                $mod_action_relations[] = $this->loadModule($mod_dir . $mod_name . '/module_config_dump.php');
             }
         }
         foreach ($mod_action_relations as $action_relations) {
-           $this->modules->loadActionRelations($action_relations);
+            $this->modules->loadActionRelations($action_relations);
         }
     }
 
     protected function loadModule($file) {
         $config = $this->loadFile($file);
         $this->modules->load($config);
+
         return $config['action_relations'];
     }
 
@@ -56,18 +56,19 @@ class LoadManager {
         $rez = array();
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
-                if ($file[0] != '.' && is_dir($this->mod_dir.$file)) {
+                if ($file[0] != '.' && is_dir($this->mod_dir . $file)) {
                     $rez[] = $file;
                 }
             }
             closedir($dh);
         }
+
         return $rez;
     }
 
     public function loadFile($file) {
         echo "Loading file $file\n";
+
         return include $file;
     }
-
 }

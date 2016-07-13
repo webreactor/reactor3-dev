@@ -1,7 +1,6 @@
 <?php
 
 class ModulesLoader {
-
     protected $_db;
 
     public function __construct($_db) {
@@ -15,11 +14,13 @@ class ModulesLoader {
         $this->loadModuleConfig($pk_module, $config['config']);
         $this->loadInterfaces($pk_module, $config['interfaces']);
         $this->loadResources($pk_module, $config['resources']);
+
         return $pk_module;
     }
 
     protected function isTable($name) {
-        $this->_db->sql('show tables like "'.$name.'"');
+        $this->_db->sql('show tables like "' . $name . '"');
+
         return (bool) $this->_db->line();
     }
 
@@ -28,7 +29,7 @@ class ModulesLoader {
             $record['fk_module'] = $pk_module;
             foreach ($record['creates'] as $table => $sql) {
                 if (!$this->isTable($table)) {
-                    $this->_db->sql($sql);    
+                    $this->_db->sql($sql);
                 }
             }
             unset($record['creates']);
@@ -92,7 +93,8 @@ class ModulesLoader {
                 foreach ($children as $line) {
                     $current_action = $this->getActionId($line);
                     if ($current_action) {
-                        $this->_db->update('reactor_interface_action', array('fk_action' => $parent_action), 'pk_action='.$current_action);
+                        $this->_db->update('reactor_interface_action', array('fk_action' => $parent_action),
+                            'pk_action=' . $current_action);
                     }
                 }
             }
@@ -105,12 +107,12 @@ class ModulesLoader {
         $action = $data[1];
         $this->_db->sql('SELECT a.pk_action FROM reactor_interface i, reactor_interface_action a
             where i.pk_interface=a.fk_interface
-            and i.name = "'.$interface.'" and a.name="'.$action.'"');
+            and i.name = "' . $interface . '" and a.name="' . $action . '"');
         $rez = $this->_db->line();
         if ($rez) {
             return $rez['pk_action'];
         }
+
         return null;
     }
-
 }

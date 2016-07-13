@@ -12,7 +12,7 @@ class WriteManager {
     }
 
     public function write() {
-        $this->writeToFile($this->mod_dir.'site/site_tree_config_dump.php', $this->site_tree->getConfig());
+        $this->writeToFile($this->mod_dir . 'site/site_tree_config_dump.php', $this->site_tree->getConfig());
         $this->writeModules();
     }
 
@@ -21,17 +21,18 @@ class WriteManager {
         $modules = $this->_db->matr('pk_module', 'name');
         foreach ($modules as $pk_module => $module_name) {
             echo "Created config dump for {$module_name}\n";
-            $this->writeToFile($this->mod_dir.$module_name.'/module_config_dump.php', $this->modules->getConfig($pk_module));
+            $this->writeToFile($this->mod_dir . $module_name . '/module_config_dump.php',
+                $this->modules->getConfig($pk_module));
         }
     }
 
     public function writeToFile($file, $data) {
         if (!is_writable($file)) {
             if (!is_writable(dirname($file))) {
-                die($file.' unable to write');    
+                die($file . ' unable to write');
             }
         }
-        file_put_contents($file, "<?php\nreturn ".$this->dataExport($data).";");
+        file_put_contents($file, "<?php\nreturn " . $this->dataExport($data) . ";");
     }
 
     public function dataExport($data, $level = 0) {
@@ -46,7 +47,7 @@ class WriteManager {
             } else {
                 $val_dumped = var_export($value, true);
             }
-            
+
             if (is_numeric($key)) {
                 $rez .= "{$tab2}{$val_dumped},\n";
             } else {
@@ -54,8 +55,6 @@ class WriteManager {
             }
         }
 
-        return $rez."{$tab1})";
+        return $rez . "{$tab1})";
     }
-
-
 }

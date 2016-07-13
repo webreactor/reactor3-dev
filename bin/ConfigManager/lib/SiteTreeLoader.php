@@ -1,7 +1,6 @@
 <?php
 
-class SiteTreeLoader
-{
+class SiteTreeLoader {
     public $_db;
     public $data;
 
@@ -24,5 +23,4 @@ class SiteTreeLoader
             $this->load_r($in, $pk_site_tree);
         }
     }
-
 }

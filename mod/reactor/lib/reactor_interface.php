@@ -1,155 +1,173 @@
 <?php
+
 //version 2.0
 
-class reactor_interface
-{
-var $_pool_id;
+class reactor_interface {
+    var $_pool_id;
 
-function reactor_interface($_name_pool_so='')
-{
-	global $_interfaces;
-reactor_trace('creating interface '.$_name_pool_so);
-$this->_pool_id=0;
-if($_name_pool_so!='')
-{
-	if(isset($GLOBALS['_pool'][$_name_pool_so])){$this->_pool_id=$_name_pool_so;return;}
-	if(isset($_interfaces[$_name_pool_so])){$this->configure($_name_pool_so);return;}
-	if(isset($_SESSION['_stored_interface'][$_name_pool_so])){$this->restore($_name_pool_so);return;}
-	reactor_error('what is '.$_name_pool_so);
-}
-}
+    function reactor_interface($_name_pool_so = '') {
+        global $_interfaces;
+        reactor_trace('creating interface ' . $_name_pool_so);
+        $this->_pool_id = 0;
+        if ($_name_pool_so != '') {
+            if (isset($GLOBALS['_pool'][$_name_pool_so])) {
+                $this->_pool_id = $_name_pool_so;
 
+                return;
+            }
+            if (isset($_interfaces[$_name_pool_so])) {
+                $this->configure($_name_pool_so);
 
-function &get($name='')
-{
-	if($name=='')return $GLOBALS['_pool'][$this->_pool_id];
-	return $GLOBALS['_pool'][$this->_pool_id][$name];
-}
+                return;
+            }
+            if (isset($_SESSION['_stored_interface'][$_name_pool_so])) {
+                $this->restore($_name_pool_so);
 
-function see_at($_pool_id)
-{
-if(!isset($GLOBALS['_pool'][$_pool_id]))reactor_error('undefined pool_id '.$interface_name);
-$this->_pool_id=$_pool_id;
-}
+                return;
+            }
+            reactor_error('what is ' . $_name_pool_so);
+        }
+    }
 
-function configure($interface_name)
-{
-global $_interfaces,$_reactor;
-if($this->_pool_id==0)$this->_pool_id=pool_new();
+    function &get($name = '') {
+        if ($name == '') {
+            return $GLOBALS['_pool'][$this->_pool_id];
+        }
 
-if(!isset($_interfaces[$interface_name]))
-reactor_error('undefined interface '.$interface_name);
+        return $GLOBALS['_pool'][$this->_pool_id][$name];
+    }
 
-$_data=&$GLOBALS['_pool'][$this->_pool_id];
-$_data=$_interfaces[$interface_name];
+    function see_at($_pool_id) {
+        if (!isset($GLOBALS['_pool'][$_pool_id])) {
+            reactor_error('undefined pool_id ' . $interface_name);
+        }
+        $this->_pool_id = $_pool_id;
+    }
 
-reactor_trace('configure '.$interface_name);
+    function configure($interface_name) {
+        global $_interfaces, $_reactor;
+        if ($this->_pool_id == 0) {
+            $this->_pool_id = pool_new();
+        }
 
-initModule($_data['module']);
+        if (!isset($_interfaces[$interface_name])) {
+            reactor_error('undefined interface ' . $interface_name);
+        }
 
-if($_data['source']!='')
-{
-include_once $_reactor['module']['dir'].$_data['source'];
-}
-$eCode='$_data["object"]=new '.$_data['class'].'('.$_data['constructor'].');';
+        $_data =& $GLOBALS['_pool'][$this->_pool_id];
+        $_data = $_interfaces[$interface_name];
 
-reactor_trace($eCode);
-eval($eCode);
-$_data['object']->_pool_id=$this->_pool_id;
+        reactor_trace('configure ' . $interface_name);
 
-if(isset($_data['action'][$interface_name]))
-$this->action($interface_name,$null);
+        initModule($_data['module']);
 
-uninitModule();
-}
+        if ($_data['source'] != '') {
+            include_once $_reactor['module']['dir'] . $_data['source'];
+        }
+        $eCode = '$_data["object"]=new ' . $_data['class'] . '(' . $_data['constructor'] . ');';
 
-function isStored($id)
-{
-	return isset($_SESSION['_stored_interface'][$id]);
-}
+        reactor_trace($eCode);
+        eval($eCode);
+        $_data['object']->_pool_id = $this->_pool_id;
 
-function restore($id)
-{
-global $_interfaces,$_reactor;
+        if (isset($_data['action'][$interface_name])) {
+            $this->action($interface_name, $null);
+        }
 
-if(!isset($_SESSION['_stored_interface'][$id]))
-reactor_error('can not find stored interface '.$id);
+        uninitModule();
+    }
 
-$cls=&$_interfaces[$_SESSION['_stored_interface'][$id]['name']];
+    function isStored($id) {
+        return isset($_SESSION['_stored_interface'][$id]);
+    }
 
-reactor_trace($_SESSION['_stored_interface'][$id]['name'].'->restore '.$id);
+    function restore($id) {
+        global $_interfaces, $_reactor;
 
-if($cls['source']!='')
-{
-	initModule($cls['module']);
-	include_once $_reactor['module']['dir'].$cls['source'];
-	uninitModule($cls['module']);
-}
+        if (!isset($_SESSION['_stored_interface'][$id])) {
+            reactor_error('can not find stored interface ' . $id);
+        }
 
-if($this->_pool_id==0)$this->_pool_id=pool_new();
-$_data=&$GLOBALS['_pool'][$this->_pool_id];
-$_data=unserialize($_SESSION['_stored_interface'][$id]['data']);
-$_data['object']->_pool_id=$this->_pool_id;
-unset($_SESSION['_stored_interface'][$id]);
+        $cls =& $_interfaces[$_SESSION['_stored_interface'][$id]['name']];
 
-if(isset($_data['action']['onRestore']))
-$this->action('onRestore',$this->_pool_id);
-return $this->_pool_id;
-}
+        reactor_trace($_SESSION['_stored_interface'][$id]['name'] . '->restore ' . $id);
 
-function store($id='none')
-{
-$_data=&$GLOBALS['_pool'][$this->_pool_id];
+        if ($cls['source'] != '') {
+            initModule($cls['module']);
+            include_once $_reactor['module']['dir'] . $cls['source'];
+            uninitModule($cls['module']);
+        }
 
-if($id=='none')
-$id=uniqid('',true);
+        if ($this->_pool_id == 0) {
+            $this->_pool_id = pool_new();
+        }
+        $_data =& $GLOBALS['_pool'][$this->_pool_id];
+        $_data = unserialize($_SESSION['_stored_interface'][$id]['data']);
+        $_data['object']->_pool_id = $this->_pool_id;
+        unset($_SESSION['_stored_interface'][$id]);
 
-reactor_trace($_data['name'].'->store '.$id);
+        if (isset($_data['action']['onRestore'])) {
+            $this->action('onRestore', $this->_pool_id);
+        }
 
-if(isset($_data['action']['onStore']))
-$this->action('onStore',$null);
+        return $this->_pool_id;
+    }
 
+    function store($id = 'none') {
+        $_data =& $GLOBALS['_pool'][$this->_pool_id];
 
-	if(session_id()==''&&!headers_sent())
-	session_start();
+        if ($id == 'none') {
+            $id = uniqid('', true);
+        }
 
-$_SESSION['_stored_interface'][$id]['name']=$_data['name'];
-$_SESSION['_stored_interface'][$id]['data']=serialize($_data);
+        reactor_trace($_data['name'] . '->store ' . $id);
 
-return $id;
-}
+        if (isset($_data['action']['onStore'])) {
+            $this->action('onStore', $null);
+        }
 
-function action($action_name,&$param)
-{
-global $_RGET,$_SGET,$_db,$_reactor,$_user;
-$_data=&$GLOBALS['_pool'][$this->_pool_id];
+        if (session_id() == '' && !headers_sent()) {
+            session_start();
+        }
 
-reactor_trace('start action '.$_data['name'].'->'.$action_name);
+        $_SESSION['_stored_interface'][$id]['name'] = $_data['name'];
+        $_SESSION['_stored_interface'][$id]['data'] = serialize($_data);
 
-if(!isset($_data['action'][$action_name]))
-{
-reactor_error('undefined action '.$action_name.' in '.$_data['name']);
-die();
-}
+        return $id;
+    }
 
-$action=&$_data['action'][$action_name];
+    function action($action_name, &$param) {
+        global $_RGET, $_SGET, $_db, $_reactor, $_user;
+        $_data =& $GLOBALS['_pool'][$this->_pool_id];
 
-if($action['method']=='')return array();
+        reactor_trace('start action ' . $_data['name'] . '->' . $action_name);
 
-if($action['method'][0]=='_')
-$eCode='$ret='.substr($action['method'],1).'('.$action['param'].');';
-else
-$eCode='$ret=$_data["object"]->'.$action['method'].'('.$action['param'].');';
+        if (!isset($_data['action'][$action_name])) {
+            reactor_error('undefined action ' . $action_name . ' in ' . $_data['name']);
+            die();
+        }
 
-initModule($_data['module']);
-reactor_trace('do: '.$eCode);
-eval($eCode);
-uninitModule();
+        $action =& $_data['action'][$action_name];
 
-reactor_trace('end action');
-return $ret;
-}
+        if ($action['method'] == '') {
+            return array();
+        }
 
+        if ($action['method'][0] == '_') {
+            $eCode = '$ret=' . substr($action['method'], 1) . '(' . $action['param'] . ');';
+        } else {
+            $eCode = '$ret=$_data["object"]->' . $action['method'] . '(' . $action['param'] . ');';
+        }
+
+        initModule($_data['module']);
+        reactor_trace('do: ' . $eCode);
+        eval($eCode);
+        uninitModule();
+
+        reactor_trace('end action');
+
+        return $ret;
+    }
 }//end of class
 
 ?>

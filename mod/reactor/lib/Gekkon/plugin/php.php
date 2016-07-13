@@ -1,4 +1,4 @@
 <?php
-$bin_open='<?php ';
-$bin_close=' ?>';
+$bin_open = '<?php ';
+$bin_close = ' ?>';
 ?>
