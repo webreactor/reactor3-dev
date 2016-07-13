@@ -1,0 +1,28 @@
+AddDefaultCharset UTF-8
+php_value log_errors On
+php_value error_log ../php_apache_error.log
+AddType application/x-httpd-php .php .html
+AddType text/x-component .htc
+AddType image/x-icon .ico
+Options -Indexes
+DirectoryIndex index.html index.php
+
+#
+#put .htaccess file into var
+#ForceType application/octet-stream
+#
+
+RewriteEngine On
+
+RewriteBase /
+
+
+RewriteRule \.svn index.php?_rawget=404 [L]
+RewriteRule \.git index.php?_rawget=404 [L]
+
+RewriteCond  %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+RewriteRule ^var/files/.* files.php [L]
+
+RewriteRule ^ index.php [L,QSA]
