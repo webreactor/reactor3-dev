@@ -1,4 +1,8 @@
 <?php
+use mod\reactor\lib\UploadHandler\FileUploadHandler;
+
+require_once('UploadHandler/UploadHandler.php');
+require_once('UploadHandler/FileUploadHandler.php');
 /*
 version 1.2.6
 reactor core api library
@@ -57,26 +61,34 @@ function reactor_ini_set_array($array)
 	configCompile();
 }
 
-function stop($msg='')
-{
-global $Gekkon, $_log;
-reactor_trace($_log.=' stop '.$msg);
+function stop($msg='') {
+	global $Gekkon, $_log;
+	reactor_trace($_log.=' stop '.$msg);
 
-initModule('site');
-if($msg!='')
-{
-	$Gekkon->register('msg',$msg);
-	if(substr($msg,0,3)=='404')
-	{
-	if(!headers_sent())header('HTTP/1.1 404 Not Found');
-	$Gekkon->display('404.tpl');
+	initModule('site');
+	if($msg != '') {
+		global $_reactor;
+		$_reactor['show']['interface'] = '';
+		$_reactor['show']['action'] = '';
+		$_reactor['show']['module'] = 'site';
+
+		if(substr($msg, 0, 3) == '404') {
+			$_reactor['show']['template'] = '404.tpl';
+
+			if(!headers_sent()) {
+				header('HTTP/1.1 404 Not Found');
+			}
+		} else {
+			$_reactor['show']['template'] = 'message.tpl';
+		}
+
+		$Gekkon->register('msg', $msg);
+		$Gekkon->display('index.tpl');
+	} else {
+		header('Location: '.SITE_URL);
 	}
-	else
-	$Gekkon->display('message.tpl');
-}
-else
-header('Location: '.SITE_URL);
-die();
+
+	die();
 }
 
 
@@ -162,7 +174,11 @@ function &pool_get($_pool_id,$name='')
 	return $GLOBALS['_pool'][$_pool_id][$name];
 }
 
-
+/**
+ * @param $_pool_id
+ *
+ * @return \content_adapter
+ */
 function &pool_create_content_adapter($_pool_id)
 {
 	if(!isset($GLOBALS['_pool'][$_pool_id])) reactor_error('undefined _pool_id '.$_pool_id.' in pool_get_content_adapter');
@@ -356,89 +372,6 @@ unset($_RGET['logout']);
 return $_user;
 }
 
-function userLogin($u,$p,$c)
-{
-	global $_log,$_user,$_db,$_reactor;
-	$_user=0;
-	$_SESSION['_stored_interface']=array();
-	$_reactor['logining']=1;
-
-	if($u!=''&&$p!='')
-	{
-		$u=htmlspecialchars(trim($u),ENT_QUOTES);
-		$p=htmlspecialchars(trim($p),ENT_QUOTES);
-		$_db->sql('select * from '.T_REACTOR_USER.' where login="'.$u.'" and pass="'.$p.'" and active=1');
-		$_user=$_db->line();
-	}
-	else
-	{
-		if(isset($_COOKIE['c_uid']))
-		{
-			$c_uid=htmlspecialchars(trim($_COOKIE['c_uid']),ENT_QUOTES);
-			if(! empty($c_uid))
-			{
-				$_db->sql('select * from '.T_REACTOR_USER.' where cookie="'.$c_uid.'" and active=1');
-				$_user=$_db->line();
-			}
-		}
-	}
-
-	if(! empty($_user['ip_allowed']))
-	{
-		if($_user['ip_allowed'] != $_SERVER['REMOTE_ADDR'])
-		{
-			$_log.=' || login denied from this ip';
-			$_user=0;
-		}
-	}
-
-	if($_user==0)
-	{
-		$_reactor['login_error']=1;
-		$_db->sql('select * from '.T_REACTOR_USER.' where login="guest"');
-		$_user=$_db->line();
-		if (!headers_sent())
-		setcookie('c_uid',0,REACTOR_COOKIE_LIVE,SITE_URL);
-	}
-	else
-	{
-		$cook=md5(uniqid(rand(), true));
-		$_db->sql('update '.T_REACTOR_USER.' set visited='.time().', cookie="'.$cook.'" where pk_user='.$_user['pk_user']);
-		if((isset($c)||isset($_COOKIE['c_uid']))&&!headers_sent())
-		setcookie('c_uid',$cook,REACTOR_COOKIE_LIVE,SITE_URL);
-	}
-
-	$_db->sql('select * from '.T_REACTOR_UGROUP.' where pk_ugroup='.$_user['fk_ugroup']);
-	$_user['ugroup']=$_db->line();
-
-	$_user['system']=SITE_URL;
-	$_user['ip']=$_SERVER['REMOTE_ADDR'];
-
-	$_log.=' login:'.$_user['login'];
-}
-
-function userLogin_light($pk_user)
-{
-	global $_user,$_interfaces,$_db;
-
-	$_db->sql('select * from '.T_REACTOR_USER.' where pk_user='.$pk_user.' and active=1');
-	$_user = $_db->line();
-
-	if( empty($_user) )
-	{
-		$_user = resourceRestore('reactor_guest_user');
-		return false;
-	}
-
-	$_db->sql('select * from '.T_REACTOR_UGROUP.' where pk_ugroup='.$_user['fk_ugroup']);
-	$_user['ugroup'] = $_db->line();
-
-	$_interfaces = resourceRestore( 'reactor_interfaces_'.$_user['ugroup']['name'] );
-
-	$_user['ip'] = $_SERVER['REMOTE_ADDR'];
-
-	return true;
-}
 //----------------------------------------------------------------------------------------
 //Resource functions
 $_resource=array();
@@ -540,19 +473,10 @@ return $_SGET[$name]=array_map('getStrChars',$test);
 
 function handleUploadedFile($_file,$_newname='')
 {
-	if(!isset($_FILES[$_file]))return 0;
-	if($_FILES[$_file]['size']==0)return 0;
-	if($_newname=='')$_newname=str_replace('.','',uniqid('',true));
+	if( !isset($_FILES[$_file]) ) return 0;
+	if( $_FILES[$_file]['size'] == 0 ) return 0;
 
-	$dir=$_newname[7].$_newname[8];
-	if(!is_dir(FILE_DIR.$dir))mkdir(FILE_DIR.$dir);
-	$dir.='/'.$_newname[9].$_newname[10];
-	if(!is_dir(FILE_DIR.$dir))mkdir(FILE_DIR.$dir);
-
-	if(!move_uploaded_file($_FILES[$_file]['tmp_name'], FILE_DIR.$dir.'/'.$_newname))
-	return 0;
-
-	return $dir.'/'.$_newname;
+	return saveFile($_FILES[$_file]['tmp_name'], true);
 }
 
 //----------------------------------------------------------------------------------------
@@ -872,5 +796,45 @@ $url.=$k.'='.$v.'&';
 return substr($url,0,-1);
 }
 
+function saveFile($file_path, $with_dir) {
+	$new_file = getNewFileName();
+	$new_file_path = FILE_DIR . $new_file['path'];
+	$tmp_dir = ini_get('upload_tmp_dir');
+	if( empty($tmp_dir) )
+	{
+		$tmp_dir = sys_get_temp_dir();
+	}
+	if( strncmp($file_path, $tmp_dir, strlen($tmp_dir)) === 0 )
+	{
+		$result = move_uploaded_file($file_path, $new_file_path);
+	}
+	else
+	{
+		$result = rename($file_path, $new_file_path);
+	}
+	if( !$result ) return 0;
+	return ($with_dir ? $new_file['path'] : $new_file['name']);
+}
 
-?>
+function getRelativePath($filename, $encode = true)
+{
+	$encoded_file_name = $encode ? rawurlencode($filename) : $filename;
+	return getDirForFileName($filename) . '/' . $encoded_file_name;
+}
+
+function getDirForFileName ($filename) {
+	if( strlen($filename) < 11 ) return '';
+
+	$dir = $filename[7] . $filename[8];
+	if( !is_dir(FILE_DIR . $dir) ) mkdir(FILE_DIR . $dir);
+	$dir .= '/' . $filename[9] . $filename[10];
+	if( !is_dir(FILE_DIR . $dir) ) mkdir(FILE_DIR . $dir);
+	return $dir;
+}
+
+function getNewFileName()
+{
+	$_newname = str_replace('.', '', uniqid('', true));
+	$dir = getDirForFileName($_newname);
+	return array('path' => $dir . '/' . $_newname, 'name' => $_newname);
+}
