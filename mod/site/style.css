@@ -1,7 +1,14 @@
-* {margin: 0;padding: 0;}
-html, body {background-color: #fff;color: #000;}
+* {
+    margin:  0;
+    padding: 0;
+}
 
-#_rt_console{
-	text-align:left;
-	z-index:1000;
+html, body {
+    background-color: #ffffff;
+    color:            #000000;
+}
+
+#_rt_console {
+    text-align: left;
+    z-index:    1000;
 }

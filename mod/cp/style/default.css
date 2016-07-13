@@ -58,11 +58,9 @@ select, option {
     height:         20px;
     vertical-align: center;
     padding-bottom: 1px;
-    padding-bottom: expression('0');
     font:           normal 12px Arial;
     min-width:      100px;
-    margin:         1 0;
-    margin:         expression("0");
+    margin:         1px 0;
 }
 
 .wild_select {
@@ -83,13 +81,10 @@ textarea {
     width:          100%;
     height:         200px;
     vertical-align: center;
-    padd ing-top: 2px;
     padding-bottom: 1px;
-    padding-bottom: expression('0');
     font:           normal 12px Arial;
     min-width:      100px;
-    margin:         1 0;
-    margin:         expression("0");
+    margin:         1px 0;
 
 }
 
@@ -195,12 +190,12 @@ textarea {
 
 #left_menu .l1 {
     font:    bold 16px Georgia;
-    padding: 7 20 9 22;
+    padding: 7px 20px 9px 22px;
 }
 
 #left_menu .l2 {
     font:        normal 15px Georgia;
-    padding:     2 20 4 22;
+    padding:     2px 20px 4px 22px;
     margin-left: 18px;
 }
 
@@ -229,11 +224,11 @@ textarea {
 
 #right_menu .l1 {
     font:    bold 14px Georgia;
-    padding: 7 22 9 20;
+    padding: 7px 22px 9px 20px;
 }
 
 #right_menu .l2 {
-    padding: 2 40 4 20;
+    padding: 2px 40px 4px 20px;
 }
 
 #right_menu a:hover {
@@ -258,14 +253,13 @@ textarea {
     height:     100%;
     width:      100%;
     background: url("../images/blank.gif") top left;
-    backg round: red;
 }
 
 #popup_frame {
     display:  none;
     position: absolute;
-    top:      310;
-    left:     310;
+    top:      310px;
+    left:     310px;
 }
 
 #whiteBox {
@@ -353,7 +347,6 @@ textarea {
     background:      white;
     color:           black;
     padding:         4px 22px 5px 22px;
-    background:      white;
     position:        relative;
     font:            normal 12px Tahoma;
 }
@@ -363,7 +356,6 @@ textarea {
     background: white;
     color:      black;
     padding:    4px 22px 5px 22px;
-    background: white;
     position:   relative;
     font:       normal 12px Tahoma;
 }
@@ -381,7 +373,7 @@ textarea {
 
 .table_line td {
     font:    normal 12px Arial;
-    padding: 8 1 8 1;
+    padding: 8px 1px 8px 1px;
     cursor:  pointer;
 }
 
@@ -411,8 +403,7 @@ textarea {
 /*---------form-----------------*/
 
 .form_line_td {
-    hei ght: 41px;
-    padding: 15 0;
+    padding: 15px 0;
 }
 
 .form_line_block {
@@ -440,7 +431,7 @@ textarea {
 }
 
 .form_title {
-    padding: 13 0;
+    padding: 13px 0;
 }
 
 .form_flag_good {
@@ -658,7 +649,7 @@ div#search_form {
 }
 
 #search_form table td {
-    padding: 3px 0px;
+    padding: 3px 0;
 }
 
 #search_result sup a {
@@ -674,7 +665,7 @@ div#search_form {
 }
 
 #search_result td {
-    padding: 4px 0px;
+    padding: 4px 0;
 }
 
 #search_result td.search_image {
