@@ -1,0 +1,10 @@
+delete `reactor_interface`  FROM `reactor_interface` left join reactor_module i on `reactor_interface`.fk_module=i.pk_module where pk_module is null;
+delete `reactor_table`  FROM `reactor_table` left join reactor_module i on `reactor_table`.fk_module=i.pk_module where pk_module is null;
+delete `reactor_config`  FROM `reactor_config`  left join reactor_module i on `reactor_config` .fk_module=i.pk_module where pk_module is null;
+delete `reactor_resource`  FROM `reactor_resource`  left join reactor_module i on `reactor_resource` .fk_module=i.pk_module where pk_module is null;
+delete `reactor_base_type`  FROM `reactor_base_type`  left join reactor_module i on `reactor_base_type` .fk_module=i.pk_module where pk_module is null;
+
+delete `reactor_interface_action`  FROM `reactor_interface_action` left join reactor_interface i on `reactor_interface_action`.fk_interface=i.pk_interface where pk_interface is null;
+delete `reactor_interface_define`  FROM `reactor_interface_define` left join reactor_interface i on `reactor_interface_define`.fk_interface=i.pk_interface where pk_interface is null;
+
+ALTER TABLE tbl_name CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
