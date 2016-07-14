@@ -37,6 +37,8 @@ include LIB_DIR . 'basic_object.php';
 include LIB_DIR . 'basic_tree.php';
 include LIB_DIR . 'content_adapter.php';
 include LIB_DIR . 'reactor_interface.php';
+include LIB_DIR . 'rest_user.php';
+//include LIB_DIR . 'local_user.php';
 include ETC_DIR . 'tables.php';
 
 $_db = new db_mysql(DB_USER, DB_PASS, DB_HOST, DB_BAZA);
@@ -44,9 +46,6 @@ if (!$_db->link) {
     die('database error');
 }//!!
 $_db->sql('set NAMES "utf8"');
-
-require SITE_DIR . 'vendor/autoload.php';
-$_rmq = new \toecto\AMQPSimpleWrapper\AMQPSimpleWrapper(RMQ_USR, RMQ_PWD, RMQ_VHOST, RMQ_HOST);
 
 $_resource        = array();
 $_user            = restoreUser();
@@ -62,18 +61,6 @@ if (!isset($_user['ip_allowed'])) {
 }
 
 include ETC_DIR . 'autoexec.php';
-
-$_ab = new \Reactor\ABDriver\ABDriver($_rmq, 'ab_tests');
-$_ab->initUtm($_RGET);
-
-if (!isset($_ab->common_factors['city'])) {
-    $city                        = ipToCityData($_ab->common_factors['ip']);
-    $_ab->common_factors['city'] = $city['name'];
-}
-
-$_ab->startTest('buy_button_text', array('Купить', 'В корзину'));
-$_ab->startTest('generic', array('no'));
-$Gekkon->data['_ab'] = $_ab;
 
 if ($_user['login'] == 'root') {
     ini_set('error_log', SITE_DIR . '../root_php.log');
