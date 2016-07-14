@@ -1,10 +1,10 @@
 <?php
+
 //ver 4.1
 
-if( empty($tag['arg']['modern']) )
-{//old-style
-$data = reset( $tag['arg'] );
-$bin_open="
+if (empty($tag['arg']['modern'])) {//old-style
+    $data     = reset($tag['arg']);
+    $bin_open = "
 <?php
 \$all={$data}['all'];
 \$now={$data}['now'];
@@ -64,13 +64,9 @@ echo '| <a href=\"'.arrToUrl(array(\$var=>0)).'\">Все</a> ';
 
 ?>
 ";
-}
-
-else
-
-{//modern style
-$data = $tag['arg']['data'];
-$bin_open="
+} else {//modern style
+    $data     = $tag['arg']['data'];
+    $bin_open = "
 <?php
 \$all={$data}['all'];
 \$now={$data}['now'];
@@ -124,7 +120,5 @@ echo '&hellip;<span><a href=\"'.arrToUrl(array(\$var=>\$all)).'\">'.\$all.'</a><
 ?>
 ";
 }
-
-
 
 ?>

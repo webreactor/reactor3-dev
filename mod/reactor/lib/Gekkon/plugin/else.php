@@ -1,5 +1,5 @@
 <?php
-$bin_open='<?php }else{ ?>';
 
+$bin_open = '<?php }else{ ?>';
 
 ?>
