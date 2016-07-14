@@ -1,8 +1,8 @@
 <?php
 
 //global variables
-$_log = '';
-$_log_t = $_SERVER['REMOTE_ADDR'] . ' | ' . $_SERVER['REQUEST_URI'];
+$_log    = '';
+$_log_t  = $_SERVER['REMOTE_ADDR'] . ' | ' . $_SERVER['REQUEST_URI'];
 $_mctime = microtime(true);
 
 $_trace = '';
@@ -13,7 +13,7 @@ $_error = '';
 function close()
 {
     global $_log, $_mctime, $_log_t;
-
+    
     if (strpos($_log_t, '/jsonp_request/?interface=basket&action=handler&operation=refresh&') !== false) {
         return;
     }
@@ -26,7 +26,7 @@ function close()
     if (strpos($_log_t, '/crossdomain/?t=') !== false) {
         return;
     }
-
+    
     error_log($_log_t . ' | ' . (microtime(true) - $_mctime) . $_log);
 }
 
@@ -48,9 +48,9 @@ function tsToDateTime($time_stamp)
 function arrayKeyFilter(&$data, $filter)
 {
     $filter = array_flip($filter);
-    $rez = array_intersect_key($data, $filter);
-    $data = array_diff_key($data, $filter);
-
+    $rez    = array_intersect_key($data, $filter);
+    $data   = array_diff_key($data, $filter);
+    
     return $rez;
 }
 
@@ -63,7 +63,7 @@ function arrayMapRecursive($handle, $data)
     } else {
         $data = $handle($data);
     }
-
+    
     return $data;
 }
 
@@ -147,10 +147,10 @@ function strToUrl($str)
         'Ь' => '',
         'Ъ' => '',
     );
-
+    
     $str = str_replace(' ', '_', html_entity_decode($str));
     $str = preg_replace('/[^a-z0-9_\-]/', '', strtolower(strtr($str, $_str_translit)));
-
+    
     return $str;
 }
 
@@ -158,14 +158,14 @@ function strToUrl($str)
 
 function arrayColumnSplit($data, $column_count)
 {
-    $result = array();
+    $result  = array();
     $portion = ceil(count($data) / $column_count);
     if (!empty($data)) {
         for ($i = 0; $i < $column_count; $i++) {
             $result[$i] = array_slice($data, $i * $portion, $portion, true);
         }
     }
-
+    
     return $result;
 }
 
@@ -187,7 +187,7 @@ function array_orderby()
     }
     $args[] = &$data;
     call_user_func_array('array_multisort', $args);
-
+    
     return array_pop($args);
 }
 
@@ -207,7 +207,7 @@ function varDumpJavaScript($data, $in = 0)
         }
         //return '"'.str_replace('"', '\"', $data).'"';
     }
-
+    
     $r = array();
     foreach ($data as $k => $v) {
         $k = addcslashes($k, '"\\');
@@ -222,7 +222,7 @@ function varDumpJavaScript($data, $in = 0)
             $r[] = '"' . $k . '":' . varDumpJavaScript($v, $in);
         }
     }
-
+    
     return '{' . implode(',', $r) . '}';
 }
 
@@ -238,24 +238,24 @@ if (!function_exists('http-chunked-decode')) {
      */
     function http_chunked_decode($chunk)
     {
-        $pos = 0;
-        $len = strlen($chunk);
+        $pos     = 0;
+        $len     = strlen($chunk);
         $dechunk = null;
-
+        
         while (($pos < $len)
             && ($chunkLenHex = substr($chunk, $pos, ($newlineAt = strpos($chunk, "\n", $pos + 1)) - $pos))) {
             if (!is_hex($chunkLenHex)) {
                 trigger_error('Value is not properly chunk encoded', E_USER_WARNING);
-
+                
                 return $chunk;
             }
-
-            $pos = $newlineAt + 1;
+            
+            $pos      = $newlineAt + 1;
             $chunkLen = hexdec(rtrim($chunkLenHex, "\r\n"));
             $dechunk .= substr($chunk, $pos, $chunkLen);
             $pos = strpos($chunk, "\n", $pos + $chunkLen) + 1;
         }
-
+        
         return $dechunk;
     }
 }
@@ -275,7 +275,7 @@ function is_hex($hex)
         $hex = 0;
     };
     $dec = hexdec($hex);
-
+    
     return ($hex == dechex($dec));
 }
 
@@ -285,7 +285,7 @@ function is_hex($hex)
 function get_request($host, $uri)
 {
     $data = array();
-    $h = fsockopen($host, 80);
+    $h    = fsockopen($host, 80);
     if ($h) {
         $req = 'GET ' . $uri . ' HTTP/1.1' . "\r\n" .
             'Host: ' . $host . "\r\n" .
@@ -298,14 +298,14 @@ function get_request($host, $uri)
             $ans .= fgets($h, 1024);
         }
         fclose($h);
-
+        
         $ans = explode("\r\n\r\n", $ans);
         if (stripos($ans[0], 'chunked') !== false) {
             $ans[1] = http_chunked_decode($ans[1]);
         }
-
+        
         $data = unserialize($ans[1]);
     }
-
+    
     return $data;
 }

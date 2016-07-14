@@ -8,7 +8,7 @@ class reactor_interface_edit extends basic_object
     {
         $t = basic_object::store($form);
         interfacesCompile();
-
+        
         return $t;
     }
 }

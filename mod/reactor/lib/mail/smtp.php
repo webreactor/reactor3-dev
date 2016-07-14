@@ -22,14 +22,14 @@ function encode_field_t($match)
 
 function encode_field($fld)
 {
-
-    $t = explode(')|_', wordwrap($fld, 40, ')|_ '));
-    $r = '';
+    
+    $t   = explode(')|_', wordwrap($fld, 40, ')|_ '));
+    $r   = '';
     $cnt = count($t);
     for ($i = 0; $i < $cnt; $i++) {
         $r .= '=?windows-1251?B?' . base64_encode($t[$i]) . "?=\n\t";
     }
-
+    
     return substr($r, 0, -2);
 }
 
@@ -56,19 +56,19 @@ class smtp extends socket_client
         'content-disposition',
         'content-id',
     );
-
+    
     function smtp($srv = '', $login = '', $pwd = '')
     {
         if ($srv != '') {
             $this->smtp_connect($srv, $login, $pwd);
         }
     }
-
+    
     function smtp_connect($srv, $login, $pwd)
     {
-        $this->srv = $srv;
+        $this->srv   = $srv;
         $this->login = $login;
-        $this->pwd = $pwd;
+        $this->pwd   = $pwd;
         $this->connect($srv, 25);
         $this->put('HELO ' . $this->get_answ(1));
         if ($this->get_answ() != '250') {
@@ -87,23 +87,23 @@ class smtp extends socket_client
         }
         $this->error = 0;
     }
-
+    
     function get_answ($i = 0)
     {
         $this->last_reply = explode(' ', $this->get());
-
+        
         return $this->last_reply[$i];
     }
-
+    
     function new_letter($text, $from, $subj = 'None', $type = 0)
     {
-        $this->letter = array();
-        $bound = md5(microtime());
-        $this->letter['header']['from'] = $from;
-        $this->letter['header']['sender'] = $from;
-        $this->letter['header']['reply-to'] = $from;
-        $this->letter['header']['return-path'] = $from;
-        $this->letter['header']['subject'] = UTF8tocp1251($subj);
+        $this->letter                           = array();
+        $bound                                  = md5(microtime());
+        $this->letter['header']['from']         = $from;
+        $this->letter['header']['sender']       = $from;
+        $this->letter['header']['reply-to']     = $from;
+        $this->letter['header']['return-path']  = $from;
+        $this->letter['header']['subject']      = UTF8tocp1251($subj);
         $this->letter['header']['content-type'] = 'multipart/related; boundary="' . $bound . '"';
         if ($type == 0) {
             $this->letter['data'][] = array(
@@ -119,22 +119,22 @@ class smtp extends socket_client
             );
         }
     }
-
+    
     function inline($fname, $disposition = 'inline')
     {
         $this->attach($fname, $disposition);
     }
-
+    
     function attach($fname, $disposition = 'attachment')
     {
         if (!is_file($fname)) {
             $this->error = 10;
         } //Error 10: Can't open file.
-        $fd = fopen($fname, 'r');
+        $fd   = fopen($fname, 'r');
         $file = fread($fd, filesize($fname));
         fclose($fd);
-        $type = mime_content_type($fname);
-        $fname = basename($fname);
+        $type                   = mime_content_type($fname);
+        $fname                  = basename($fname);
         $this->letter['data'][] = array(
             'header' =>
                 array(
@@ -146,13 +146,13 @@ class smtp extends socket_client
             'data'   => $file,
         );
     }
-
+    
     function send($to)
     {
         $this->put('NOOP');
         if ($this->get_answ() == '250') {
             $this->letter['header']['to'] = $to;
-            $data = $this->get_raw($this->letter);
+            $data                         = $this->get_raw($this->letter);
             $this->put('MAIL FROM: ' . $this->letter['header']['from']);
             if ($this->get_answ() != '250') {
                 $this->error = 12;
@@ -166,7 +166,7 @@ class smtp extends socket_client
                 if ($this->get_answ() == '250') {
                     $this->put('RSET');
                     $this->get();
-
+                    
                     return 1;
                 }
             } else {
@@ -177,7 +177,7 @@ class smtp extends socket_client
             $this->send($to);
         }
     }
-
+    
     function quit()
     {
         $this->put("QUIT");
@@ -186,20 +186,23 @@ class smtp extends socket_client
         } //Error 20: Can't QUIT right now.
         $this->close();
     }
-
+    
     function combine_head(&$header)
     {
         $bound = md5(microtime());
-
+        
         $type = substr($header['content-type'], 0, 4);
         if ($type == 'text') {
             if (strpos($header['content-type'], 'charset') > 0) {
-                $header['content-type'] = preg_replace('/charset="?([^;"]+)"?/is', 'charset="windows-1251"',
-                    $header['content-type']);
+                $header['content-type'] = preg_replace(
+                    '/charset="?([^;"]+)"?/is',
+                    'charset="windows-1251"',
+                    $header['content-type']
+                );
             } else {
                 $header['content-type'] .= '; charset="windows-1251"';
             }
-
+            
             unset($header['content-transfer-encoding']);
         } else {
             if ($type == 'mult') {
@@ -208,32 +211,38 @@ class smtp extends socket_client
                 $header['content-transfer-encoding'] = 'base64';
             }
         }
-
-        $header['content-type'] = preg_replace_callback('/(name)="?([^;"]+)"?/is', 'encode_field_t',
-            $header['content-type']);
-
+        
+        $header['content-type'] = preg_replace_callback(
+            '/(name)="?([^;"]+)"?/is',
+            'encode_field_t',
+            $header['content-type']
+        );
+        
         if (isset($header['content-disposition'])) {
-            $header['content-disposition'] = preg_replace_callback('/(filename)="?([^;"]+)"?/is', 'encode_field_t',
-                $header['content-disposition']);
+            $header['content-disposition'] = preg_replace_callback(
+                '/(filename)="?([^;"]+)"?/is',
+                'encode_field_t',
+                $header['content-disposition']
+            );
         }
-
+        
         foreach ($header as $key => $val) {
             if (in_array($key, $this->header_fields)) {
                 $this->text .= ucfirst($key) . ': ' . wordwrap($val, 75, "\n\t") . "\n";
             }
         }
         $this->text .= "\n";
-
+        
         return $bound;
     }
-
+    
     function combine_part_r($part)
     {
-
+        
         $bound = $this->combine_head($part['header']);
-
+        
         if (substr($part['header']['content-type'], 0, 5) == 'multi') {
-
+            
             foreach ($part['data'] as $multi) {
                 $this->text .= '--' . $bound . "\n";
                 $this->text .= $this->combine_part_r($multi) . "\n";
@@ -247,14 +256,14 @@ class smtp extends socket_client
             }
         }
     }
-
+    
     function get_raw($data)
     {
         $this->text = '';
         if (!isset($data['header']['from'])/* or !isset($data['header']['to'])*/) {
             return 0;
         }
-
+        
         if (!isset($data['header']['date'])) {
             $data['header']['date'] = date("r");
         }
@@ -264,15 +273,15 @@ class smtp extends socket_client
         if (!isset($data['header']['content-type'])) {
             $data['header']['content-type'] = "text/plain";
         }
-
+        
         if (!isset($data['header']['subject'])) {
             $data['header']['subject'] = 'None';
         } else {
             $data['header']['subject'] = encode_field($data['header']['subject']);
         }
-
+        
         $this->combine_part_r($data) . "\n";
-
+        
         return $this->text;
     }
 }

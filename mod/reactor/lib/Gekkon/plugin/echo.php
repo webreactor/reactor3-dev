@@ -1,5 +1,6 @@
 <?php
-$t = explode(' ', $tag['arg']);
+
+$t        = explode(' ', $tag['arg']);
 $bin_open = '<?php echo ';
 foreach ($t as $tt) {
     if (isset($tt[0])) {

@@ -1,5 +1,6 @@
 <?php
-$t = explode(' ', $tag['arg']);
+
+$t     = explode(' ', $tag['arg']);
 $ifstr = '';
 foreach ($t as $tt) {
     if (isset($tt[0])) {
@@ -10,7 +11,7 @@ foreach ($t as $tt) {
     $ifstr .= ' ' . $tt;
 }
 
-$bin_open = '<?php if(' . $ifstr . ') { ?>';
+$bin_open  = '<?php if(' . $ifstr . ') { ?>';
 $bin_close = '<?php } ?>';
 
 ?>

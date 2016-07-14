@@ -1,5 +1,6 @@
 <?php
-$t = explode(' ', $tag['arg']);
+
+$t        = explode(' ', $tag['arg']);
 $bin_open = '<?php switch(';
 foreach ($t as $tt) {
     if ($tt[0] == '$' || $tt[0] == '@') {

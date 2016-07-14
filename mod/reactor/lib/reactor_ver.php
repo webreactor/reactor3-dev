@@ -8,7 +8,7 @@ function reactor_ver()
         'reactor/lib/db/',
         'constructor/lib/',
     );
-    $rez = '';
+    $rez  = '';
     foreach ($dirs as $c_dir) {
         if (is_dir(MOD_DIR . $c_dir)) {
             if ($dh = opendir(MOD_DIR . $c_dir)) {
@@ -23,19 +23,19 @@ function reactor_ver()
             }
         }
     }
-
+    
     return trim($rez);
 }
 
 function reactor_item_ver($file)
 {
-    $f = fopen($file, 'r');
+    $f   = fopen($file, 'r');
     $str = fread($f, 100);
     fclose($f);
     if (preg_match('/version\s+(\d+(\.\d+)*)/uis', $str, $match)) {
         return $match[1];
     }
-
+    
     return '';
 }
 
@@ -49,15 +49,15 @@ function reactor_ver_depend($check, &$log)
     foreach ($t[1] as $k => $item) {
         $check_match[$t[1][$k]] = $t[2][$k];
     }
-
+    
     preg_match_all('/\s*([^=\s]+)\s*=\s*(\d+(\.\d+)*)/is', reactor_ver(), $t);
-
+    
     $match = array();
     foreach ($t[1] as $k => $item) {
         $match[$t[1][$k]] = $t[2][$k];
     }
-
-    $r = 1;
+    
+    $r   = 1;
     $log = array();
     foreach ($check_match as $k => $item) {
         $log[$k]['need'] = $item;
@@ -67,24 +67,24 @@ function reactor_ver_depend($check, &$log)
                 $log[$k]['status'] = 'OK';
             } else {
                 $log[$k]['status'] = 'Error';
-                $r = 0;
+                $r                 = 0;
             }
         } else {
             $log[$k]['status'] = 'Error';
-            $r = 0;
+            $r                 = 0;
         }
     }
-
+    
     return $r;
 }
 
 function cleen_ver($str)
 {
-    $t = explode('.', $str);
+    $t   = explode('.', $str);
     $str = $t[0];
     if (isset($t[1])) {
         $str .= $t[1];
     }
-
+    
     return $str;
 }

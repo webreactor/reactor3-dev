@@ -17,12 +17,12 @@ class reactor_module extends basic_object
         } else {
             $t = basic_object::store($form);
         }
-
+        
         interfacesCompile();
-
+        
         return $t;
     }
-
+    
     function uninstall_rmp($key)
     {
         global $_db;
@@ -30,7 +30,7 @@ class reactor_module extends basic_object
         $t = $_db->line();
         uninstall_rmp($t['name']);
     }
-
+    
     function create_rmp($key)
     {
         global $_db;

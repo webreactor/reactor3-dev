@@ -28,7 +28,7 @@ $this->clear_cache($template_name,$stream);
 }
 ';
     }
-
+    
     $bin_open .= '
 $cache_dir=dirname($bin_name)."/".$cid[1].$cid[2];
 $cache_name=$cache_dir."/".$cid;
@@ -61,7 +61,7 @@ readfile ($cache_name);
         if ($tag['arg']['time'][0] == '"') {
             $tag['arg']['time'] = substr($tag['arg']['time'], 1, -1);
         }
-
+        
         $bin_open = '<?php
 if(time() >' . (time() + $tag['arg']['time'] * 60) . ')
 {
@@ -77,14 +77,14 @@ if(' . $tag['arg']['if'] . '==1)
 $this->compile_file($template_name);
 } ?>';
     }
-
+    
     $tag['inner'] = $this->compile($tag['inner']);
     ob_start();
     ob_clean();
-
+    
     eval(' global $Gekkon,$_db,$_user,$_reactor; ?>' . $tag['inner'] . '<?php ');
     $tag['inner'] = ob_get_contents();
-
+    
     ob_end_clean();
 }
 ?>

@@ -7,8 +7,10 @@ if ($_SERVER['REQUEST_URI'] == '/index') {
     die();
 }
 
-if (substr($_SERVER['REQUEST_URI'], 0, 10) == '/var/files' && (false !== $filename_pos = strpos($_SERVER['REQUEST_URI'],
-            'name/'))
+if (substr($_SERVER['REQUEST_URI'], 0, 10) == '/var/files' && (false !== $filename_pos = strpos(
+            $_SERVER['REQUEST_URI'],
+            'name/'
+        ))
 ) {
     header('Location: /var/files/' . substr($_SERVER['REQUEST_URI'], 12, $filename_pos));
     die();
@@ -57,16 +59,16 @@ die();
 /**/
 if ($_reactor['show']['interface'] != '') {
     $object = new reactor_interface();
-
+    
     if (isset($_RGET['_so']) && $_reactor['show']['interface'] == 'null') {
         $object->restore($_RGET['_so']);
     } else {
         $object->configure($_reactor['show']['interface']);
     }
-
+    
     $Gekkon->register('exec_pool_id', $object->_pool_id);
     $Gekkon->register('main_pool_id', $object->_pool_id);
-
+    
     if ($_reactor['show']['action'] != '') {
         $_action =& $object->get('action');
         if (!isset($_action[$_reactor['show']['action']])) {
@@ -74,7 +76,7 @@ if ($_reactor['show']['interface'] != '') {
             $Gekkon->display('login.tpl');
             die();
         }
-
+        
         $data = $object->action($_reactor['show']['action'], $null);
         $Gekkon->registers('exec_data', $data);
         $Gekkon->register('main_data', $data);
@@ -87,7 +89,7 @@ switch ($_reactor['show']['handle']) {
         $Gekkon->display('index.tpl');
         uninitModule();
         break;
-
+    
     case 1:
         if ($_reactor['show']['module'] != '') {
             initModule($_reactor['show']['module']);

@@ -1,4 +1,5 @@
 <?php
+
 $_SERVER['REQUEST_URI'] = '/';
 include '../../../../../../bin/load_core.php';
 

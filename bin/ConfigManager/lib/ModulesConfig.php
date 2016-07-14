@@ -3,34 +3,35 @@
 class ModulesConfig
 {
     protected $_db;
-
+    
     function __construct($_db)
     {
         $this->_db = $_db;
     }
-
+    
     function getConfig($pk_module)
     {
         $config = array();
         $this->_db->sql('select * from reactor_module where pk_module = ' . $pk_module);
         $module = $this->_db->line();
         unset($module['pk_module']);
-        $module['depend'] = '';
-        $config['module'] = $module;
-        $config['interfaces'] = $this->interfaces($pk_module);
-        $config['tables'] = $this->tables($pk_module);
-        $config['config'] = $this->moduleConfig($pk_module);
-        $config['resources'] = $this->resources($pk_module);
-        $config['base_types'] = $this->baseTypes($pk_module);
+        $module['depend']           = '';
+        $config['module']           = $module;
+        $config['interfaces']       = $this->interfaces($pk_module);
+        $config['tables']           = $this->tables($pk_module);
+        $config['config']           = $this->moduleConfig($pk_module);
+        $config['resources']        = $this->resources($pk_module);
+        $config['base_types']       = $this->baseTypes($pk_module);
         $config['action_relations'] = $this->actionRelations($pk_module);
-
+        
         return $config;
     }
-
+    
     function actionRelations($pk_module)
     {
         $rez = array();
-        $this->_db->sql('
+        $this->_db->sql(
+            '
             SELECT
                 pi.name parent_interface, pa.name as parent_action, 
                 i.name as interface, a.name as `action`
@@ -50,10 +51,10 @@ class ModulesConfig
         foreach ($data as $rel) {
             $rez[$rel['parent_interface'] . ';' . $rel['parent_action']][] = $rel['interface'] . ';' . $rel['action'];
         }
-
+        
         return $rez;
     }
-
+    
     function baseTypes($pk_parent)
     {
         $rez = array();
@@ -64,10 +65,10 @@ class ModulesConfig
             unset($item['fk_module']);
             $rez[] = $item;
         }
-
+        
         return $rez;
     }
-
+    
     function tables($pk_parent)
     {
         global $_languages;
@@ -88,43 +89,43 @@ class ModulesConfig
             }
             $rez[] = $item;
         }
-
+        
         return $rez;
     }
-
+    
     protected function isTable($name)
     {
         $this->_db->sql('show tables like "' . $name . '"');
-
+        
         return (bool) $this->_db->line();
     }
-
+    
     function tableCreate($db_name)
     {
         if ($this->isTable($db_name)) {
             $this->_db->sql('show create table `' . $db_name . '`');
             $create_sql = $this->_db->line();
-
+            
             return $create_sql['Create Table'];
         }
-
+        
         return null;
     }
-
+    
     function tableCreateMLng($db_name, $languages)
     {
         $rez = array();
         foreach ($languages as $lng) {
             $real_name = $db_name . '_' . $lng;
-            $sql = $this->tableCreate($real_name);
+            $sql       = $this->tableCreate($real_name);
             if (!empty($sql)) {
                 $rez[$real_name] = $sql;
             }
         }
-
+        
         return $rez;
     }
-
+    
     function resources($pk_parent)
     {
         $rez = array();
@@ -135,10 +136,10 @@ class ModulesConfig
             unset($item['fk_module']);
             $rez[] = $item;
         }
-
+        
         return $rez;
     }
-
+    
     function moduleConfig($pk_parent)
     {
         $rez = array();
@@ -149,10 +150,10 @@ class ModulesConfig
             unset($item['fk_module']);
             $rez[] = $item;
         }
-
+        
         return $rez;
     }
-
+    
     function interfaces($pk_parent)
     {
         $rez = array();
@@ -162,14 +163,14 @@ class ModulesConfig
             unset($item['pk_interface']);
             unset($item['fk_interface']);
             unset($item['fk_module']);
-            $item['_define'] = $this->interfaceDefine($pk);
+            $item['_define']  = $this->interfaceDefine($pk);
             $item['_actions'] = $this->interfaceActions($pk);
-            $rez[] = $item;
+            $rez[]            = $item;
         }
-
+        
         return $rez;
     }
-
+    
     function interfaceDefine($pk_parent)
     {
         $rez = array();
@@ -180,10 +181,10 @@ class ModulesConfig
             unset($property['pk_define']);
             $rez[] = $property;
         }
-
+        
         return $rez;
     }
-
+    
     function interfaceActions($pk_parent)
     {
         $rez = array();
@@ -195,7 +196,7 @@ class ModulesConfig
             unset($action['pk_action']);
             $rez[] = $action;
         }
-
+        
         return $rez;
     }
 }

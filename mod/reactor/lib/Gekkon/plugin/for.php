@@ -1,4 +1,5 @@
 <?php
+
 if (!isset($tag['arg']['step'])) {
     $tag['arg']['step'] = 1;
 }

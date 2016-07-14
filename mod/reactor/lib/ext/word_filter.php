@@ -31,7 +31,7 @@ class Text_Censure
     private function __construct()
     {
     }
-
+    
     /**
      *
      * @param    string      $s          строка для проверки
@@ -67,9 +67,9 @@ class Text_Censure
         if ($s === null) {
             return null;
         }
-
+        
         static $re_badwords = null;
-
+        
         if ($re_badwords === null) {
             #предлоги русского языка:
             #[всуо]|
@@ -125,7 +125,7 @@ class Text_Censure
                 '[дdg]_?[оo]_?[лl]_?[бb6]_?[оoаa]_?', #долб[оа]
                 '[оo]_?[сc]_?[тt]_?[рpr]_?[оo]_?',    #остро
             );
-
+            
             $badwords = array(
                 #Слово на букву Х
                 '(?<=\PL) %RE_PRETEXT%?
@@ -136,12 +136,12 @@ class Text_Censure
                          | _хуе(?=дин)   #Хуедин  -- город в Румынии
                          | _hyu(?=ndai_) #Hyundai -- марка корейского автомобиля
                       )',
-
+                
                 #Слово на букву П
                 '(?<=\PL) %RE_PRETEXT%?
                       [пp]_?[иieеё]_?[зz3]_?[дd](?=_?[:vowel:])',
                 #п[ие]зда, пизде, пиздёж, пизду, пиздюлина, пиздобол, опиздинеть, пиздых, подпёздывать
-
+                
                 #Слово на букву Е
                 '(?<=\PL) %RE_PRETEXT%?
                       [eеё]_?
@@ -156,37 +156,37 @@ class Text_Censure
                                 | [кk]_?[аa]                    #взъёбка
                                 | [сc]_?[тt]                    #ебсти
                                )',
-
+                
                 #Слово на букву Е (c обязательной приставкой от 2-х и более букв!)
                 '(?<=\PL) %RE_PRETEXT%
                       (?<= \pL\pL|\pL_\pL_)
                       [eеё]_?[бb6]    #долбоёб, дураёб, изъёб, заёб, заебай, разъебай, мудоёбы
             ',
-
+                
                 #Слово на букву Е
                 '(?<=\PL) ёб (?=\PL)',
                 #ёб твою мать
-
+                
                 #Слово на букву Б
                 '(?<=\PL) %RE_PRETEXT%?
                       [бb6]_?[лl]_?(?:я|ya)(?: _         #бля
                                              | _?[тдtd]  #блять, бляди
                                            )',
-
+                
                 #ПИДОР
                 '(?<=\PL) [пp]_?[иieе]_?[дdg]_?[eеиiaаoо]_?[rpр]',
                 #п[ие]д[оеа]р
-
+                
                 #МУДАК
                 '(?<=\PL) [мm]_?[уy]_?[дdg]_?[аa]  #мудак, мудачок
                       #исключения:
                       (?<!_myda(?=s_))  #Chelonia mydas -- морская зеленая (суповая) черепаха
             ',
-
+                
                 #ЖОПА
                 '(?<=\PL) [zж]_?h?_?[оo]_?[pп]_?[aаyуыiеeoо]',
                 #жоп[ауыео]
-
+                
                 #МАНДА
                 #исключения: город Мандалай, округ Мандаль, индейский народ Мандан, фамилия Мандель, мандарин
                 '(?<=\PL) [мm]_?[аa]_?[нnh]_?[дdg]_?[aаyуыiеeoо]  #манд[ауыео]
@@ -195,15 +195,15 @@ class Text_Censure
                          | manda(?=[ln]|rin)
                          | манде(?=ль)
                       )',
-
+                
                 #ГОВНО
                 '(?<=\PL) [гg]_?[оo]_?[вvb]_?[нnh]_?[оoаaяеeyу]',
                 #говн[оаяеу]
-
+                
                 #FUCK
                 '(?<=\PL) f_?u_?[cс]_?k',
                 #fuck, fucking
-
+                
                 /*
                 #ЛОХ
                 ' л_?[оo]_?[хx]',
@@ -219,7 +219,7 @@ class Text_Censure
                 ' [зz3]_?[аa]_?[лl]_?[уy]_?[пp]_?[аa]',
                 */
             );
-
+            
             $trans = array(
                 '_'             => '\x20',                       #пробел
                 '\pL'           => '[^\x20\d]',                  #буква
@@ -227,7 +227,7 @@ class Text_Censure
                 '[:vowel:]'     => '[аеиоуыэюяёaeioyu]',         #гласные буквы
                 '[:consonant:]' => '[^аеиоуыэюяёaeioyu\x20\d]',  #согласные буквы
             );
-
+            
             $re_badwords = str_replace(
                 '%RE_PRETEXT%',
                 '(?:' . implode('|', $pretext) . ')',  #однократный шаблон с альтернативами использовать нельзя!
@@ -240,13 +240,17 @@ class Text_Censure
 		$replace = UTF8::convert_from($replace, $charset);
 		*/
         $ss = $s;  #saves original string
-
+        
         if ($is_html) {
             #скрипты не вырезаем, т.к. м.б. обходной маневр на с кодом на javascript:
             #<script>document.write('сло'+'во')</script>
             #хотя давать пользователю возможность использовать код на javascript нехорошо
-            $s = is_callable(array('HTML', 'strip_tags')) ? HTML::strip_tags($s, null, true,
-                array('comment', 'style', 'map', 'frameset', 'object', 'applet'))
+            $s = is_callable(array('HTML', 'strip_tags')) ? HTML::strip_tags(
+                $s,
+                null,
+                true,
+                array('comment', 'style', 'map', 'frameset', 'object', 'applet')
+            )
                 : strip_tags($s);
             #заменяем html-сущности в "чистый" UTF-8
             $s = /*UTF8::*/
@@ -264,43 +268,55 @@ class Text_Censure
         */
         #ВотБ/\яПидорыОхуелиБлятьНахуйПохуйПи3децПолный
         if (version_compare(PHP_VERSION, '5.2.0', '>=')) {
-            $s = preg_replace('~     [\p{Lu}3] (?>\p{Ll}+|/\\\\|[@36]+)++   #Вот
+            $s = preg_replace(
+                '~     [\p{Lu}3] (?>\p{Ll}+|/\\\\|[@36]+)++   #Вот
 								 (?= [\p{Lu}3] (?:\p{Ll} |/\\\\|[@36] ) )   #Бля
-							   ~sxuSX', '$0 ', $s);
+							   ~sxuSX',
+                '$0 ',
+                $s
+            );
         }
-
+        
         $s = mb_strtolower($s);
-
+        
         #получаем в массив только буквы и цифры
         #"с_л@о#во,с\xc2\xa7лово.Слово" -> "с л о во с лово слово слово слово слово"
-        preg_match_all('~(?> \xd0[\xb0-\xbf]|\xd1[\x80-\x8f\x91]  #[а-я]
+        preg_match_all(
+            '~(?> \xd0[\xb0-\xbf]|\xd1[\x80-\x8f\x91]  #[а-я]
 						  |  /\\\\     #л
 						  |  @         #а
 						  |  [a-z\d]+
 						  )+
-						~sxSX', $s, $m);
+						~sxSX',
+            $s,
+            $m
+        );
         $s = ' ' . implode(' ', $m[0]) . ' ';
-
+        
         $trans = array(
             '/\\' => 'л',  #Б/\ЯТЬ --> БЛЯТЬ
             '@'   => 'а',  #пизд@  --> пизда
         );
-        $s = strtr($s, $trans);
-
+        $s     = strtr($s, $trans);
+        
         #цифровые подделки под буквы
         $trans = array(
             '~ [3з]++ [3з\x20]*+ ~sxuSX' => 'з',
             '~ [6б]++ [6б\x20]*+ ~sxuSX' => 'б',
         );
-        $s = preg_replace(array_keys($trans), array_values($trans), $s);
-
+        $s     = preg_replace(array_keys($trans), array_values($trans), $s);
+        
         #убираем все повторяющиеся символы, ловим обман типа "х-у-у-й"
         #"сллоооовоо   слово  х у у й" --> "слово слово х у й"
-        $s = preg_replace('/(  [\xd0\xd1][\x80-\xbf] \x20?  #optimized [а-я]
+        $s = preg_replace(
+            '/(  [\xd0\xd1][\x80-\xbf] \x20?  #optimized [а-я]
                              | [a-z\d] \x20?
                              ) \\1+
-                           /sxSX', '$1', $s);
-
+                           /sxSX',
+            '$1',
+            $s
+        );
+        
         if ($replace === null || version_compare(PHP_VERSION, '5.2.0', '<')) {
             $result = preg_match($re_badwords, $s, $m, PREG_OFFSET_CAPTURE);
             if (function_exists('preg_last_error') && preg_last_error() !== PREG_NO_ERROR) {
@@ -311,8 +327,8 @@ class Text_Censure
             }  #PREG_INTERNAL_ERROR = 1
             if ($result && $replace === null) {
                 list($word, $offset) = $m[0];
-                $s1 = substr($s, 0, $offset);
-                $s2 = substr($s, $offset + strlen($word));
+                $s1    = substr($s, 0, $offset);
+                $s2    = substr($s, $offset + strlen($word));
                 $delta = intval($delta);
                 if ($delta === 0) {
                     $fragment = '[' . trim($word) . ']';
@@ -320,26 +336,34 @@ class Text_Censure
                     if ($delta < 1 || $delta > 10) {
                         $delta = 3;
                     }
-                    preg_match('/  (?> \x20 (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)++ ){1,' . $delta . '}+
+                    preg_match(
+                        '/  (?> \x20 (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)++ ){1,' . $delta . '}+
                                    \x20?+
-                                $/sxSX', $s1, $m1);
-                    preg_match('/^ (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)*+  #ending
+                                $/sxSX',
+                        $s1,
+                        $m1
+                    );
+                    preg_match(
+                        '/^ (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)*+  #ending
                                    \x20?+
                                    (?> (?>[\xd0\xd1][\x80-\xbf]|[a-z\d]+)++ \x20 ){0,' . $delta . '}+
-                                /sxSX', $s2, $m2);
+                                /sxSX',
+                        $s2,
+                        $m2
+                    );
                     $fragment = (ltrim(@$m1[0]) !== ltrim($s1) ? $continue : '') .
                         trim((isset($m1[0]) ? $m1[0] : '') . '[' . trim($word) . ']' . (isset($m2[0]) ? $m2[0] : '')) .
                         (rtrim(@$m2[0]) !== rtrim($s2) ? $continue : '');
                 }
-
+                
                 return /*UTF8::convert_to(*/
                     $fragment/*, $charset)*/
                     ;
             }
-
+            
             return false;
         }
-
+        
         $result = preg_match_all($re_badwords, $s, $m);
         if (function_exists('preg_last_error') && preg_last_error() !== PREG_NO_ERROR) {
             return preg_last_error();
@@ -352,21 +376,24 @@ class Text_Censure
             $s = $ss;
             #замена матного фрагмента на $replace
             foreach ($m[0] as $w) {
-                $re_w = '~' . preg_replace_callback('~(?:/\\\\|[^\x20])~suSX', array('self', '_make_regexp_callback'),
-                        $w) . '~sxuiSX';
-                $ss = preg_replace($re_w, $replace, $ss);
+                $re_w = '~' . preg_replace_callback(
+                        '~(?:/\\\\|[^\x20])~suSX',
+                        array('self', '_make_regexp_callback'),
+                        $w
+                    ) . '~sxuiSX';
+                $ss   = preg_replace($re_w, $replace, $ss);
                 #d($re_w);
             }
             while ($ss !== $s) {
                 $ss = self::parse($s = $ss, $delta, $continue, $is_html, $replace, 'UTF-8');
             }
         }
-
+        
         return /*UTF8::convert_to(*/
             $ss/*, $charset)*/
             ;
     }
-
+    
     private static function _make_regexp_callback(array $m)
     {
         #$re_holes = '[\x00-\x20\-_\*\~\.\'"\^=`:]';
@@ -384,9 +411,9 @@ class Text_Censure
             #в PCRE-7.2 флаг /i в комбинации с /u в регулярном выражении почему-то не работает (BUG?)
             #поэтому делаем класс символов с буквами в обоих регистрах
             $char = '[' . preg_quote($m[0] . mb_strtoupper($m[0]), '~') . ']';
-            $re = str_replace('$0', $char, '$0++ (?>[:holes:]|$0+)*+');
+            $re   = str_replace('$0', $char, '$0++ (?>[:holes:]|$0+)*+');
         }
-
+        
         return str_replace('[:holes:]', $re_holes, $re . "\r\n");
     }
 }

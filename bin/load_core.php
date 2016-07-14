@@ -1,4 +1,5 @@
 <?php
+
 //error_log('['.$_SERVER['REMOTE_ADDR'].']'.$_SERVER['REQUEST_URI']);
 if (empty($_COOKIE['PHPSESSID'])) {
     unset($_COOKIE['PHPSESSID']);
@@ -20,12 +21,12 @@ $_reactor = array(
 $_site_tree = resourceRestore('reactor_site_tree');
 
 include LIB_DIR . 'Gekkon/Gekkon.php';
-$Gekkon = new Gekkon();
-$Gekkon->data['_SERVER'] =& $_SERVER;
+$Gekkon                   = new Gekkon();
+$Gekkon->data['_SERVER']  =& $_SERVER;
 $Gekkon->data['_reactor'] =& $_reactor;
 $Gekkon->data['SITE_URL'] = SITE_URL;
 $Gekkon->data['FILE_URL'] = FILE_URL;
-$Gekkon->data['_user'] =& $_user;
+$Gekkon->data['_user']    =& $_user;
 
 initRequest();
 $_RGET = $_GET;
@@ -47,14 +48,14 @@ $_db->sql('set NAMES "utf8"');
 require SITE_DIR . 'vendor/autoload.php';
 $_rmq = new \toecto\AMQPSimpleWrapper\AMQPSimpleWrapper(RMQ_USR, RMQ_PWD, RMQ_VHOST, RMQ_HOST);
 
-$_resource = array();
-$_user = restoreUser();
-$_base_types = resourceRestore('reactor_base_types');
-$_interfaces = resourceRestore('reactor_interfaces_' . $_user['ugroup']['name']);
+$_resource        = array();
+$_user            = restoreUser();
+$_base_types      = resourceRestore('reactor_base_types');
+$_interfaces      = resourceRestore('reactor_interfaces_' . $_user['ugroup']['name']);
 $GLOBALS['_pool'] = array();
 
 $Gekkon->data['_interfaces'] =& $_interfaces;
-$Gekkon->data['_SGET'] =& $_SGET;
+$Gekkon->data['_SGET']       =& $_SGET;
 
 if (!isset($_user['ip_allowed'])) {
     $_user = restoreUser();
@@ -66,7 +67,7 @@ $_ab = new \Reactor\ABDriver\ABDriver($_rmq, 'ab_tests');
 $_ab->initUtm($_RGET);
 
 if (!isset($_ab->common_factors['city'])) {
-    $city = ipToCityData($_ab->common_factors['ip']);
+    $city                        = ipToCityData($_ab->common_factors['ip']);
     $_ab->common_factors['city'] = $city['name'];
 }
 

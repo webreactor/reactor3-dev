@@ -35,10 +35,10 @@ if (!$_db->link) {
 }//!!
 $_db->sql('set NAMES "utf8"');
 
-$_resource = array();
-$_user = resourceRestore('reactor_guest_user');
-$_base_types = resourceRestore('reactor_base_types');
-$_interfaces = resourceRestore('reactor_interfaces_' . $_user['ugroup']['name']);
+$_resource        = array();
+$_user            = resourceRestore('reactor_guest_user');
+$_base_types      = resourceRestore('reactor_base_types');
+$_interfaces      = resourceRestore('reactor_interfaces_' . $_user['ugroup']['name']);
 $GLOBALS['_pool'] = array();
 
 include ETC_DIR . 'autoexec.php';

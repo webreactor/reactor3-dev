@@ -1,4 +1,5 @@
 <?php
+
 //$this->add_plugin($name,$close,$compile,$st_arg);
 $this->add_plugin('echo', 0, 0, 0);
 $this->add_plugin('foreach', 1, 1, 1);

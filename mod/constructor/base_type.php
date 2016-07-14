@@ -1,4 +1,5 @@
 <?php
+
 include_once LIB_DIR . 'config_write.php';
 
 class reactor_base_type extends basic_object
@@ -7,7 +8,7 @@ class reactor_base_type extends basic_object
     {
         $r = basic_object::store($form);
         baseTypeCompile();
-
+        
         return $r;
     }
 }

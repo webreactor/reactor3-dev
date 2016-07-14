@@ -14,15 +14,15 @@ class FileUploadHandler extends UploadHandler
             $this->initialize();
         }
     }
-
+    
     protected function get_download_url($file_name, $version = null, $direct = false)
     {
-        $url = parent::get_download_url($file_name, $version, $direct);
+        $url               = parent::get_download_url($file_name, $version, $direct);
         $encoded_file_name = rawurlencode($file_name);
-
+        
         return str_replace($encoded_file_name, getRelativePath($file_name), $url);
     }
-
+    
     protected function handle_file_upload(
         $uploaded_file,
         $name,
@@ -34,12 +34,12 @@ class FileUploadHandler extends UploadHandler
     ) {
         $file = parent::handle_file_upload($uploaded_file, $name, $size, $type, $error, $index, $content_range);
         if (property_exists($file, 'url')) {
-            $file_path = $this->get_upload_path($file->name);
-            $new_name = saveFile($file_path, false);
+            $file_path  = $this->get_upload_path($file->name);
+            $new_name   = saveFile($file_path, false);
             $file->name = $new_name;
-            $file->url = $this->get_download_url($new_name);
+            $file->url  = $this->get_download_url($new_name);
         }
-
+        
         return $file;
     }
 }
