@@ -2,15 +2,18 @@
 
 include_once LIB_DIR . 'config_write.php';
 
-class reactor_interface_action extends basic_object {
-    function store($form) {
+class reactor_interface_action extends basic_object
+{
+    function store($form)
+    {
         $t = basic_object::store($form);
         interfacesCompile();
 
         return $t;
     }
 
-    function back() {
+    function back()
+    {
         global $_db;
         $_db->sql('select fk_module from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
         $t = $_db->line();
@@ -18,7 +21,8 @@ class reactor_interface_action extends basic_object {
         return $t['fk_module'];
     }
 
-    function addStandartActions() {
+    function addStandartActions()
+    {
         global $_db;
         $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
         $robj = $_db->line();
@@ -33,7 +37,8 @@ class reactor_interface_action extends basic_object {
         $_db->sql('insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,0,' . $this->fkey_value . ',"onRestore","onRestore","onRestore","","","",0,0,"",0)');
     }
 
-    function addUpDownActions() {
+    function addUpDownActions()
+    {
         global $_db;
         $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
         $robj = $_db->line();
@@ -42,7 +47,8 @@ class reactor_interface_action extends basic_object {
         interfacesCompile();
     }
 
-    function addStandartJump() {
+    function addStandartJump()
+    {
         global $_db;
         $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
         $robj = $_db->line();
@@ -50,7 +56,8 @@ class reactor_interface_action extends basic_object {
         $_db->sql('insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $this->fkey_value . ',"!jump","Перейти к ...","","","target interface","target action",1,1,"\'' . $fkey . '=\'.inputGetNum(\'' . $robj['pkey'] . '\')",0)');
     }
 
-    function addBasicObjConfigure() {
+    function addBasicObjConfigure()
+    {
         global $_db;
         $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
         $robj = $_db->line();
@@ -61,7 +68,8 @@ class reactor_interface_action extends basic_object {
         }
     }
 
-    function addIntSelect() {
+    function addIntSelect()
+    {
         global $_db;
         $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
         $robj = $_db->line();

@@ -1,6 +1,7 @@
 <?php
 
-function tablesCompile() {
+function tablesCompile()
+{
     reactor_trace('tablesCompile');
     global $_db, $_languages;
 
@@ -39,7 +40,8 @@ function tablesCompile() {
 }
 
 //----------------------------------------------
-function groupInterfacesCompile($ugroup) {
+function groupInterfacesCompile($ugroup)
+{
     reactor_trace('groupInterfacesCompile');
     global $_db;
 
@@ -92,7 +94,8 @@ function groupInterfacesCompile($ugroup) {
 
 //----------------------------------------------------------
 
-function interfacesCompile() {
+function interfacesCompile()
+{
     global $_db;
     $_db->sql('select * from ' . T_REACTOR_UGROUP);
     $ugroups = $_db->matr();
@@ -102,7 +105,8 @@ function interfacesCompile() {
     }
 }
 
-function autoexecCompile() {
+function autoexecCompile()
+{
     reactor_trace('autoexecCompile');
     global $_db;
     $_db->sql('select * from ' . T_REACTOR_MODULE);
@@ -121,7 +125,8 @@ function autoexecCompile() {
     fclose($fw);
 }
 
-function configCompile() {
+function configCompile()
+{
     reactor_trace('configCompile');
     global $_db;
     $_db->sql('select pk_module,name from ' . T_REACTOR_MODULE);
@@ -160,7 +165,8 @@ function configCompile() {
     fclose($f);
 }
 
-function resourceCompile() {
+function resourceCompile()
+{
     reactor_trace('resourceCompile');
     global $_db;
 
@@ -180,7 +186,8 @@ function resourceCompile() {
     resourceStore('reactor_resource', $rez);
 }
 
-function baseTypeCompile() {
+function baseTypeCompile()
+{
     reactor_trace('baseTypeCompile');
     global $_db;
     $rez = array();
@@ -199,7 +206,8 @@ function baseTypeCompile() {
     resourceStore('reactor_base_types', $rez);
 }
 
-function guestUserCompile() {
+function guestUserCompile()
+{
     reactor_trace('guestUserCompile');
     global $_user;
     $_user_save = $_user;
@@ -212,7 +220,8 @@ function guestUserCompile() {
     $_user = $_user_save;
 }
 
-function siteTreeCompile() {
+function siteTreeCompile()
+{
     global $_db;
     $_db->sql('select * from ' . T_SITE_TREE . ' order by sort');
     $_tree = $_db->matr();
@@ -225,7 +234,8 @@ function siteTreeCompile() {
     resourceStore('reactor_site_tree', $_site_tree);
 }
 
-function siteTreeCompile_r(&$t, $fk, $path, &$root, &$nodes) {
+function siteTreeCompile_r(&$t, $fk, $path, &$root, &$nodes)
+{
     $r = array('#key' => $fk);
     $ct = count($t);
     for ($i = 0; $i < $ct; $i++) {
@@ -277,7 +287,8 @@ function siteTreeCompile_r(&$t, $fk, $path, &$root, &$nodes) {
     return $r;
 }
 
-function siteModified($where = '1') {
+function siteModified($where = '1')
+{
     global $_db;
     $_db->sql('update ' . T_SITE_TREE . ' set modified=' . time() . ' where modified!="none" and ' . $where);
     siteTreeCompile();

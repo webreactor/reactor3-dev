@@ -1,20 +1,23 @@
 <?php
 
-class sms_sender {
+class sms_sender
+{
     var $login;
     var $pass;
     var $from;
     var $host;
     var $messages = array();
 
-    function sms_sender($login, $pass, $from, $host) {
+    function sms_sender($login, $pass, $from, $host)
+    {
         $this->login = $login;
         $this->pass = $pass;
         $this->from = $from;
         $this->host = $host;
     }
 
-    function prepare_phone($str) {
+    function prepare_phone($str)
+    {
         $num_chars = '';
         foreach (str_split($str) as $char) {
             if (is_numeric($char)) {
@@ -44,7 +47,8 @@ class sms_sender {
         return $num_chars;
     }
 
-    function add_sms($to, $text) {
+    function add_sms($to, $text)
+    {
         $to = $this->prepare_phone($to);
         if ($to === 0) {
             return 0;
@@ -52,7 +56,8 @@ class sms_sender {
         $this->messages[] = array('to' => $to, 'text' => $text);
     }
 
-    function send($to = '', $text = '') {
+    function send($to = '', $text = '')
+    {
         ini_set('error_log', SITE_DIR . '../sms.log');
         error_log('-----------------------------');
         if ($to != '' && $text != '') {

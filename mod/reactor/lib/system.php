@@ -1,6 +1,7 @@
 <?php
 
-function execFork($cmd) {
+function execFork($cmd)
+{
     if (isset($_SERVER['WINDIR'])) {
         $WshShell = new COM('WScript.Shell');
         error_log('execFork: ' . $cmd);

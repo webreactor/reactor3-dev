@@ -1,6 +1,7 @@
 <?php
 
-function reactor_ver() {
+function reactor_ver()
+{
     $dirs = array(
         'reactor/lib/',
         'reactor/lib/Gekkon/',
@@ -26,7 +27,8 @@ function reactor_ver() {
     return trim($rez);
 }
 
-function reactor_item_ver($file) {
+function reactor_item_ver($file)
+{
     $f = fopen($file, 'r');
     $str = fread($f, 100);
     fclose($f);
@@ -37,7 +39,8 @@ function reactor_item_ver($file) {
     return '';
 }
 
-function reactor_ver_depend($check, &$log) {
+function reactor_ver_depend($check, &$log)
+{
     if ($check == '') {
         return 1;
     }
@@ -75,7 +78,8 @@ function reactor_ver_depend($check, &$log) {
     return $r;
 }
 
-function cleen_ver($str) {
+function cleen_ver($str)
+{
     $t = explode('.', $str);
     $str = $t[0];
     if (isset($t[1])) {

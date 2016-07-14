@@ -10,7 +10,8 @@ $_error = '';
 //------------------------------------------------------------------------------
 //shutdown function
 
-function close() {
+function close()
+{
     global $_log, $_mctime, $_log_t;
 
     if (strpos($_log_t, '/jsonp_request/?interface=basket&action=handler&operation=refresh&') !== false) {
@@ -34,15 +35,18 @@ function close() {
 //------------------------------------------------------------------------------
 //time functions
 
-function tsToDate($time_stamp) {
+function tsToDate($time_stamp)
+{
     return date(REACTOR_FORMAT_DATE, $time_stamp);
 }
 
-function tsToDateTime($time_stamp) {
+function tsToDateTime($time_stamp)
+{
     return date(REACTOR_FORMAT_DATETIME, $time_stamp);
 }
 
-function arrayKeyFilter(&$data, $filter) {
+function arrayKeyFilter(&$data, $filter)
+{
     $filter = array_flip($filter);
     $rez = array_intersect_key($data, $filter);
     $data = array_diff_key($data, $filter);
@@ -50,7 +54,8 @@ function arrayKeyFilter(&$data, $filter) {
     return $rez;
 }
 
-function arrayMapRecursive($handle, $data) {
+function arrayMapRecursive($handle, $data)
+{
     if (is_array($data)) {
         foreach ($data as $k => $v) {
             $data[$k] = arrayMapRecursive($handle, $v);
@@ -62,7 +67,8 @@ function arrayMapRecursive($handle, $data) {
     return $data;
 }
 
-function html_entity_decode_full($txt) {
+function html_entity_decode_full($txt)
+{
     return html_entity_decode($txt, ENT_QUOTES);
 }
 
@@ -71,7 +77,8 @@ function html_entity_decode_full($txt) {
 
 include LIB_DIR . 'ext/typo.php';
 
-function strToUrl($str) {
+function strToUrl($str)
+{
     $_str_translit = array(
         'а' => 'a',
         'б' => 'b',
@@ -149,7 +156,8 @@ function strToUrl($str) {
 
 //------------------------------------------------------------------------------
 
-function arrayColumnSplit($data, $column_count) {
+function arrayColumnSplit($data, $column_count)
+{
     $result = array();
     $portion = ceil(count($data) / $column_count);
     if (!empty($data)) {
@@ -164,7 +172,8 @@ function arrayColumnSplit($data, $column_count) {
 //------------------------------------------------------------------------------
 // Database-style sorting array
 // !! NOTE: keys are not preserved
-function array_orderby() {
+function array_orderby()
+{
     $args = func_get_args();
     $data = array_shift($args);
     foreach ($args as $n => $field) {
@@ -184,7 +193,8 @@ function array_orderby() {
 
 //------------------------------------------------------------------------------
 
-function varDumpJavaScript($data, $in = 0) {
+function varDumpJavaScript($data, $in = 0)
+{
     $in++;
     if ($in > 7) {
         $data = "" . $data;
@@ -226,7 +236,8 @@ if (!function_exists('http-chunked-decode')) {
      *
      * @return string the decoded message.  If $chunk wasn't encoded properly it will be returned unmodified.
      */
-    function http_chunked_decode($chunk) {
+    function http_chunked_decode($chunk)
+    {
         $pos = 0;
         $len = strlen($chunk);
         $dechunk = null;
@@ -256,7 +267,8 @@ if (!function_exists('http-chunked-decode')) {
  *
  * @return boolean true if the string is a hex, otherwise false
  */
-function is_hex($hex) {
+function is_hex($hex)
+{
     // regex is for weenies
     $hex = strtolower(trim(ltrim($hex, "0")));
     if (empty($hex)) {
@@ -270,7 +282,8 @@ function is_hex($hex) {
 /*
 || request data from other host via get-request
 */
-function get_request($host, $uri) {
+function get_request($host, $uri)
+{
     $data = array();
     $h = fsockopen($host, 80);
     if ($h) {

@@ -1,14 +1,16 @@
 <?php
 
 //version 1.1
-class mailer {
+class mailer
+{
     var $text;
     var $server;
     var $boundary;
     var $from;
     var $ans;
 
-    function mailer($server, $from, $user = '', $pass = '') {
+    function mailer($server, $from, $user = '', $pass = '')
+    {
 //$this->server = fopen ('log.log', 'w');
         $this->server = fsockopen($server, 25);
         if (!$this->server) {
@@ -37,7 +39,8 @@ class mailer {
         return 1;
     }
 
-    function letter($subject = '', $message = '', $type = 0) {
+    function letter($subject = '', $message = '', $type = 0)
+    {
         $this->boundary = md5(time());
         $boundary = $this->boundary;
         $this->text = "Subject: $subject\r\n";
@@ -53,7 +56,8 @@ class mailer {
         $this->text .= $message . "\r\n\r\n";
     }
 
-    function file($fname, $type) {
+    function file($fname, $type)
+    {
         $boundary = $this->boundary;
         if (!is_file($fname)) {
             return "<br><b>Mailer Error:</b> Can't open file $fname!<br>";
@@ -71,7 +75,8 @@ class mailer {
         $this->text .= "$filedata\r\n";
     }
 
-    function send($to) {
+    function send($to)
+    {
         $boundary = $this->boundary;
         $from = $this->from;
         if ($this->text == '') {
@@ -94,12 +99,14 @@ class mailer {
         return $this->ans;
     }
 
-    function close() {
+    function close()
+    {
         fputs($this->server, "QUIT\r\n");
         fclose($this->server);
     }
 
-    function subscribe($to) {
+    function subscribe($to)
+    {
 
         foreach ($to as $item) {
             $this->send($item);

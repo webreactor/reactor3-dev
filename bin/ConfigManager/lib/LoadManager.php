@@ -1,11 +1,13 @@
 <?php
 
-class LoadManager {
+class LoadManager
+{
     protected $_db;
     protected $mod_dir;
     protected $group_rights_file;
 
-    public function __construct($_db, $mod_dir) {
+    public function __construct($_db, $mod_dir)
+    {
         $this->_db = $_db;
         $this->mod_dir = $mod_dir;
         $this->site_tree = new SiteTreeLoader($_db);
@@ -15,7 +17,8 @@ class LoadManager {
         $this->group_rights_file = $mod_dir . 'user_group_rights.php';
     }
 
-    public function load() {
+    public function load()
+    {
         $rights = $this->group_rights->getConfig();
         $this->rollback->resetAllModules();
         $this->loadModules($this->mod_dir);
@@ -23,7 +26,8 @@ class LoadManager {
         $this->loadTree();
     }
 
-    protected function loadTree() {
+    protected function loadTree()
+    {
         $tree_config_file = $this->mod_dir . 'site/site_tree_config_dump.php';
         if (is_file($tree_config_file)) {
             $data = $this->loadFile($tree_config_file);
@@ -31,7 +35,8 @@ class LoadManager {
         }
     }
 
-    protected function loadModules($mod_dir) {
+    protected function loadModules($mod_dir)
+    {
         $mod_action_relations = array();
         $modules = $this->getModulesList($mod_dir);
         $mod_action_relations[] = $this->loadModule($mod_dir . 'reactor/module_config_dump.php');
@@ -45,14 +50,16 @@ class LoadManager {
         }
     }
 
-    protected function loadModule($file) {
+    protected function loadModule($file)
+    {
         $config = $this->loadFile($file);
         $this->modules->load($config);
 
         return $config['action_relations'];
     }
 
-    protected function getModulesList($dir) {
+    protected function getModulesList($dir)
+    {
         $rez = array();
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
@@ -66,7 +73,8 @@ class LoadManager {
         return $rez;
     }
 
-    public function loadFile($file) {
+    public function loadFile($file)
+    {
         echo "Loading file $file\n";
 
         return include $file;

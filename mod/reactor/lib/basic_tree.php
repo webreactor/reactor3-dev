@@ -1,10 +1,12 @@
 <?php
 
 //version 3.1.0
-class basic_tree extends basic_object {
+class basic_tree extends basic_object
+{
     var $img;
 
-    function basic_tree($table = '', $pkey = '', $fkey = '', $order = '') {
+    function basic_tree($table = '', $pkey = '', $fkey = '', $order = '')
+    {
 
         $this->pkey = $pkey;
         $this->fkey = $fkey;
@@ -15,20 +17,23 @@ class basic_tree extends basic_object {
         $this->onRestore();
     }
 
-    function configure($table, $fk_value = 0, $order = '', $img_w = '') {
+    function configure($table, $fk_value = 0, $order = '', $img_w = '')
+    {
 
         basic_object::configure($table, $fk_value, $order);
 
         $this->createImage($img_w);
     }
 
-    function moveNode($node_key, $new_parent) {
+    function moveNode($node_key, $new_parent)
+    {
         $this->_db->sql('update ' . $this->table . ' set `' . $this->fkey . '`="' . $new_parent . '" where `' . $this->pkey . '`="' . $node_key . '"');
 
         return 1;
     }
 
-    function createImage($d = '', $rows = '*') {
+    function createImage($d = '', $rows = '*')
+    {
 
         $t = '';
         if ($d != '') {
@@ -60,7 +65,8 @@ class basic_tree extends basic_object {
     $row - path in row name
     $path =array(0=>'root',1=>'next')
     */
-    function findPath($row, $path) {
+    function findPath($row, $path)
+    {
         $r = array();
         $path_level = 0;
         $node_key = 0;
@@ -84,7 +90,8 @@ class basic_tree extends basic_object {
         return $r;
     }
 
-    function delete($node_key) {
+    function delete($node_key)
+    {
         $this->_db->sql('select * from ' . $this->table . ' where `' . $this->pkey . '` = "' . $node_key . '"');
         $t = $this->_db->line();
         if ($t == 0) {
@@ -104,7 +111,8 @@ class basic_tree extends basic_object {
     P:node int create tree from this parent node,whithout parent
     R:array "real" tree array
     */
-    function realTree($node = 0, $level = 0) {
+    function realTree($node = 0, $level = 0)
+    {
         if ($level == 0) {
             $level = -1;
         }
@@ -112,7 +120,8 @@ class basic_tree extends basic_object {
         return $this->realTree_r($node, $level);
     }
 
-    function realTree_r($node, $level) {
+    function realTree_r($node, $level)
+    {
         $r = array();
         if ($level == 0) {
             return $r;
@@ -132,7 +141,8 @@ class basic_tree extends basic_object {
     P:node int
     R:array path to node
     */
-    function pathToNode($node_key, $preserve_keys = 1) {
+    function pathToNode($node_key, $preserve_keys = 1)
+    {
         $r = array();
         while (isset($this->img[$node_key])) {
             $r[] = $this->img[$node_key];
@@ -142,7 +152,8 @@ class basic_tree extends basic_object {
         return array_reverse($r, $preserve_keys);
     }
 
-    function childNodes($parent, $save_keys = false) {
+    function childNodes($parent, $save_keys = false)
+    {
         $r = array();
         foreach ($this->img as $k => $v) {
             if ($v[$this->fkey] == $parent) {
@@ -157,7 +168,8 @@ class basic_tree extends basic_object {
         return $r;
     }
 
-    function allChildNodes($node = 0) {
+    function allChildNodes($node = 0)
+    {
         $this->data = array();
         $this->allChildNodes_r($node);
         $r = $this->data;
@@ -166,7 +178,8 @@ class basic_tree extends basic_object {
         return $r;
     }
 
-    function allChildNodes_r($node = 0) {
+    function allChildNodes_r($node = 0)
+    {
         foreach ($this->img as $k => $v) {
             if ($v[$this->fkey] == $node) {
                 $this->data[$k] = $v;
@@ -175,7 +188,8 @@ class basic_tree extends basic_object {
         }
     }
 
-    function realArm($node_key, $level = 0) {
+    function realArm($node_key, $level = 0)
+    {
         $path = $this->pathToNode($node_key);
         if ($level > 0) {
             $path = array_slice($path, 0, $level);
@@ -197,7 +211,8 @@ class basic_tree extends basic_object {
         return $r;
     }
 
-    function realArmUp($node_key, $level = 0) {
+    function realArmUp($node_key, $level = 0)
+    {
         foreach ($this->img as $nk => $node) {
             if ($node[$this->fkey] == $node_key) {
                 $node_key = $nk;
@@ -208,7 +223,8 @@ class basic_tree extends basic_object {
         return $this->realArm($node_key, $level);
     }
 
-    function level($l_s, $l_e = 0, $from_node = 0) {
+    function level($l_s, $l_e = 0, $from_node = 0)
+    {
         if ($l_e == 0) {
             $l_e = $l_s;
         }
@@ -228,7 +244,8 @@ class basic_tree extends basic_object {
         return $r;
     }
 
-    function friendNodes($node_key) {
+    function friendNodes($node_key)
+    {
         $r = array();
         $fk = $this->img[$node_key][$this->fkey];
         foreach ($this->img as $k => $item) {
@@ -240,7 +257,8 @@ class basic_tree extends basic_object {
         return $r;
     }
 
-    function reindex($level, $childs = '', $k_left = '', $k_right = '') {
+    function reindex($level, $childs = '', $k_left = '', $k_right = '')
+    {
 
         $this->_db->sql('update ' . $this->table . ' set `' . $k_left . '`=0, `' . $k_right . '`=0, `' . $level . '`=0, `' . $childs . '`=0');
 //$this->_db->sql('update '.$this->table.' set `'.$level.'`=0');

@@ -8,7 +8,8 @@ define('MANAGER_LIB', __dir__ . '/');
 
 define('MANAGED_APP_DIR', dirname(dirname(dirname(MANAGER_LIB))) . '/');
 
-function configManagerAutoload($class_name) {
+function configManagerAutoload($class_name)
+{
     $file = MANAGER_LIB . $class_name . '.php';
     if (is_file($file)) {
         include $file;
@@ -27,6 +28,7 @@ if (!$_db->link) {
 }
 $_db->sql('set NAMES "utf8"');
 
-function reactor_error($msg) {
+function reactor_error($msg)
+{
     echo $msg . "\n";
 }

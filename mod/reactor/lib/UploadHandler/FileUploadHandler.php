@@ -2,8 +2,10 @@
 
 namespace mod\reactor\lib\UploadHandler;
 
-class FileUploadHandler extends UploadHandler {
-    function __construct($options = null, $initialize = true, $error_messages = null) {
+class FileUploadHandler extends UploadHandler
+{
+    function __construct($options = null, $initialize = true, $error_messages = null)
+    {
         parent::__construct($options, false, $error_messages);
         unset($this->options['image_versions']['thumbnail']);
         $this->options['upload_dir'] = FILE_DIR;
@@ -13,7 +15,8 @@ class FileUploadHandler extends UploadHandler {
         }
     }
 
-    protected function get_download_url($file_name, $version = null, $direct = false) {
+    protected function get_download_url($file_name, $version = null, $direct = false)
+    {
         $url = parent::get_download_url($file_name, $version, $direct);
         $encoded_file_name = rawurlencode($file_name);
 

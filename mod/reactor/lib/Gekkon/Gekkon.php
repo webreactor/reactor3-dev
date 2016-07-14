@@ -1,7 +1,8 @@
 <?php
 
 //version 3.1.6 - reactor edition
-class Gekkon {
+class Gekkon
+{
     var $template_path;
     var $bin_path;
     var $gekkon_path;
@@ -10,7 +11,8 @@ class Gekkon {
     var $ukey;
 
 //constructor
-    function Gekkon() {
+    function Gekkon()
+    {
         $this->template_path = SITE_DIR . 'tpl/';
         $this->bin_path = VAR_DIR . 'tpl_bin/';
         $this->gekkon_path = LIB_DIR . 'Gekkon/';
@@ -21,13 +23,15 @@ class Gekkon {
         $this->data['ukey'] =& $this->ukey;
     }
 
-    function get_ukey() {
+    function get_ukey()
+    {
         $this->ukey++;
 
         return $this->ukey;
     }
 
-    function add_plugin($name, $close = '1', $compile = '1', $st_arg = '1') {
+    function add_plugin($name, $close = '1', $compile = '1', $st_arg = '1')
+    {
         $this->plugin[$name]['close'] = $close;
         if ($close == '0') {
             $compile = '0';
@@ -37,27 +41,33 @@ class Gekkon {
     }
 
 //registration variable for using
-    function register($name, $value) {
+    function register($name, $value)
+    {
         $this->data[$name] = $value;
     }
 
-    function registers($name, &$value) {
+    function registers($name, &$value)
+    {
         $this->data[$name] =& $value;
     }
 
-    function fullTemplatePath($template_name) {
+    function fullTemplatePath($template_name)
+    {
         return MOD_DIR . $this->template_path . $template_name;
     }
 
-    function fullBinPath($template_name) {
+    function fullBinPath($template_name)
+    {
         return $this->bin_path . $this->binDir($template_name) . basename($template_name) . '.php';
     }
 
-    function binDir($template_name) {
+    function binDir($template_name)
+    {
         return crc32($this->template_path . $template_name) . '/';
     }
 
-    function display($file_name) {
+    function display($file_name)
+    {
         reactor_trace('display ' . $file_name . ' bin:' . $this->binDir($file_name));
 
         $tfile_name = $this->fullTemplatePath($file_name);
@@ -91,7 +101,8 @@ class Gekkon {
         return 1;
     }
 
-    function display_into($file_name) {
+    function display_into($file_name)
+    {
         ob_start();
         ob_clean();
         $this->display($file_name);
@@ -101,19 +112,22 @@ class Gekkon {
         return $r;
     }
 
-    function execute($bin_name, $template_name) {
+    function execute($bin_name, $template_name)
+    {
         global $_reactor, $Gekkon, $_db, $_user, $_RGET;
         $data = array();
         include $bin_name;
     }
 
-    function cache_stream($template_name, $stream = '') {
+    function cache_stream($template_name, $stream = '')
+    {
         global $_reactor;
 
         return MD5(serialize(array($template_name, $stream, $_reactor['language'])));
     }
 
-    function clear_cache($template_name, $stream = '') {
+    function clear_cache($template_name, $stream = '')
+    {
         reactor_trace('clear_cache ' . $template_name . ' ' . $stream);
 
         $compile_path = $this->bin_path . $this->binDir($template_name);
@@ -136,7 +150,8 @@ class Gekkon {
         }
     }
 
-    function clear_cache_r($path) {
+    function clear_cache_r($path)
+    {
         if ($dh = opendir($path)) {
             while (($file = readdir($dh)) !== false) {
                 if ($file[0] != '.') {
@@ -152,7 +167,8 @@ class Gekkon {
         }
     }
 
-    function compile_file($file_name, $virt_name = '') {
+    function compile_file($file_name, $virt_name = '')
+    {
         reactor_trace('compile_file ' . $file_name . ' ' . $virt_name);
 
         if ($virt_name == '') {
@@ -172,7 +188,8 @@ class Gekkon {
         fclose($bfile);
     }
 
-    function compile(&$str) {
+    function compile(&$str)
+    {
         include_once $this->gekkon_path . 'config.php';
 
         $str = preg_replace_callback('/(<a[^>]*href=)["\']([^!].+)(["\'])/Uis', 'urlHeader', $str);
@@ -197,7 +214,8 @@ class Gekkon {
         return $rez;
     }
 
-    function compile_r(&$str) {
+    function compile_r(&$str)
+    {
         if ($str == '') {
             return '';
         }
@@ -271,7 +289,8 @@ class Gekkon {
         return $before_tag . $this->compile_tag($tag) . $this->compile_r($after_tag);
     }
 
-    function compile_tag($tag) {
+    function compile_tag($tag)
+    {
         $bin_open = '';
         $bin_close = '';
         include $this->gekkon_path . 'plugin/' . $tag['name'] . '.php';
@@ -285,7 +304,8 @@ class Gekkon {
 
 //-----------------------------------------------------------------------------
 
-function parse_arg($str) {
+function parse_arg($str)
+{
 //echo '<b>Gekkon debug</b> parse_arg - '.$str.'<br>';
     $now = 0;
     $par = array();
@@ -317,7 +337,8 @@ function parse_arg($str) {
     return $par;
 }
 
-function parse_var($str) {
+function parse_var($str)
+{
 //echo '<b>Gekkon debug</b> parse_var - '.$str.'<br>';
     if ($str[0] != '$' && $str[0] != '@') {
         if ($str[0] == "'" || $str[0] == '"') {

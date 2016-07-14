@@ -2,7 +2,8 @@
 
 $_vk_idx_upload_image = 0;
 
-function vk_uploadImage($group_id, $token, $file, $filename = 'image') {
+function vk_uploadImage($group_id, $token, $file, $filename = 'image')
+{
     global $_vk_idx_upload_image;
     $_vk_idx_upload_image++;
     $sVkImageId = '';
@@ -64,7 +65,8 @@ function vk_uploadImage($group_id, $token, $file, $filename = 'image') {
     return $sVkImageId;
 }
 
-function vk_post($group_id, $token, $text, $images = array()) {
+function vk_post($group_id, $token, $text, $images = array())
+{
     $attachments = '';
     file_put_contents(SITE_DIR . '../vk_api.log', print_r($attachments, true));
     foreach ($images as $file) {

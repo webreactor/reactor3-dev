@@ -2,12 +2,14 @@
 
 //version 1.4.2
 
-class db_mysql {
+class db_mysql
+{
     var $link;
     var $rez;
     var $sql;
 
-    function db_mysql($user, $pass, $host, $baza) {
+    function db_mysql($user, $pass, $host, $baza)
+    {
         $this->link = 'none';
         $this->user = $user;
         $this->pass = $pass;
@@ -15,7 +17,8 @@ class db_mysql {
         $this->baza = $baza;
     }
 
-    function connect() {
+    function connect()
+    {
         $this->link = mysql_pconnect($this->host, $this->user, $this->pass);
         if (!$this->link) {
             error_log('mysql: down');
@@ -29,7 +32,8 @@ class db_mysql {
         return $this->link;
     }
 
-    function sql($z) {
+    function sql($z)
+    {
         if ($this->link == 'none') {
             $this->connect();
         }
@@ -55,7 +59,8 @@ class db_mysql {
         return $this->rez;
     }
 
-    function line($row = '*') {
+    function line($row = '*')
+    {
         if ($l = @mysql_fetch_array($this->rez, MYSQL_ASSOC)) {
             if ($row == '*') {
                 return $l;
@@ -69,7 +74,8 @@ class db_mysql {
         }
     }
 
-    function matr($key = '', $row = '*') {
+    function matr($key = '', $row = '*')
+    {
         $r = array();
         if ($key == '') {
             if ($row == '*') {
@@ -101,19 +107,23 @@ class db_mysql {
         return $r;
     }
 
-    function close() {
+    function close()
+    {
         mysql_close($this->link);
     }
 
-    function last_id() {
+    function last_id()
+    {
         return mysql_insert_id($this->link);
     }
 
-    function affected_rows() {
+    function affected_rows()
+    {
         return mysql_affected_rows($this->link);
     }
 
-    function insert($table, $data, $addslashes = true, $flags = '') {
+    function insert($table, $data, $addslashes = true, $flags = '')
+    {
         if ($addslashes) {
             $data = array_map('addslashes', $data);
         }
@@ -123,7 +133,8 @@ class db_mysql {
         return $this->last_id();
     }
 
-    function replace($table, $data, $addslashes = true) {
+    function replace($table, $data, $addslashes = true)
+    {
         if ($addslashes) {
             $data = array_map('addslashes', $data);
         }
@@ -133,7 +144,8 @@ class db_mysql {
         return $this->last_id();
     }
 
-    function update($table, $data, $where = '', $addslashes = true) {
+    function update($table, $data, $where = '', $addslashes = true)
+    {
         if ($addslashes) {
             $data = array_map('addslashes', $data);
         }
@@ -150,7 +162,8 @@ class db_mysql {
         return $this->affected_rows();
     }
 
-    function pages($sql, $p, $by, &$all, &$total_rows) {
+    function pages($sql, $p, $by, &$all, &$total_rows)
+    {
         $sql = 'select SQL_CALC_FOUND_ROWS' . substr($sql, 6);
         if ($p == 0) {
             $this->sql($sql);
@@ -168,7 +181,8 @@ class db_mysql {
         return $rez;
     }
 
-    function pagess($sql, $p, $by, &$all, &$total_rows) {
+    function pagess($sql, $p, $by, &$all, &$total_rows)
+    {
         if ($p == 0) {
             $this->sql($sql);
         } else {

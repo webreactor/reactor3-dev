@@ -2,10 +2,12 @@
 
 //version 2.0
 
-class reactor_interface {
+class reactor_interface
+{
     var $_pool_id;
 
-    function reactor_interface($_name_pool_so = '') {
+    function reactor_interface($_name_pool_so = '')
+    {
         global $_interfaces;
         reactor_trace('creating interface ' . $_name_pool_so);
         $this->_pool_id = 0;
@@ -29,7 +31,8 @@ class reactor_interface {
         }
     }
 
-    function &get($name = '') {
+    function &get($name = '')
+    {
         if ($name == '') {
             return $GLOBALS['_pool'][$this->_pool_id];
         }
@@ -37,14 +40,16 @@ class reactor_interface {
         return $GLOBALS['_pool'][$this->_pool_id][$name];
     }
 
-    function see_at($_pool_id) {
+    function see_at($_pool_id)
+    {
         if (!isset($GLOBALS['_pool'][$_pool_id])) {
             reactor_error('undefined pool_id ' . $interface_name);
         }
         $this->_pool_id = $_pool_id;
     }
 
-    function configure($interface_name) {
+    function configure($interface_name)
+    {
         global $_interfaces, $_reactor;
         if ($this->_pool_id == 0) {
             $this->_pool_id = pool_new();
@@ -77,11 +82,13 @@ class reactor_interface {
         uninitModule();
     }
 
-    function isStored($id) {
+    function isStored($id)
+    {
         return isset($_SESSION['_stored_interface'][$id]);
     }
 
-    function restore($id) {
+    function restore($id)
+    {
         global $_interfaces, $_reactor;
 
         if (!isset($_SESSION['_stored_interface'][$id])) {
@@ -113,7 +120,8 @@ class reactor_interface {
         return $this->_pool_id;
     }
 
-    function store($id = 'none') {
+    function store($id = 'none')
+    {
         $_data =& $GLOBALS['_pool'][$this->_pool_id];
 
         if ($id == 'none') {
@@ -136,7 +144,8 @@ class reactor_interface {
         return $id;
     }
 
-    function action($action_name, &$param) {
+    function action($action_name, &$param)
+    {
         global $_RGET, $_SGET, $_db, $_reactor, $_user;
         $_data =& $GLOBALS['_pool'][$this->_pool_id];
 

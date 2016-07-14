@@ -724,7 +724,7 @@ var trace = function () {
     _rt(window).bind('load', function () {
         _rt(document.body).append(console_obj);
     }, 'for console');
-
+    
     _rt(document).bind('keydown', function (event) {
         event = _rt().getEvent(event);
         if (event.ctrlKey && (event.keyCode ? event.keyCode : event.which ? event.which : null) == 192) {

@@ -1,12 +1,14 @@
 <?php
 
-class RollbackTableManager {
+class RollbackTableManager
+{
     protected $_db;
     protected $tables;
     protected $writer;
     protected $dump_file;
 
-    public function __construct($_db, $dump_dir) {
+    public function __construct($_db, $dump_dir)
+    {
         $this->_db = $_db;
         $this->writer = new WriteManager(null, null);
         $this->dump_file = $dump_dir . 'config_rollback.php';
@@ -24,14 +26,16 @@ class RollbackTableManager {
         );
     }
 
-    public function resetAllModules() {
+    public function resetAllModules()
+    {
         $this->dumpAllTables();
         foreach ($this->tables as $table) {
             $this->clearTable($table);
         }
     }
 
-    public function dumpAllTables() {
+    public function dumpAllTables()
+    {
         $rez = array();
         foreach ($this->tables as $table) {
             $rez[] = $this->getTableDump($table);
@@ -40,7 +44,8 @@ class RollbackTableManager {
         $this->writer->writeToFile($this->dump_file, $rez);
     }
 
-    public function loadAllTables() {
+    public function loadAllTables()
+    {
         if (!is_file($this->dump_file)) {
             die("Unable to locate " . $this->dump_file);
         }
@@ -52,13 +57,15 @@ class RollbackTableManager {
         }
     }
 
-    protected function clearTable($name) {
+    protected function clearTable($name)
+    {
         if ($this->isTable($name)) {
             $this->_db->sql('truncate table `' . $name . '`');
         }
     }
 
-    public function getTableDump($table_name) {
+    public function getTableDump($table_name)
+    {
         if (!$this->isTable($table_name)) {
             die("Table $table_name does not exist");
         }
@@ -70,7 +77,8 @@ class RollbackTableManager {
         );
     }
 
-    public function loadTableDump($table) {
+    public function loadTableDump($table)
+    {
         $this->_db->sql('DROP TABLE IF EXISTS `' . $table['name'] . '`');
         $this->_db->sql($table['create']);
         foreach ($table['data'] as $line) {
@@ -78,13 +86,15 @@ class RollbackTableManager {
         }
     }
 
-    public function isTable($table_name) {
+    public function isTable($table_name)
+    {
         $this->_db->sql('show tables like "' . $table_name . '"');
 
         return (bool) $this->_db->line();
     }
 
-    public function tableCreate($table_name) {
+    public function tableCreate($table_name)
+    {
         if ($this->isTable($table_name)) {
             $this->_db->sql('show create table `' . $table_name . '`');
             $create_sql = $this->_db->line();
@@ -95,7 +105,8 @@ class RollbackTableManager {
         return null;
     }
 
-    public function tableData($table_name) {
+    public function tableData($table_name)
+    {
         $this->_db->sql('select * from `' . $table_name . '`');
 
         return $this->_db->matr();

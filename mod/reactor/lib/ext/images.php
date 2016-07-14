@@ -1,7 +1,8 @@
 <?php
 //ver 1.2
 
-function createPreview($file_src, $file_dest, $size_x, $size_y = 0, $ex = 'out') {
+function createPreview($file_src, $file_dest, $size_x, $size_y = 0, $ex = 'out')
+{
     global $_error;
     $t = getimagesize($file_src);
     $us = 0;
@@ -125,7 +126,8 @@ function createPreview($file_src, $file_dest, $size_x, $size_y = 0, $ex = 'out')
     return 1;
 }
 
-function r_imagecreatefrombmp($p_sFile) {
+function r_imagecreatefrombmp($p_sFile)
+{
     //    Load the image into a string
     $file = fopen($p_sFile, "rb");
     $read = fread($file, 10);

@@ -1,6 +1,7 @@
 <?php
 
-function configuratorsUrl($configurators) {
+function configuratorsUrl($configurators)
+{
     global $_RGET;
     $r = '';
 //print_r($configurators);die();
@@ -16,11 +17,13 @@ function configuratorsUrl($configurators) {
     return $r;
 }
 
-class cp {
+class cp
+{
     var $action;
     var $interface_name;
 
-    function show($interface_name, $action_name) {
+    function show($interface_name, $action_name)
+    {
         global $_user;
         if ($_user['login'] != 'root') {
             ini_set('error_log', SITE_DIR . '../cp.log');
@@ -85,7 +88,8 @@ class cp {
         return $data;
     }
 
-    function menu() {
+    function menu()
+    {
         global $_db, $_user;
         if ($_user['ugroup']['name'] != 'root') {
             $_db->sql('select a.* from ' . T_REACTOR_INTERFACE_ACTION . ' a,' . T_REACTOR_UGROUP_ACTION . ' g where a.public=3 and g.fk_action=a.pk_action and g.fk_ugroup=' . $_user['fk_ugroup'] . ' order by a.sort');
@@ -99,7 +103,8 @@ class cp {
         return $tree;
     }
 
-    function path() {
+    function path()
+    {
         global $Gekkon, $_db;
 
         $_db->sql('select a.pk_action,i.name as interface_name from ' . T_REACTOR_INTERFACE_ACTION . ' as a, ' . T_REACTOR_INTERFACE . ' as i where a.fk_interface=i.pk_interface and a.name="' . $this->action . '" and i.name="' . $this->interface_name . '"');
@@ -113,7 +118,8 @@ class cp {
         return $method_tree->pathToNode($t['pk_action']);
     }
 
-    function description($key) {
+    function description($key)
+    {
         global $_db;
         $_db->sql('select description from ' . T_REACTOR_INTERFACE_ACTION . ' where pk_action=' . $key);
         $t = $_db->line();
@@ -124,7 +130,8 @@ class cp {
         return $t['description'];
     }
 
-    function help($interface, $action) {
+    function help($interface, $action)
+    {
         global $_db;
         $_db->sql('select pk_help from ' . T_REACTOR_HELP . ' where interface="' . $interface . '" and action="' . $action . '"');
         $t = $_db->line();

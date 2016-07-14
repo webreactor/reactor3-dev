@@ -1,17 +1,20 @@
 <?php
 
-class socket_client {
+class socket_client
+{
     var $log;
     var $socket;
 
-    function socket_client() {
+    function socket_client()
+    {
         $this->log = array();
         $this->log[] = 'socket create';
         $this->socket = null;
         $this->log[] = 'ok';
     }
 
-    function connect($server, $port) {
+    function connect($server, $port)
+    {
 
         $this->log[] = 'connect to ' . $server . ' ' . $port;
         $this->socket = fsockopen($server, $port);
@@ -26,24 +29,28 @@ class socket_client {
         return $this->socket;
     }
 
-    function put($str) {
+    function put($str)
+    {
         $this->log[] = 'put&lt;' . $str;
         fwrite($this->socket, $str . "\r\n");
     }
 
-    function get() {
+    function get()
+    {
         $str = fgets($this->socket);
         $this->log[] = 'get&gt;' . $str;
 
         return $str;
     }
 
-    function write($str) {
+    function write($str)
+    {
         $this->log[] = 'write&lt;' . $str;
         fwrite($this->socket, $str);
     }
 
-    function read($len = 1024) {
+    function read($len = 1024)
+    {
         $str = '';
         while ($tlen = $len - strlen($str) + 1 > 0) {
             $str .= fread($this->socket, $tlen);
@@ -54,7 +61,8 @@ class socket_client {
         return $str;
     }
 
-    function close() {
+    function close()
+    {
         fclose($this->socket);
         $this->log[] = 'close';
     }

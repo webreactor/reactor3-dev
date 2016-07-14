@@ -1,6 +1,7 @@
 <?php
 //vers ion 1
-function keys_implode(&$values, &$keys) {
+function keys_implode(&$values, &$keys)
+{
     $where_rez = array();
     foreach ($keys as $key) {
         if (isset($values[$key])) {
@@ -12,7 +13,8 @@ function keys_implode(&$values, &$keys) {
     return ' ' . implode(' and ', $where_rez) . ' ';
 }
 
-class ex_object {
+class ex_object
+{
     var $table;
     var $pkeys;
     var $pkeys_value;
@@ -22,7 +24,8 @@ class ex_object {
     var $_db;
     var $_pool_id;
 
-    function ex_object($table = '', $pkey = '', $order = '') {
+    function ex_object($table = '', $pkey = '', $order = '')
+    {
         $this->table = '`' . $table . '`';
 
         if ($pkey != '') {
@@ -39,12 +42,14 @@ class ex_object {
         $this->onRestore();
     }
 
-    function onRestore() {
+    function onRestore()
+    {
         global $_db;
         $this->_db =& $_db;
     }
 
-    function configure($table, $order = '', $fk_value = 0) {
+    function configure($table, $order = '', $fk_value = 0)
+    {
         $_container =& pool_get($this->_pool_id);
         $this->pkeys = array($_container['pkey']);
         $this->fkeys = $_container['configurators'];
@@ -55,7 +60,8 @@ class ex_object {
         }
     }
 
-    function getList($page, $per_page, $where = '') {
+    function getList($page, $per_page, $where = '')
+    {
 
         $all = 0;
         $where_rez = keys_implode($this->fkeys_value, $this->fkeys);
@@ -79,14 +85,16 @@ class ex_object {
         );
     }
 
-    function getOne($pk) {
+    function getOne($pk)
+    {
         $this->_db->sql('select * from ' . $this->table . ' where ' . keys_implode($pk, $this->pkeys));
         $this->pkey_value = $pk;
 
         return $this->_db->line();
     }
 
-    function getPage($where = '') {
+    function getPage($where = '')
+    {
         $where_rez = keys_implode($this->fkeys_value, $this->fkeys);
 
         if ($where != '') {
@@ -101,7 +109,8 @@ class ex_object {
         return $this->_db->matr();
     }
 
-    function delete($pk, $isStream = 0) {
+    function delete($pk, $isStream = 0)
+    {
 
         if ($isStream == 0) {
             if ($pk == 0) {
@@ -121,7 +130,8 @@ class ex_object {
         return $this->_db->affected_rows();
     }
 
-    function insert($data) {
+    function insert($data)
+    {
         $rows = array();
         $values = array();
 
@@ -145,7 +155,8 @@ class ex_object {
         }
     }
 
-    function update($data, $pk = 0, $isStream = 0) {
+    function update($data, $pk = 0, $isStream = 0)
+    {
         if ($isStream == 0) {
             if ($pk == 0) {
                 $where_rez = keys_implode($this->pkeys_value, $this->pkeys);
@@ -169,7 +180,8 @@ class ex_object {
         return $this->_db->affected_rows();
     }
 
-    function replace($data, $pk = 0) {
+    function replace($data, $pk = 0)
+    {
         if ($pk == 0) {
             $pk = keys_implode($this->pkeys_value, $this->pkeys);
         }
@@ -184,7 +196,8 @@ class ex_object {
         }
     }
 
-    function store(&$form) {
+    function store(&$form)
+    {
         $data = $form->toDb();
 
         $data += $this->fkeys_value;
@@ -198,7 +211,8 @@ class ex_object {
         return $this->pkey_value;
     }
 
-    function moveUp($node_key) {
+    function moveUp($node_key)
+    {
         if ($this->order == '') {
             return 0;
         }
@@ -229,7 +243,8 @@ class ex_object {
         return 1;
     }
 
-    function moveDown($pk) {
+    function moveDown($pk)
+    {
         if ($this->order == '') {
             return 0;
         }

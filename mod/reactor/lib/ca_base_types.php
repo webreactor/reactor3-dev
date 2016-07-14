@@ -2,45 +2,54 @@
 
 //version 2.1.2
 
-class base_type {
+class base_type
+{
     var $_pool_id;
     var $item;
 
-    function base_type($item) {
+    function base_type($item)
+    {
         $this->_pool_id = 0;
         $this->item = $item;
     }
 
-    function fromForm(&$value) {
+    function fromForm(&$value)
+    {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         return $value;
     }
 
-    function toHTML($value) {
+    function toHTML($value)
+    {
         return $value;
     }
 
-    function toDB($value) {
+    function toDB($value)
+    {
         return arrayMapRecursive('addslashes', $value);
     }
 
-    function get($name) {
+    function get($name)
+    {
         $ca =& pool_get($this->_pool_id, 'object');
 
         return $ca->define[$this->item][$name];
     }
 
-    function set($name, $value) {
+    function set($name, $value)
+    {
         $ca =& pool_get($this->_pool_id, 'object');
         $ca->data[$name] = $value;
     }
 }//end of class base_type
 
 //------------------------------------------------------------------------------
-function ca_text_url_handler($m) {
+function ca_text_url_handler($m)
+{
     $url = $m[1];
     $name = $url;
     if (strlen($name) > 70) {
@@ -74,8 +83,10 @@ function ca_text_url_handler($m) {
     return '<a href="' . $url . '">' . $name . '</a>';
 }
 
-class ca_text extends base_type {
-    function fromForm(&$value) {
+class ca_text extends base_type
+{
+    function fromForm(&$value)
+    {
         $prop = $this->get('base_type_param');
 
         if (!isset($prop['typo'])) {
@@ -93,7 +104,8 @@ class ca_text extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         $prop = $this->get('base_type_param');
         if (!isset($prop['no-br'])) {
             $value = str_replace('<br />', "\n", $value);
@@ -107,8 +119,10 @@ class ca_text extends base_type {
 }
 
 //------------------------------------------------------------------------------
-class ca_email extends base_type {
-    function fromForm(&$value) {
+class ca_email extends base_type
+{
+    function fromForm(&$value)
+    {
         $r = ca_text::fromForm($value);
         if ($value == '') {
             $value = $this->get('default');
@@ -131,8 +145,10 @@ class ca_email extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_url_key extends base_type {
-    function fromForm(&$value) {
+class ca_url_key extends base_type
+{
+    function fromForm(&$value)
+    {
         $prop = $this->get('base_type_param');
 
         $ca =& pool_get($this->_pool_id, 'object');
@@ -157,15 +173,18 @@ class ca_url_key extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         return htmlspecialchars($value, ENT_QUOTES);
     }
 }
 
 //------------------------------------------------------------------------------
 
-class ca_code extends base_type {
-    function fromForm(&$value) {
+class ca_code extends base_type
+{
+    function fromForm(&$value)
+    {
         if ($value == '') {
             $value = $this->get('default');
             if ($this->get('necessary') == 1) {
@@ -176,14 +195,17 @@ class ca_code extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         return htmlspecialchars($value, ENT_QUOTES);
     }
 }
 
 //------------------------------------------------------------------------------
-class ca_enum extends base_type {
-    function fromForm(&$value) {
+class ca_enum extends base_type
+{
+    function fromForm(&$value)
+    {
         if ($value == '') {
             $value = $this->get('default');
             if ($this->get('necessary') == 1) {
@@ -213,7 +235,8 @@ class ca_enum extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         $rez = '';
         $data = array();
         if (substr($value, 0, 5) != "//php") {
@@ -234,8 +257,10 @@ class ca_enum extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_html extends base_type {
-    function fromForm(&$value) {
+class ca_html extends base_type
+{
+    function fromForm(&$value)
+    {
         $prop = $this->get('base_type_param');
         $t = trim(str_replace('&nbsp;', '', strip_tags($value, '<img><object><iframe>')));
         if ($t == '') {
@@ -256,7 +281,8 @@ class ca_html extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         $prop = $this->get('base_type_param');
 
 //	if(!isset($prop['no-br']))	$value=str_replace('<br />',"\n",$value);
@@ -267,8 +293,10 @@ class ca_html extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_string extends ca_text {
-    function fromForm(&$value) {
+class ca_string extends ca_text
+{
+    function fromForm(&$value)
+    {
         $r = ca_text::fromForm($value);
         if (strpos($value, "<br />") !== false) {
             $value = $this->get('default');
@@ -282,8 +310,10 @@ class ca_string extends ca_text {
 
 //------------------------------------------------------------------------------
 
-class ca_int extends ca_text {
-    function fromForm(&$value) {
+class ca_int extends ca_text
+{
+    function fromForm(&$value)
+    {
         $r = ca_text::fromForm($value);
         if (!is_numeric($value)) {
             $value = $this->get('default');
@@ -297,14 +327,17 @@ class ca_int extends ca_text {
 
 //------------------------------------------------------------------------------
 
-class ca_flags extends base_type {
-    function fromForm(&$value) {
+class ca_flags extends base_type
+{
+    function fromForm(&$value)
+    {
         $value = serialize($value);
 
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         if ($value == '') {
             $value = array();
         } else {
@@ -314,7 +347,8 @@ class ca_flags extends base_type {
         return $value;
     }
 
-    function toHTML($value) {
+    function toHTML($value)
+    {
         if ($value == '') {
             $value = array();
         } else {
@@ -327,8 +361,10 @@ class ca_flags extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_date extends base_type {
-    function fromForm(&$value) {
+class ca_date extends base_type
+{
+    function fromForm(&$value)
+    {
         if ($value == '--' || $value == '-') {
             $value = 0;
 
@@ -345,7 +381,8 @@ class ca_date extends base_type {
         return 1;
     }
 
-    function parseDate($value) {
+    function parseDate($value)
+    {
         $value = str_replace(array(' ', ',', '-', '/'), '.', $value);
         $value = explode('.', $value);
         if (count($value) < 3) {
@@ -355,7 +392,8 @@ class ca_date extends base_type {
         return mktime(0, 0, 0, $value[1], $value[0], $value[2]);
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         if ($value == 0) {
             return '--';
         }
@@ -366,7 +404,8 @@ class ca_date extends base_type {
         return $value;
     }
 
-    function toHTML($value) {
+    function toHTML($value)
+    {
         if ($value == 0) {
             return '--';
         }
@@ -377,8 +416,10 @@ class ca_date extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_date_time extends base_type {
-    function fromForm(&$value) {
+class ca_date_time extends base_type
+{
+    function fromForm(&$value)
+    {
         if ($value == '--' || $value == '-') {
             $value = 0;
 
@@ -395,7 +436,8 @@ class ca_date_time extends base_type {
         return 1;
     }
 
-    function parseDate($value) {
+    function parseDate($value)
+    {
         $value = str_replace(array(' ', ',', '-', '/', ':'), '.', $value);
         $value = explode('.', $value);
         if (count($value) < 3) {
@@ -408,7 +450,8 @@ class ca_date_time extends base_type {
         return mktime($value[3], $value[4], $value[5], $value[1], $value[0], $value[2]);
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         if ($value == 0) {
             return '--';
         }
@@ -419,7 +462,8 @@ class ca_date_time extends base_type {
         return $value;
     }
 
-    function toHTML($value) {
+    function toHTML($value)
+    {
         if ($value == 0) {
             return '--';
         }
@@ -457,8 +501,10 @@ $bbcode_out = array(
 
 /*- bbCode Tags -e*/
 
-class ca_bbcode extends base_type {
-    function fromForm(&$value) {
+class ca_bbcode extends base_type
+{
+    function fromForm(&$value)
+    {
         global $bbcode_in, $bbcode_out;
 
         $value = htmlspecialchars($value, ENT_QUOTES);
@@ -469,7 +515,8 @@ class ca_bbcode extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         global $bbcode_out, $bbcode_in;
 
         $value = preg_replace(array_keys($bbcode_out), array_values($bbcode_out), $value);
@@ -481,8 +528,10 @@ class ca_bbcode extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_file extends base_type {
-    function fromForm(&$value) {
+class ca_file extends base_type
+{
+    function fromForm(&$value)
+    {
         if (!$t = handleUploadedFile('_file_' . $this->get('name'))) {
             if (!is_file(FILE_DIR . $value)) {
                 $value = $this->get('default');
@@ -497,7 +546,8 @@ class ca_file extends base_type {
         return 1;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         if (!is_file(FILE_DIR . $value)) {
             $value = '';
         }
@@ -508,8 +558,10 @@ class ca_file extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_image extends ca_file {
-    function fromForm(&$value) {
+class ca_image extends ca_file
+{
+    function fromForm(&$value)
+    {
         $ret = ca_file::fromForm($value);
 
         if ($ret == 1 && is_file(FILE_DIR . $value)) {
@@ -542,8 +594,10 @@ class ca_image extends ca_file {
 
 //------------------------------------------------------------------------------
 
-class ca_files extends base_type {
-    function fromForm(&$value) {
+class ca_files extends base_type
+{
+    function fromForm(&$value)
+    {
 
         $rez = 0;
         $r = array();
@@ -593,7 +647,8 @@ class ca_files extends base_type {
         return $rez;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         if ($value == '') {
             return array();
         }
@@ -601,7 +656,8 @@ class ca_files extends base_type {
         return unserialize($value);
     }
 
-    function toHTML($value) {
+    function toHTML($value)
+    {
         if ($value == '') {
             return array();
         }
@@ -612,8 +668,10 @@ class ca_files extends base_type {
 
 //------------------------------------------------------------------------------
 
-class ca_image_list extends base_type {
-    function fromForm(&$value) {
+class ca_image_list extends base_type
+{
+    function fromForm(&$value)
+    {
         $rez = 0;
         $r = array();
         $cnt = 0;
@@ -648,7 +706,8 @@ class ca_image_list extends base_type {
         return $rez;
     }
 
-    function toForm($value) {
+    function toForm($value)
+    {
         if ($value == '') {
             return array();
         }
@@ -656,7 +715,8 @@ class ca_image_list extends base_type {
         return unserialize($value);
     }
 
-    function toHTML($value) {
+    function toHTML($value)
+    {
         if ($value == '') {
             return array();
         }

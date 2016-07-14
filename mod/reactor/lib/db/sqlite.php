@@ -2,17 +2,20 @@
 
 //ver 1.1
 
-class DB_sqlite {
+class DB_sqlite
+{
     var $link;
     var $rez;
     var $err;
     var $sql;
 
-    function DB_sqlite() {
+    function DB_sqlite()
+    {
         $this->link = sqlite_open(SITE_DIR . DB_BAZA, 0666, $sqliteerror);
     }
 
-    function sql($z) {
+    function sql($z)
+    {
         GLOBAL $_log, $_reactor;
         if (REACTOR_DEBUG_SQL == 1) {
             $t = microtime();
@@ -37,7 +40,8 @@ class DB_sqlite {
         return $this->rez;
     }
 
-    function line($t = 1) {
+    function line($t = 1)
+    {
         if ($l = @sqlite_fetch_array($this->rez, $t)) {
             return $l;
         } else {
@@ -46,7 +50,8 @@ class DB_sqlite {
     }
 
 //assign by Baader
-    function matr($a = 1) {
+    function matr($a = 1)
+    {
         $r = array();
         while ($t = @sqlite_fetch_array($this->rez, $a)) {
             if ($t != 0) {
@@ -60,19 +65,23 @@ class DB_sqlite {
         return $r;
     }
 
-    function close() {
+    function close()
+    {
         sqlite_close($this->link);
     }
 
-    function last_id() {
+    function last_id()
+    {
         return sqlite_last_insert_rowid($this->link);
     }
 
-    function affected_rows() {
+    function affected_rows()
+    {
         return sqlite_changes($this->link);
     }
 
-    function pages($sql, $p, $by, &$all) {
+    function pages($sql, $p, $by, &$all)
+    {
         $sql = 'select SQL_CALC_FOUND_ROWS' . substr($sql, 6);
         if ($p == -1) {
             $p = ceil($all / $by);
@@ -92,7 +101,8 @@ class DB_sqlite {
         return $rez;
     }
 
-    function pagess($sql, $p, $by, &$all) {
+    function pagess($sql, $p, $by, &$all)
+    {
         if ($p == -1) {
             $p = ceil($all / $by);
         }
@@ -112,14 +122,16 @@ class DB_sqlite {
         return $rez;
     }
 
-    function sql_stream($str) {
+    function sql_stream($str)
+    {
         $str = $this->query_parser($str);
         foreach ($str as $item) {
             $this->sql($item);
         }
     }
 
-    function query_parser($q) {
+    function query_parser($q)
+    {
         // strip the comments from the query
         while ($n = strpos($q, '--')) {
             $k = @strpos($q, "\n", $n + 1);

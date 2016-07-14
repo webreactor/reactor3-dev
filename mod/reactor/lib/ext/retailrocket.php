@@ -1,6 +1,7 @@
 <?php
 
-class retailrocket {
+class retailrocket
+{
     var $partnerId;
     var $socket;
     var $error;
@@ -8,11 +9,13 @@ class retailrocket {
     const host = 'api.retailrocket.ru';
     const service_port = 80;
 
-    function __construct($partnerId) {
+    function __construct($partnerId)
+    {
         $this->partnerId = $partnerId;
     }
 
-    function requestRemoteAPI($rocketFunct, $rocketValue = '', $paramArr = null) {
+    function requestRemoteAPI($rocketFunct, $rocketValue = '', $paramArr = null)
+    {
         $getSendStr = 'GET http://' . self::host . self::base_url_api . $rocketFunct . '/' . $this->partnerId . '/' . $rocketValue;
         if (is_array($paramArr)) {
             $getSendStr .= '?' . http_build_query($paramArr);
@@ -42,19 +45,23 @@ class retailrocket {
         return json_decode($answerStr[1], true);
     }
 
-    function getByCategory($category_id) {
+    function getByCategory($category_id)
+    {
         return $this->requestRemoteAPI('CategoryToItems', $category_id);
     }
 
-    function getForMain() {
+    function getForMain()
+    {
         return $this->requestRemoteAPI('ItemsToMain', $category_id);
     }
 
-    function getByGood($item_id) {
+    function getByGood($item_id)
+    {
         return $this->requestRemoteAPI('ItemToItems', $item_id);
     }
 
-    function getForBasket($item_ids) {
+    function getForBasket($item_ids)
+    {
         if (is_array($item_ids)) {
             $item_ids = implode($item_ids, ',');
         }
@@ -62,11 +69,13 @@ class retailrocket {
         return $this->requestRemoteAPI('CrossSellItemToItems', $item_ids);
     }
 
-    function getSameGoods($item_id) {
+    function getSameGoods($item_id)
+    {
         return $this->requestRemoteAPI('UpSellItemToItems', $item_id);
     }
 
-    function getByReferer($referer = '') {
+    function getByReferer($referer = '')
+    {
         if ($referer == '') {
             $referer = $_SERVER['HTTP_REFERER'];
         }
@@ -74,11 +83,13 @@ class retailrocket {
         return $this->requestRemoteAPI('SearchToItems', null, array('referrer' => $referer));
     }
 
-    function getByText($keyword) {
+    function getByText($keyword)
+    {
         return $this->requestRemoteAPI('SearchToItems', null, array('keyword' => $keyword));
     }
 
-    function getByRocketUser($cookie = '') {
+    function getByRocketUser($cookie = '')
+    {
         if ($cookie == '') {
             $cookie = $_COOKIE['rrpusid'];
         }

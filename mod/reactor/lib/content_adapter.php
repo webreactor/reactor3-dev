@@ -2,7 +2,8 @@
 
 //version 2.2.5
 
-class content_adapter {
+class content_adapter
+{
     var $define;
     var $data;
     var $error;
@@ -17,7 +18,8 @@ class content_adapter {
     var $cancel_url;
     var $_pool_id;
 
-    function content_adapter($_name_pool_so = '') {
+    function content_adapter($_name_pool_so = '')
+    {
         global $_interfaces;
         $this->define = array();
         $this->handler = array();
@@ -48,27 +50,31 @@ class content_adapter {
         }
     }
 
-    function testField($class, $value) {
+    function testField($class, $value)
+    {
         $test = new $class;
 
         return $test->fromForm($value);
     }
 
-    function drop($fields = 'none') {
+    function drop($fields = 'none')
+    {
         $this->_drop = $fields;
         if ($fields == 'none') {
             $this->_drop = array();
         }
     }
 
-    function take($fields = 'none') {
+    function take($fields = 'none')
+    {
         $this->_take = $fields;
         if ($fields == 'none') {
             $this->_take = array();
         }
     }
 
-    function configure($define) {
+    function configure($define)
+    {
         global $_base_types;
         reactor_trace('content_adapter->configure');
 
@@ -109,13 +115,15 @@ class content_adapter {
         $this->onRestore();
     }
 
-    function onRestore() {
+    function onRestore()
+    {
         foreach ($this->handler as $k => $v) {
             $this->handler[$k]->_pool_id = $this->_pool_id;
         }
     }
 
-    function fromForm($src) {
+    function fromForm($src)
+    {
         global $_base_types;
 
         $this->error = array();
@@ -147,7 +155,8 @@ class content_adapter {
         }
     }
 
-    function validate(&$value, &$item) {
+    function validate(&$value, &$item)
+    {
         global $_base_types;
         $type =& $_base_types[$item['base_type']];
         if (is_array($value) && $type['check_array'] == 1) {
@@ -192,7 +201,8 @@ class content_adapter {
         return $value;
     }
 
-    function _necessary_r(&$value, &$def) {
+    function _necessary_r(&$value, &$def)
+    {
         $r = 0;
         if (is_array($value)) {
             foreach ($value as $k => $v) {
@@ -208,7 +218,8 @@ class content_adapter {
         return $r;
     }
 
-    function _enum_check_r(&$value, &$def, &$enum) {
+    function _enum_check_r(&$value, &$def, &$enum)
+    {
         $r = 0;
         if (is_array($value)) {
             foreach ($value as $k => $v) {
@@ -224,7 +235,8 @@ class content_adapter {
         return $r;
     }
 
-    function toDB($data = 'none') {
+    function toDB($data = 'none')
+    {
 
         if ($data != 'none') {
             return arrayMapRecursive('addslashes', $data);
@@ -233,7 +245,8 @@ class content_adapter {
         return $this->convertTo('DB');
     }
 
-    function convertTo($to, $data = 'none') {
+    function convertTo($to, $data = 'none')
+    {
         reactor_trace('content_adapter->convertTo' . $to);
         $to = 'to' . $to;
         if ($data == 'none') {
@@ -265,7 +278,8 @@ class content_adapter {
         return $data;
     }
 
-    function convertTo_r($to, &$obj, &$item, $value) {
+    function convertTo_r($to, &$obj, &$item, $value)
+    {
         global $_base_types;
         if (is_array($value) && $_base_types[$item['base_type']]['check_array'] == 1) {
             foreach ($value as $k => $v) {
@@ -278,13 +292,15 @@ class content_adapter {
         return $value;
     }
 
-    function toForm($data = 'none') {
+    function toForm($data = 'none')
+    {
         ;
 
         return $this->convertTo('Form', $data);
     }
 
-    function arrayToHTML(&$data) {
+    function arrayToHTML(&$data)
+    {
         foreach ($data as $k => $v) {
             $data[$k] = $this->toHTML($v);
         }
@@ -292,7 +308,8 @@ class content_adapter {
         return $data;
     }
 
-    function toHTML($data = 'none') {
+    function toHTML($data = 'none')
+    {
         $data = $this->convertTo('HTML', $data);
 
         foreach ($this->define as $key => $item) {

@@ -25,9 +25,11 @@
  * @author   Nasibullin Rinat
  * @version  3.2.7
  */
-class Text_Censure {
+class Text_Censure
+{
     #запрещаем создание экземпляра класса, вызов методов этого класса только статически!
-    private function __construct() {
+    private function __construct()
+    {
     }
 
     /**
@@ -365,7 +367,8 @@ class Text_Censure {
             ;
     }
 
-    private static function _make_regexp_callback(array $m) {
+    private static function _make_regexp_callback(array $m)
+    {
         #$re_holes = '[\x00-\x20\-_\*\~\.\'"\^=`:]';
         #$re_holes = '[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]';
         $re_holes = '(?!/\\\\)[^\p{L}\d]';  #non letter, non digit, non '/\'

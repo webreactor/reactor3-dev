@@ -5,19 +5,23 @@ version 1.03
 dont forget set mb_internal_encoding('UTF-8');
 */
 
-function typo_tag_encode($match) {
+function typo_tag_encode($match)
+{
     return '<' . base64_encode($match[1]) . '>';
 }
 
-function typo_tag_decode($match) {
+function typo_tag_decode($match)
+{
     return '<' . base64_decode($match[1]) . '>';
 }
 
-function typo_savetag_encode($match) {
+function typo_savetag_encode($match)
+{
     return '<%' . base64_encode('%' . $match[1]) . '>';
 }
 
-function typo_savetag_decode($match) {
+function typo_savetag_decode($match)
+{
     $t = base64_decode($match[1]);
     if ($t[0] != '%') {
         return '<%' . $match[1] . '>';
@@ -26,7 +30,8 @@ function typo_savetag_decode($match) {
     return '<' . substr($t, 1) . '>';
 }
 
-function typo_nbsp($match) {
+function typo_nbsp($match)
+{
     $match_t = trim(preg_replace('/<[^>]+>/u', '', $match[0]));
     //if(substr($match_t,-1,1)=='.')return $match[0];
     $match_t = preg_replace('/[\s\()-]/u', '', $match_t);
@@ -39,7 +44,8 @@ function typo_nbsp($match) {
     return $match[0];
 }
 
-function typo($text, $settings = 'none') {
+function typo($text, $settings = 'none')
+{
 
     if ($text == '') {
         return '';
@@ -232,7 +238,8 @@ function typo($text, $settings = 'none') {
     return $text;
 }
 
-function post_typo($text) {
+function post_typo($text)
+{
 //Сохраняем нужное
     $text = preg_replace_callback('/<((script|style|code|save|nobr)[^>]*>.+<\/\2)>/Uus', 'typo_savetag_encode', $text);
     $text = preg_replace_callback('/<([^%][^>]*)>/su', 'typo_tag_encode', $text);
@@ -275,7 +282,8 @@ function post_typo($text) {
     return $text;
 }
 
-function unpost_typo($text) {
+function unpost_typo($text)
+{
     $text = preg_replace('/<nobr class="typo">(.+)<\/nobr>/Uu', '\1', $text);
 
     $text = str_replace('<span class="hbrace typo">(</span>', '(', $text);

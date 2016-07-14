@@ -11,7 +11,8 @@ reactor core api library
 //----------------------------------------------------------------------------------------
 //core support functions
 
-function initModule($mod_name) {
+function initModule($mod_name)
+{
     global $_reactor, $Gekkon;
     reactor_trace('initModule ' . $mod_name);
 
@@ -22,7 +23,8 @@ function initModule($mod_name) {
     $Gekkon->template_path = $mod_name . '/tpl/';
 }
 
-function uninitModule() {
+function uninitModule()
+{
     global $_reactor, $Gekkon;
     reactor_trace('uninitModule ' . $_reactor['module']['name']);
 
@@ -35,7 +37,8 @@ function uninitModule() {
     return $mod_name;
 }
 
-function reactor_ini_set($module, $name, $value) {
+function reactor_ini_set($module, $name, $value)
+{
     if (constant(strtoupper($module . '_' . $name)) == $value) {
         return;
     }
@@ -46,7 +49,8 @@ function reactor_ini_set($module, $name, $value) {
     configCompile();
 }
 
-function reactor_ini_set_array($array) {
+function reactor_ini_set_array($array)
+{
     global $_db;
     $up = 0;
     foreach ($array as $ini) {
@@ -63,7 +67,8 @@ function reactor_ini_set_array($array) {
     configCompile();
 }
 
-function stop($msg = '') {
+function stop($msg = '')
+{
     global $Gekkon, $_log;
     reactor_trace($_log .= ' stop ' . $msg);
 
@@ -93,7 +98,8 @@ function stop($msg = '') {
     die();
 }
 
-function reactor_trace($msg) {
+function reactor_trace($msg)
+{
     global $_mctime, $_user;
     if (isset($_GET['debug']) && $_user['ugroup']['name'] == 'root') {
         echo microtime(true) - $_mctime, ' - ', $msg, "\n";
@@ -103,19 +109,22 @@ function reactor_trace($msg) {
     }
 }
 
-function reactor_error($msg, $lvl = 0) {
+function reactor_error($msg, $lvl = 0)
+{
     global $_user;
     error_log($msg);
     //die();
 }
 
-function admin_error($v) {
+function admin_error($v)
+{
 }
 
 //----------------------------------------------------------------------------------------
 //interface support functions
 
-function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_module = '') {
+function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_module = '')
+{
     global $Gekkon;
 
     reactor_trace('start execute ' . $name_or_pool_id . '->' . $action_name . ' to ' . $tpl_module . '/' . $template);
@@ -159,7 +168,8 @@ function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_
     return $data;
 }
 
-function pool_new() {
+function pool_new()
+{
     static $_global_pool_cnt = 0;
     $_global_pool_cnt++;
     $GLOBALS['_pool'][$_global_pool_cnt] = '';
@@ -167,7 +177,8 @@ function pool_new() {
     return $_global_pool_cnt;
 }
 
-function &pool_get($_pool_id, $name = '') {
+function &pool_get($_pool_id, $name = '')
+{
     if (!isset($GLOBALS['_pool'][$_pool_id])) {
         reactor_error('undefined _pool_id ' . $_pool_id . ' in pool_get');
     }
@@ -183,7 +194,8 @@ function &pool_get($_pool_id, $name = '') {
  *
  * @return \content_adapter
  */
-function &pool_create_content_adapter($_pool_id) {
+function &pool_create_content_adapter($_pool_id)
+{
     if (!isset($GLOBALS['_pool'][$_pool_id])) {
         reactor_error('undefined _pool_id ' . $_pool_id . ' in pool_get_content_adapter');
     }
@@ -194,7 +206,8 @@ function &pool_create_content_adapter($_pool_id) {
     return $ca;
 }
 
-function &tryGetForm($_so) {
+function &tryGetForm($_so)
+{
     $form_container = new reactor_interface();
     $form = 0;
     if ($form_container->isStored($_so)) {
@@ -206,7 +219,8 @@ function &tryGetForm($_so) {
     return $form;
 }
 
-function handleForm($_so = '', $interface = 'none', $action = 'none') {
+function handleForm($_so = '', $interface = 'none', $action = 'none')
+{
     global $Gekkon, $_RGET, $_reactor;
     $object = 'none';
     $form_container = new reactor_interface();
@@ -269,7 +283,8 @@ function handleForm($_so = '', $interface = 'none', $action = 'none') {
     die();
 }
 
-function createForm($pool_id, $action, $callback, $param = array()) {
+function createForm($pool_id, $action, $callback, $param = array())
+{
     global $_RGET, $_reactor;
     $container = new reactor_interface($pool_id);
 
@@ -297,7 +312,8 @@ function createForm($pool_id, $action, $callback, $param = array()) {
     return $form->_pool_id;
 }
 
-function isForm($pool_id, $form_session = 'none', $callback, $param = array()) {
+function isForm($pool_id, $form_session = 'none', $callback, $param = array())
+{
     $container = new reactor_interface($pool_id);
 
     $form = new reactor_interface();
@@ -314,7 +330,8 @@ function isForm($pool_id, $form_session = 'none', $callback, $param = array()) {
 //----------------------------------------------------------------------------------------
 //User functions
 
-function &restoreUser() {
+function &restoreUser()
+{
     global $_user, $_RGET, $_reactor;
     if (session_id() == '') {
         session_start();
@@ -374,7 +391,8 @@ function &restoreUser() {
 //Resource functions
 $_resource = array();
 
-function &resource($name) {
+function &resource($name)
+{
     global $_reactor, $_db, $Gekkon, $_user, $_resource;
     clearstatcache();
     if (!isset($_resource[$name])) {
@@ -397,33 +415,38 @@ function &resource($name) {
     return $_resource[$name];
 }
 
-function resourceStore($name, &$data) {
+function resourceStore($name, &$data)
+{
     reactor_trace('resourceStore - ' . $name);
     $f = fopen(RES_DIR . $name, 'w');
     fwrite($f, serialize($data));
     fclose($f);
 }
 
-function resourceRestore($name) {
+function resourceRestore($name)
+{
     reactor_trace('resourceRestore - ' . $name);
 
     return unserialize(file_get_contents(RES_DIR . $name));
 }
 
-function resourceClear($name) {
+function resourceClear($name)
+{
     reactor_trace('resourceClear - ' . $name);
     @unlink(RES_DIR . $name);
 }
 
 //----------------------------------------------------------------------------------------
 //IO functions
-function getStrChars($str) {
+function getStrChars($str)
+{
     $str = preg_replace('/[^\w\pP\pL\s\$]/uis', ' ', $str);
 
     return htmlspecialchars($str, ENT_QUOTES);
 }
 
-function inputGetStr($name, $def = false, $stop = '') {
+function inputGetStr($name, $def = false, $stop = '')
+{
     global $_RGET, $_SGET;
     if (isset($_SGET[$name])) {
         return $_SGET[$name];
@@ -447,7 +470,8 @@ function inputGetStr($name, $def = false, $stop = '') {
     return $_SGET[$name];
 }
 
-function inputGetNum($name, $def = '', $stop = '') {
+function inputGetNum($name, $def = '', $stop = '')
+{
     global $_RGET, $_SGET;
     if (isset($_SGET[$name])) {
         return $_SGET[$name];
@@ -472,7 +496,8 @@ function inputGetNum($name, $def = '', $stop = '') {
     return $_SGET[$name] = intval($test);
 }
 
-function inputGetPath($name, $def = array()) {
+function inputGetPath($name, $def = array())
+{
     global $_RGET, $_SGET;
     if (isset($_SGET[$name])) {
         return $_SGET[$name];
@@ -486,7 +511,8 @@ function inputGetPath($name, $def = array()) {
     return $_SGET[$name] = array_map('getStrChars', $test);
 }
 
-function handleUploadedFile($_file, $_newname = '') {
+function handleUploadedFile($_file, $_newname = '')
+{
     if (!isset($_FILES[$_file])) {
         return 0;
     }
@@ -500,7 +526,8 @@ function handleUploadedFile($_file, $_newname = '') {
 //----------------------------------------------------------------------------------------
 //Handle request functions
 
-function initRequest() {
+function initRequest()
+{
     global $_languages, $_reactor;
     header('Content-Type: text/html; charset=utf-8');
 
@@ -512,7 +539,8 @@ function initRequest() {
     mb_internal_encoding('UTF-8');
 }
 
-function initRequestIndex() {
+function initRequestIndex()
+{
     $url = str_replace('?' . $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
     $url = str_replace('//', '/', $url);
     $url = urldecode($url);
@@ -541,7 +569,8 @@ function initRequestIndex() {
     return $_RGET;
 }
 
-function httpModified($mtime) {
+function httpModified($mtime)
+{
     global $_log;
     if (headers_sent()) {
         return 0;
@@ -562,11 +591,13 @@ function httpModified($mtime) {
 //----------------------------------------------------------------------------------------
 //URL functions
 
-function urlHeaderEnc($data) {
+function urlHeaderEnc($data)
+{
     return str_replace('&', '_!_', $data[0]);
 }
 
-function urlHeader($str) {
+function urlHeader($str)
+{
 
     if (substr($str[2], 0, 11) == 'javascript:') {
         return $str[0];
@@ -623,22 +654,26 @@ function urlHeader($str) {
     return $r;
 }
 
-function arrToUrl($a) {
+function arrToUrl($a)
+{
     global $_RGET;
     $r = array_merge($_RGET, $a);
 
     return compileUrl($r);
 }
 
-function compileUrl($data) {
+function compileUrl($data)
+{
     return compileAurl($data);
 }
 
-function parseUrl($str) {
+function parseUrl($str)
+{
     return parseAurl($str);
 }
 
-function parseAurl($str) {
+function parseAurl($str)
+{
     global $_languages, $_site_tree, $_reactor;
 
     $r = array();
@@ -715,7 +750,8 @@ function parseAurl($str) {
     return $r;
 }
 
-function compileAurl($data) {
+function compileAurl($data)
+{
     global $_reactor, $_site_tree;
     $url = SITE_URL;
 
@@ -795,7 +831,8 @@ function compileAurl($data) {
     return $url;
 }
 
-function compileSurl($data) {
+function compileSurl($data)
+{
     $url = SITE_URL . 'index.php?';
 
     foreach ($data as $k => $v) {
@@ -807,7 +844,8 @@ function compileSurl($data) {
     return substr($url, 0, -1);
 }
 
-function saveFile($file_path, $with_dir) {
+function saveFile($file_path, $with_dir)
+{
     $new_file = getNewFileName();
     $new_file_path = FILE_DIR . $new_file['path'];
     $tmp_dir = ini_get('upload_tmp_dir');
@@ -826,13 +864,15 @@ function saveFile($file_path, $with_dir) {
     return ($with_dir ? $new_file['path'] : $new_file['name']);
 }
 
-function getRelativePath($filename, $encode = true) {
+function getRelativePath($filename, $encode = true)
+{
     $encoded_file_name = $encode ? rawurlencode($filename) : $filename;
 
     return getDirForFileName($filename) . '/' . $encoded_file_name;
 }
 
-function getDirForFileName($filename) {
+function getDirForFileName($filename)
+{
     if (strlen($filename) < 11) {
         return '';
     }
@@ -849,7 +889,8 @@ function getDirForFileName($filename) {
     return $dir;
 }
 
-function getNewFileName() {
+function getNewFileName()
+{
     $_newname = str_replace('.', '', uniqid('', true));
     $dir = getDirForFileName($_newname);
 

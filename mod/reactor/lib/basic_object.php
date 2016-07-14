@@ -2,7 +2,8 @@
 
 //version 2.1.4
 
-class basic_object {
+class basic_object
+{
     var $table;
     var $pkey;
     var $pkey_value;
@@ -12,7 +13,8 @@ class basic_object {
     var $_db;
     var $_pool_id;
 
-    function basic_object($table = '', $pkey = '', $order = '') {
+    function basic_object($table = '', $pkey = '', $order = '')
+    {
         $this->pkey = $pkey;
         $this->table = '`' . $table . '`';
         $this->fkey = '';
@@ -21,12 +23,14 @@ class basic_object {
         $this->onRestore();
     }
 
-    function onRestore() {
+    function onRestore()
+    {
         global $_db;
         $this->_db =& $_db;
     }
 
-    function configure($table, $order = '', $fk_value = 0) {
+    function configure($table, $order = '', $fk_value = 0)
+    {
         $_container =& pool_get($this->_pool_id);
         $this->pkey = $_container['pkey'];
         $this->table = '`' . $table . '`';
@@ -38,7 +42,8 @@ class basic_object {
         $this->order = $order;
     }
 
-    function getList($page, $per_page, $where = '') {
+    function getList($page, $per_page, $where = '')
+    {
         $all = 0;
         $where_rez = ' where 1';
         if ($this->fkey != '') {
@@ -63,7 +68,8 @@ class basic_object {
         );
     }
 
-    function getOne($pk = 0, $row = '*') {
+    function getOne($pk = 0, $row = '*')
+    {
         $this->_db->sql('select ' . $row . ' from ' . $this->table . ' where `' . $this->pkey . '` = "' . $pk . '"');
         $rez = $this->_db->line($row);
         $this->pkey_value = $pk;
@@ -74,7 +80,8 @@ class basic_object {
         return $rez;
     }
 
-    function get($where = '', $rows = '*') {
+    function get($where = '', $rows = '*')
+    {
         if ($where != '') {
             $where = 'where ' . $where;
         }
@@ -83,7 +90,8 @@ class basic_object {
         return $this->_db->matr();
     }
 
-    function getSelect($row, $filter, $forceOne = 0, $forceFkey = 1) {
+    function getSelect($row, $filter, $forceOne = 0, $forceFkey = 1)
+    {
         if ($forceOne == 1) {
             return $this->getOne($filter, $row);
         }
@@ -103,7 +111,8 @@ class basic_object {
         return $this->_db->matr($this->pkey, $row);
     }
 
-    function delete($rule, $isStream = 0) {
+    function delete($rule, $isStream = 0)
+    {
         if ($isStream == 0) {
             $where_exp = '`' . $this->pkey . '`="' . $rule . '"';
         } else {
@@ -116,7 +125,8 @@ class basic_object {
         return $this->_db->affected_rows();
     }
 
-    function insert($data = 1) {
+    function insert($data = 1)
+    {
         if ($data == 1) {
             $data = array();
         }
@@ -141,7 +151,8 @@ class basic_object {
         }
     }
 
-    function update($data, $rule, $isStream = 0) {
+    function update($data, $rule, $isStream = 0)
+    {
         if ($isStream == 0) {
             $where_exp = '`' . $this->pkey . '`="' . $rule . '"';
         } else {
@@ -160,7 +171,8 @@ class basic_object {
         return $this->_db->affected_rows();
     }
 
-    function replace($data = 1, $pk) {
+    function replace($data = 1, $pk)
+    {
         if ($data == 1) {
             $data = array();
         }
@@ -180,11 +192,13 @@ class basic_object {
         }
     }
 
-    function setFkey($value) {
+    function setFkey($value)
+    {
         $this->fkey_value = $value;
     }
 
-    function store(&$form) {
+    function store(&$form)
+    {
         $data = $form->toDb();
 
         if ($this->fkey != '' && !isset($data[$this->fkey])) {
@@ -200,7 +214,8 @@ class basic_object {
         return $this->pkey_value;
     }
 
-    function moveUp($node_key) {
+    function moveUp($node_key)
+    {
         if ($this->order == '') {
             return 0;
         }
@@ -230,7 +245,8 @@ class basic_object {
         return 1;
     }
 
-    function moveDown($node_key) {
+    function moveDown($node_key)
+    {
         if ($this->order == '') {
             return 0;
         }

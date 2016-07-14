@@ -1,22 +1,26 @@
 <?php
 
-class WriteManager {
+class WriteManager
+{
     protected $_db;
     protected $mod_dir;
 
-    public function __construct($_db, $mod_dir) {
+    public function __construct($_db, $mod_dir)
+    {
         $this->_db = $_db;
         $this->mod_dir = $mod_dir;
         $this->site_tree = new SiteTreeConfig($_db);
         $this->modules = new ModulesConfig($_db);
     }
 
-    public function write() {
+    public function write()
+    {
         $this->writeToFile($this->mod_dir . 'site/site_tree_config_dump.php', $this->site_tree->getConfig());
         $this->writeModules();
     }
 
-    protected function writeModules() {
+    protected function writeModules()
+    {
         $this->_db->sql('select pk_module, name from reactor_module order by name');
         $modules = $this->_db->matr('pk_module', 'name');
         foreach ($modules as $pk_module => $module_name) {
@@ -26,7 +30,8 @@ class WriteManager {
         }
     }
 
-    public function writeToFile($file, $data) {
+    public function writeToFile($file, $data)
+    {
         if (!is_writable($file)) {
             if (!is_writable(dirname($file))) {
                 die($file . ' unable to write');
@@ -35,7 +40,8 @@ class WriteManager {
         file_put_contents($file, "<?php\nreturn " . $this->dataExport($data) . ";");
     }
 
-    public function dataExport($data, $level = 0) {
+    public function dataExport($data, $level = 0)
+    {
         $tab1 = str_repeat(' ', $level * 4);
         $tab2 = str_repeat(' ', ($level + 1) * 4);
 

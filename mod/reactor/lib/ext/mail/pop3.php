@@ -11,11 +11,13 @@ Error 11: There's no message with this ($i) number.
 
 include_once 'socket_client.php';
 
-function decode_quoted($str) {
+function decode_quoted($str)
+{
     return quoted_printable_decode(str_replace('_', ' ', $str));
 }
 
-function decode_field_r($match) {
+function decode_field_r($match)
+{
 
     $str = $match[3];
     if ($match[2][0] == 'Q' || $match[2][0] == 'q') {
@@ -30,14 +32,16 @@ function decode_field_r($match) {
     return trim($str);
 }
 
-function decode_to_utf8(&$str, $charset) {
+function decode_to_utf8(&$str, $charset)
+{
     if ($charset == 'windows-1251') {
         $charset = 'cp1251';
     }
     $str = iconv($charset, 'UTF-8', $str);
 }
 
-class pop3 extends socket_client {
+class pop3 extends socket_client
+{
     var $data;
     var $text;
     var $html;
@@ -50,7 +54,8 @@ class pop3 extends socket_client {
     var $error;
     var $header;
 
-    function pop3($srv, $login, $pwd) {
+    function pop3($srv, $login, $pwd)
+    {
         $this->srv = $srv;
         $this->login = $login;
         $this->pwd = $pwd;
@@ -79,19 +84,22 @@ class pop3 extends socket_client {
         $this->error = 0;
     }
 
-    function get_answ($i = 0) {
+    function get_answ($i = 0)
+    {
         $this->last_reply = explode(' ', $this->get());
 
         return $this->last_reply[$i];
     }
 
-    function count_messages() {
+    function count_messages()
+    {
         $this->put('STAT');
 
         return $this->get_answ(1);
     }
 
-    function get_header($i) {
+    function get_header($i)
+    {
         $this->put('TOP ' . $i . ' 0');
         if ($this->get_answ() == '+OK') {
             $hdr = '';
@@ -110,7 +118,8 @@ class pop3 extends socket_client {
         return $hdr;
     }
 
-    function get_list() {
+    function get_list()
+    {
         $res = array();
         $c = $this->count_messages();
         for ($i = 1; $i <= $c; $i++) {
@@ -121,7 +130,8 @@ class pop3 extends socket_client {
         return $res;
     }
 
-    function get_messages() {
+    function get_messages()
+    {
         $let = array();
         $c = $this->count_messages();
         for ($i = 1; $i <= $c; $i++) {
@@ -145,27 +155,31 @@ class pop3 extends socket_client {
         return $let;
     }
 
-    function check_connect() {
+    function check_connect()
+    {
         $this->put('NOOP');
         if ($this->get_answ() != "+OK\r\n") {
             $this->pop3($this->srv, $this->login, $this->pwd);
         }
     }
 
-    function quit() {
+    function quit()
+    {
         $this->put('QUIT');
         $this->get();
         $this->close();
     }
 
-    function decode_field($str) {
+    function decode_field($str)
+    {
         $str = str_replace("\r\n\t", ' ', $str);
         $str = str_replace("\r\n ", '', $str);
 
         return preg_replace_callback('/=\?(.+)\?(.)\?(.*)\?=/Uis', 'decode_field_r', $str);
     }
 
-    function parce_header($str) {
+    function parce_header($str)
+    {
         preg_match_all('/([\w-]+):(?:\s+)(.+)\r\n(?!\s)/Umis', $str . "\r\nx", $m);
 
         $header = array();
@@ -181,7 +195,8 @@ class pop3 extends socket_client {
         return $header;
     }
 
-    function decode_body(&$body, &$header) {
+    function decode_body(&$body, &$header)
+    {
         if (isset($header['content-transfer-encoding'])) {
             if ($header['content-transfer-encoding'][0] == 'q') {
                 $body = quoted_printable_decode($body);
@@ -218,7 +233,8 @@ class pop3 extends socket_client {
         return $body;
     }
 
-    function parce_body_multi(&$body) {
+    function parce_body_multi(&$body)
+    {
         $data = array();
         $boundary = substr($body, $now = strpos($body, '--'), strpos($body, "\r\n", $now) - $now);
 
@@ -233,7 +249,8 @@ class pop3 extends socket_client {
         return $data;
     }
 
-    function parce_r(&$str) {
+    function parce_r(&$str)
+    {
 //echo $str,'----------------------------------------------------------';
         $data = array();
         $header_stream = substr($str, 0, $t = strpos($str, "\r\n\r\n"));
@@ -257,7 +274,8 @@ class pop3 extends socket_client {
         return $data;
     }
 
-    function parce(&$str) {
+    function parce(&$str)
+    {
         $this->data = $this->parce_r($str);
         $header = array(
             'date',

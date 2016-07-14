@@ -1,13 +1,16 @@
 <?php
 
-class GroupRights {
+class GroupRights
+{
     protected $_db;
 
-    public function __construct($_db) {
+    public function __construct($_db)
+    {
         $this->_db = $_db;
     }
 
-    public function getConfig() {
+    public function getConfig()
+    {
         $this->_db->sql('
             SELECT fk_ugroup, i.name as `interface`, a.name as `action`
             FROM
@@ -19,7 +22,8 @@ class GroupRights {
         return $this->_db->matr();
     }
 
-    public function load($data) {
+    public function load($data)
+    {
         $this->_db->sql('truncate table reactor_ugroup_action');
         foreach ($data as $line) {
             $pk_action = $this->getActionId($line['interface'], $line['action']);
@@ -32,7 +36,8 @@ class GroupRights {
         }
     }
 
-    protected function getActionId($interface, $action) {
+    protected function getActionId($interface, $action)
+    {
         if (isset($this->cache[$interface]) && isset($this->cache[$interface][$action])) {
             return $this->cache[$interface][$action];
         }

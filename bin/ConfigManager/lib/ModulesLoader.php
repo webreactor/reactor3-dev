@@ -1,13 +1,16 @@
 <?php
 
-class ModulesLoader {
+class ModulesLoader
+{
     protected $_db;
 
-    public function __construct($_db) {
+    public function __construct($_db)
+    {
         $this->_db = $_db;
     }
 
-    public function load($config) {
+    public function load($config)
+    {
         $pk_module = $this->_db->insert('reactor_module', $config['module']);
         $this->loadTables($pk_module, $config['tables']);
         $this->loadBaseTypes($pk_module, $config['base_types']);
@@ -18,13 +21,15 @@ class ModulesLoader {
         return $pk_module;
     }
 
-    protected function isTable($name) {
+    protected function isTable($name)
+    {
         $this->_db->sql('show tables like "' . $name . '"');
 
         return (bool) $this->_db->line();
     }
 
-    protected function loadTables($pk_module, $config) {
+    protected function loadTables($pk_module, $config)
+    {
         foreach ($config as $record) {
             $record['fk_module'] = $pk_module;
             foreach ($record['creates'] as $table => $sql) {
@@ -37,28 +42,32 @@ class ModulesLoader {
         }
     }
 
-    protected function loadBaseTypes($pk_module, $config) {
+    protected function loadBaseTypes($pk_module, $config)
+    {
         foreach ($config as $base_type) {
             $base_type['fk_module'] = $pk_module;
             $this->_db->insert('reactor_base_type', $base_type);
         }
     }
 
-    protected function loadModuleConfig($pk_module, $config) {
+    protected function loadModuleConfig($pk_module, $config)
+    {
         foreach ($config as $line) {
             $line['fk_module'] = $pk_module;
             $this->_db->insert('reactor_config', $line);
         }
     }
 
-    protected function loadResources($pk_module, $config) {
+    protected function loadResources($pk_module, $config)
+    {
         foreach ($config as $line) {
             $line['fk_module'] = $pk_module;
             $this->_db->insert('reactor_resource', $line);
         }
     }
 
-    protected function loadInterfaces($pk_module, $config) {
+    protected function loadInterfaces($pk_module, $config)
+    {
         foreach ($config as $line) {
             $line['fk_module'] = $pk_module;
             $actions = $line['_actions'];
@@ -72,21 +81,24 @@ class ModulesLoader {
         }
     }
 
-    protected function loadActions($pk_interface, $config) {
+    protected function loadActions($pk_interface, $config)
+    {
         foreach ($config as $line) {
             $line['fk_interface'] = $pk_interface;
             $this->_db->insert('reactor_interface_action', $line);
         }
     }
 
-    protected function loadDefines($pk_interface, $config) {
+    protected function loadDefines($pk_interface, $config)
+    {
         foreach ($config as $line) {
             $line['fk_interface'] = $pk_interface;
             $this->_db->insert('reactor_interface_define', $line);
         }
     }
 
-    public function loadActionRelations($relations) {
+    public function loadActionRelations($relations)
+    {
         foreach ($relations as $parent => $children) {
             $parent_action = $this->getActionId($parent);
             if ($parent_action) {
@@ -101,7 +113,8 @@ class ModulesLoader {
         }
     }
 
-    protected function getActionId($str) {
+    protected function getActionId($str)
+    {
         $data = explode(';', $str);
         $interface = $data[0];
         $action = $data[1];

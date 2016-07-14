@@ -1,13 +1,16 @@
 <?php
 
-class ModulesConfig {
+class ModulesConfig
+{
     protected $_db;
 
-    function __construct($_db) {
+    function __construct($_db)
+    {
         $this->_db = $_db;
     }
 
-    function getConfig($pk_module) {
+    function getConfig($pk_module)
+    {
         $config = array();
         $this->_db->sql('select * from reactor_module where pk_module = ' . $pk_module);
         $module = $this->_db->line();
@@ -24,7 +27,8 @@ class ModulesConfig {
         return $config;
     }
 
-    function actionRelations($pk_module) {
+    function actionRelations($pk_module)
+    {
         $rez = array();
         $this->_db->sql('
             SELECT
@@ -50,7 +54,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function baseTypes($pk_parent) {
+    function baseTypes($pk_parent)
+    {
         $rez = array();
         $this->_db->sql('select * from reactor_base_type where fk_module = ' . $pk_parent . ' order by name');
         $collection = $this->_db->matr('pk_base_type');
@@ -63,7 +68,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function tables($pk_parent) {
+    function tables($pk_parent)
+    {
         global $_languages;
         $rez = array();
         $this->_db->sql('select * from reactor_table where fk_module = ' . $pk_parent . ' order by name');
@@ -86,13 +92,15 @@ class ModulesConfig {
         return $rez;
     }
 
-    protected function isTable($name) {
+    protected function isTable($name)
+    {
         $this->_db->sql('show tables like "' . $name . '"');
 
         return (bool) $this->_db->line();
     }
 
-    function tableCreate($db_name) {
+    function tableCreate($db_name)
+    {
         if ($this->isTable($db_name)) {
             $this->_db->sql('show create table `' . $db_name . '`');
             $create_sql = $this->_db->line();
@@ -103,7 +111,8 @@ class ModulesConfig {
         return null;
     }
 
-    function tableCreateMLng($db_name, $languages) {
+    function tableCreateMLng($db_name, $languages)
+    {
         $rez = array();
         foreach ($languages as $lng) {
             $real_name = $db_name . '_' . $lng;
@@ -116,7 +125,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function resources($pk_parent) {
+    function resources($pk_parent)
+    {
         $rez = array();
         $this->_db->sql('select * from reactor_resource where fk_module = ' . $pk_parent . ' order by name');
         $collection = $this->_db->matr('pk_resource');
@@ -129,7 +139,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function moduleConfig($pk_parent) {
+    function moduleConfig($pk_parent)
+    {
         $rez = array();
         $this->_db->sql('select * from reactor_config where fk_module = ' . $pk_parent . ' order by name');
         $collection = $this->_db->matr('pk_config');
@@ -142,7 +153,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function interfaces($pk_parent) {
+    function interfaces($pk_parent)
+    {
         $rez = array();
         $this->_db->sql('select * from reactor_interface where fk_module = ' . $pk_parent . ' order by name');
         $collection = $this->_db->matr('pk_interface');
@@ -158,7 +170,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function interfaceDefine($pk_parent) {
+    function interfaceDefine($pk_parent)
+    {
         $rez = array();
         $this->_db->sql('select * from reactor_interface_define where fk_interface = ' . $pk_parent . ' order by name');
         $collection = $this->_db->matr('pk_define');
@@ -171,7 +184,8 @@ class ModulesConfig {
         return $rez;
     }
 
-    function interfaceActions($pk_parent) {
+    function interfaceActions($pk_parent)
+    {
         $rez = array();
         $this->_db->sql('select * from reactor_interface_action where fk_interface = ' . $pk_parent . ' order by name');
         $collection = $this->_db->matr('pk_action');

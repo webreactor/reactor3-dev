@@ -15,11 +15,13 @@ Error 20: Can't QUIT right now.
 include_once 'socket_client.php';
 include_once LIB_DIR . '/ext/str.php';
 
-function encode_field_t($match) {
+function encode_field_t($match)
+{
     return $match[1] . '="' . encode_field($match[2]) . '"';
 }
 
-function encode_field($fld) {
+function encode_field($fld)
+{
 
     $t = explode(')|_', wordwrap($fld, 40, ')|_ '));
     $r = '';
@@ -31,7 +33,8 @@ function encode_field($fld) {
     return substr($r, 0, -2);
 }
 
-class smtp extends socket_client {
+class smtp extends socket_client
+{
     var $srv;
     var $login;
     var $pwd;
@@ -54,13 +57,15 @@ class smtp extends socket_client {
         'content-id',
     );
 
-    function smtp($srv = '', $login = '', $pwd = '') {
+    function smtp($srv = '', $login = '', $pwd = '')
+    {
         if ($srv != '') {
             $this->smtp_connect($srv, $login, $pwd);
         }
     }
 
-    function smtp_connect($srv, $login, $pwd) {
+    function smtp_connect($srv, $login, $pwd)
+    {
         $this->srv = $srv;
         $this->login = $login;
         $this->pwd = $pwd;
@@ -83,13 +88,15 @@ class smtp extends socket_client {
         $this->error = 0;
     }
 
-    function get_answ($i = 0) {
+    function get_answ($i = 0)
+    {
         $this->last_reply = explode(' ', $this->get());
 
         return $this->last_reply[$i];
     }
 
-    function new_letter($text, $from, $subj = 'None', $type = 0) {
+    function new_letter($text, $from, $subj = 'None', $type = 0)
+    {
         $this->letter = array();
         $bound = md5(microtime());
         $this->letter['header']['from'] = $from;
@@ -113,11 +120,13 @@ class smtp extends socket_client {
         }
     }
 
-    function inline($fname, $disposition = 'inline') {
+    function inline($fname, $disposition = 'inline')
+    {
         $this->attach($fname, $disposition);
     }
 
-    function attach($fname, $disposition = 'attachment') {
+    function attach($fname, $disposition = 'attachment')
+    {
         if (!is_file($fname)) {
             $this->error = 10;
         } //Error 10: Can't open file.
@@ -138,7 +147,8 @@ class smtp extends socket_client {
         );
     }
 
-    function send($to) {
+    function send($to)
+    {
         $this->put('NOOP');
         if ($this->get_answ() == '250') {
             $this->letter['header']['to'] = $to;
@@ -168,7 +178,8 @@ class smtp extends socket_client {
         }
     }
 
-    function quit() {
+    function quit()
+    {
         $this->put("QUIT");
         if ($this->get_answ() != '221') {
             $this->error = 20;
@@ -176,7 +187,8 @@ class smtp extends socket_client {
         $this->close();
     }
 
-    function combine_head(&$header) {
+    function combine_head(&$header)
+    {
         $bound = md5(microtime());
 
         $type = substr($header['content-type'], 0, 4);
@@ -215,7 +227,8 @@ class smtp extends socket_client {
         return $bound;
     }
 
-    function combine_part_r($part) {
+    function combine_part_r($part)
+    {
 
         $bound = $this->combine_head($part['header']);
 
@@ -235,7 +248,8 @@ class smtp extends socket_client {
         }
     }
 
-    function get_raw($data) {
+    function get_raw($data)
+    {
         $this->text = '';
         if (!isset($data['header']['from'])/* or !isset($data['header']['to'])*/) {
             return 0;
