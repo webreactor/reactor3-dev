@@ -305,5 +305,3 @@ class basic_tree extends basic_object
         return 3;
     }
 }
-
-?>

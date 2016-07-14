@@ -47,5 +47,3 @@ class reactor_user_group_rights extends basic_object
         return 1;
     }
 }
-
-?>

@@ -88,5 +88,3 @@ function cleen_ver($str)
 
     return $str;
 }
-
-?>

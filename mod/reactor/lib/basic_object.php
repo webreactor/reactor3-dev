@@ -274,5 +274,4 @@ class basic_object
 
         return 1;
     }
-}//end of class
-?>
+}

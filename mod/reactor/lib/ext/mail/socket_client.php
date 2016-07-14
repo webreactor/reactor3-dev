@@ -66,5 +66,4 @@ class socket_client
         fclose($this->socket);
         $this->log[] = 'close';
     }
-}//end of class socket_client
-?>
+}

@@ -60,6 +60,4 @@ function uninstall_rmp($mod_name)
     siteTreeCompile();
 
     return 1;
-}//end of function uninstall_rmp
-
-?>
+}

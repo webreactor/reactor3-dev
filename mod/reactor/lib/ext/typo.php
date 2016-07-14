@@ -303,5 +303,3 @@ function unpost_typo($text)
 
     return $text;
 }
-
-?>

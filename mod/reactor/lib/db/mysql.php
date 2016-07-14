@@ -205,6 +205,4 @@ class db_mysql
 
         return $rez;
     }
-}//class end
-
-?>
+}

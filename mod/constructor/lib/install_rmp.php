@@ -137,6 +137,4 @@ function install_rmp($mod_name)
     siteTreeCompile();
 
     return 1;
-}//end of function install_rmp
-
-?>
+}

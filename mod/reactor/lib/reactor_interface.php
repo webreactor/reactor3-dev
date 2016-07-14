@@ -177,6 +177,4 @@ class reactor_interface
 
         return $ret;
     }
-}//end of class
-
-?>
+}

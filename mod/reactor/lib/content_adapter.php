@@ -321,6 +321,4 @@ class content_adapter
 
         return $data;
     }
-}//end of content adapter
-
-?>
+}

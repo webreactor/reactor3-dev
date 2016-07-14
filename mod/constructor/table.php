@@ -23,6 +23,4 @@ class reactor_table extends basic_object
 
         return $r;
     }
-}//end of class
-
-?>
+}

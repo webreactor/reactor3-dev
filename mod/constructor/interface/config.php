@@ -10,6 +10,4 @@ class reactor_config extends basic_object
 
         return $t;
     }
-}//end of class
-
-?>
+}

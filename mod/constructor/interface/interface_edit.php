@@ -11,6 +11,4 @@ class reactor_interface_edit extends basic_object
 
         return $t;
     }
-}//end of class
-
-?>
+}

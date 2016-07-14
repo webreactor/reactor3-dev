@@ -97,5 +97,3 @@ class retailrocket
         return $this->requestRemoteAPI('PersonalRecommendation', null, array('rrUserId' => $cookie));
     }
 }
-
-?>

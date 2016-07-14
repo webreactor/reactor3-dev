@@ -276,5 +276,3 @@ class smtp extends socket_client
         return $this->text;
     }
 }
-
-?>

@@ -68,30 +68,3 @@ function xlsWriteLabel($Row, $Col, $Value)
 
     return;
 }
-
-/*
-C ������� ���� ������� ����� ����� � ������ ��������� xls-�����, �������� ���:
-
-
-    header("Content-Type: application/force-download");
-    header("Content-Type: application/octet-stream");
-    header("Content-Type: application/download");;
-    header("Content-Disposition: attachment;filename="list.xls");
-    header("Content-Transfer-Encoding: binary ");
-
-    xlsBOF(); //�������� �������� ����
-    //������ ������
-    xlsWriteLabel(1,0,"��������");
-    //������ ������
-    xlsWriteLabel(2,0,"��/�");
-    xlsWriteLabel(2,1,"���");
-    xlsWriteLabel(2,2,"�������");
-    //������ ������
-    xlsWriteNumber(3,0,"1");
-    xlsWriteLabel(3,1,"����");
-    xlsWriteLabel(3,2,"������");
-
-
-    xlsEOF(); //����������� ��������
-*/
-?>

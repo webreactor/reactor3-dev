@@ -10,6 +10,4 @@ class site_tree extends basic_tree
 
         return $r;
     }
-}//end of class
-
-?>
+}

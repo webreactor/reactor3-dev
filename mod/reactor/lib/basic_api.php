@@ -309,5 +309,3 @@ function get_request($host, $uri)
 
     return $data;
 }
-
-?>

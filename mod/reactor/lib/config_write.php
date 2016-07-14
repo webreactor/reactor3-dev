@@ -293,5 +293,3 @@ function siteModified($where = '1')
     $_db->sql('update ' . T_SITE_TREE . ' set modified=' . time() . ' where modified!="none" and ' . $where);
     siteTreeCompile();
 }
-
-?>

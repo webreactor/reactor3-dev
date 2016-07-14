@@ -175,6 +175,4 @@ class DB_sqlite
 
         return $queries;
     }
-}//class end
-
-?>
+}

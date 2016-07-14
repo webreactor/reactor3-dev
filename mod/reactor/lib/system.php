@@ -10,5 +10,3 @@ function execFork($cmd)
         sysexec('nohup ' . $cmd . ' &');
     }
 }
-
-?>

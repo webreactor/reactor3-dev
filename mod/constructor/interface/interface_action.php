@@ -75,6 +75,4 @@ class reactor_interface_action extends basic_object
         $robj = $_db->line();
         $_db->sql('insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $this->fkey_value . ',"!getSelect","Интерактивный select","getSelect","_ROW,inputGetStr(\'filter\',\'\'),inputGetNum(\'getOne\',0)","","",0,0,"",0)');
     }
-}//end of class
-
-?>
+}

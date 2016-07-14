@@ -54,5 +54,3 @@ class reactor_user extends basic_object
         return $this->_db->matr($this->pkey, $row);
     }
 }
-
-?>

@@ -27,6 +27,4 @@ class reactor_interface_edit extends basic_object
             $_db->sql('delete `' . T_REACTOR_INTERFACE_DEFINE . '`  FROM `' . T_REACTOR_INTERFACE_DEFINE . '` left join `' . T_REACTOR_INTERFACE . '` i on `' . T_REACTOR_INTERFACE_DEFINE . '`.fk_interface=i.pk_interface where pk_interface is null;');
         }
     }
-}//end of class
-
-?>
+}

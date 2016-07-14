@@ -92,5 +92,4 @@ and m.fk_interface in(' . implode(',', $keys) . ')');
     fclose($f);
 //print_r($module);
     uninitModule();
-}//end of function create_rmp
-?>
+}

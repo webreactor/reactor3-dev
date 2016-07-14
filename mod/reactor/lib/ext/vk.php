@@ -79,5 +79,3 @@ function vk_post($group_id, $token, $text, $images = array())
 
     return $oResp;
 }
-
-?>

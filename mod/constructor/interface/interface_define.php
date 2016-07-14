@@ -21,6 +21,4 @@ class reactor_interface_define extends basic_object
 
         return $t['fk_module'];
     }
-}//end of class
-
-?>
+}

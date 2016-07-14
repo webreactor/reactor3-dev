@@ -10,6 +10,4 @@ class reactor_base_type extends basic_object
 
         return $r;
     }
-}//end of class
-
-?>
+}

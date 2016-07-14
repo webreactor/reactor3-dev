@@ -79,5 +79,3 @@ if ($_user['login'] == 'root') {
     error_log('[' . $_SERVER['REMOTE_ADDR'] . ']' . $_SERVER['REQUEST_URI']);
     $GLOBALS['DEBUG_SQL'] = 1;
 }
-
-?>

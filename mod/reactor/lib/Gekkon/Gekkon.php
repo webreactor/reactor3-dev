@@ -432,6 +432,3 @@ function parse_var($str)
 
     return $ret;
 }
-
-/**/
-?>

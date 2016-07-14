@@ -218,5 +218,3 @@ function r_imagecreatefrombmp($p_sFile)
     //    Return image-object
     return $image;
 }
-
-?>

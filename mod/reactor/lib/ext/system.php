@@ -10,5 +10,3 @@ function execFork($cmd)
         exec($cmd . ' &');
     }
 }
-
-?>

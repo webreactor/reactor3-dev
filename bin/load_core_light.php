@@ -44,5 +44,3 @@ $GLOBALS['_pool'] = array();
 include ETC_DIR . 'autoexec.php';
 
 ini_set('error_log', SITE_DIR . '../rest.log');
-
-?>

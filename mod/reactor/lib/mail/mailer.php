@@ -115,13 +115,3 @@ class mailer
         return $this->ans;
     }
 }
-
-/*
-
-$m=new mailer($server,$from,$user,$pass);
-$m->letter($subject,$message,$type=0); - if type ==1 - text of the letter will have HTML content type
-$m->file($fname,$type) - for example ('image.jpg','image/jpg'); - you can skip this function
-$m->send($to);
-*/
-
-?>

@@ -44,6 +44,4 @@ class reactor_module extends basic_object
     {
         update_module($key);
     }
-}//end of class
-
-?>
+}

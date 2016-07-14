@@ -294,5 +294,4 @@ class pop3 extends socket_client
             }
         }
     }
-}//end of class pop3
-?>
+}

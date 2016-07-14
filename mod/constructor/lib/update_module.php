@@ -140,5 +140,3 @@ function update_module($pk_module)
 
     return 1;
 }
-
-?>

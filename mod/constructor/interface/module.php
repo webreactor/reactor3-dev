@@ -38,6 +38,4 @@ class reactor_module extends basic_object
         $t = $_db->line();
         create_rmp($t['name']);
     }
-}//end of class
-
-?>
+}
