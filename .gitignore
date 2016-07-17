@@ -1,7 +1,8 @@
-.svn/
+*~
 *.bak
 *.log
-.idea/
-var/
-etc/
-
+composer.phar
+/.idea/
+/etc/
+/var/
+/vendor/

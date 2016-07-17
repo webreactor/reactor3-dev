@@ -1,9 +1,9 @@
 <?php
 
 $_SERVER['REQUEST_URI'] = '/';
-include 'bin/load_core.php';
+require 'bin/load_core.php';
 
-include_once LIB_DIR . 'config_write.php';
+require_once LIB_DIR . 'config_write.php';
 
 tablesCompile();
 interfacesCompile();

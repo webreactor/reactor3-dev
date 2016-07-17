@@ -49,7 +49,7 @@ class RollbackTableManager
         if (!is_file($this->dump_file)) {
             die("Unable to locate " . $this->dump_file);
         }
-        $data = include $this->dump_file;
+        $data = require $this->dump_file;
         foreach ($data as $table) {
             echo "Loading table " . $table['name'] . "\n";
             $this->loadTableDump($table);

@@ -28,9 +28,8 @@ if ($url[strlen($url) - 1] != '/') {
     }
 }
 
-header('Access-Control-Allow-Origin: http://m.xcom-shop.ru');
+require 'bin/load_core.php';
 
-include 'bin/load_core.php';
 $_RGET = initRequestIndex();
 
 if (strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
@@ -38,25 +37,6 @@ if (strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
     die();
 }
 
-//print_r($_interfaces);
-//print_r($_user);
-
-//print_r($_reactor);
-//print_r($_site_tree);
-//print_r($_RGET);
-//print_r($_GET);
-//echo $_SERVER['REQUEST_URI'];
-//print_r( execute('catalog_tree_site','getArm'));
-//die();
-//echo '<div align="left"><b>',compileUrl($_RGET),'</b></div>';
-/*
-
-include LIB_DIR.'config_write.php';
-siteModified();
-siteTreeCompile();
-die();
-
-/**/
 if ($_reactor['show']['interface'] != '') {
     $object = new reactor_interface();
     
