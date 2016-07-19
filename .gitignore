@@ -1,7 +1,7 @@
-.svn/
+*~
 *.bak
 *.log
-.idea/
-var/
-etc/
-
+/.idea/
+/etc/
+/var/
+/vendor/

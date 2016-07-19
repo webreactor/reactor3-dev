@@ -77,6 +77,6 @@ class LoadManager
     {
         echo "Loading file $file\n";
         
-        return include $file;
+        return require $file;
     }
 }

@@ -1,0 +1,23 @@
+{
+    "name":         "webreactor/reactor3.5-dev",
+    "type":         "library",
+    "description":  "Reactor PHP Framework",
+    "keywords":     [
+        "framework"
+    ],
+    "license":      "MIT",
+    "require":      {
+        "php": ">=5.3"
+    },
+    "require-dev":  {
+    },
+    "autoload":     {
+        "psr-4": {
+            "reactor\\": "htdocs/mod/reactor/lib",
+            "mod\\":     "htdocs/mod"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {}
+    }
+}
