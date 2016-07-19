@@ -108,7 +108,7 @@ class ModulesLoader
                         $this->_db->update(
                             'reactor_interface_action',
                             array('fk_action' => $parent_action),
-                            array('pk_action' => $current_action)
+                            'pk_action=' . $current_action
                         );
                     }
                 }
