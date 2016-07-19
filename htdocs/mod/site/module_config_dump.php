@@ -52,7 +52,7 @@ return array(
         ),
         array(
             'name' => 'TestController',
-            'class' => 'webreactor\\mod\\site\\TestController',
+            'class' => 'mod\\site\\TestController',
             'source' => '',
             'pkey' => '',
             'configurators' => '',
@@ -82,7 +82,6 @@ return array(
         array(
             'name' => 'mailer_data',
             'db_name' => 'site_mailer_data',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -90,7 +89,6 @@ return array(
         array(
             'name' => 'messenger_buffer',
             'db_name' => 'messenger_buffer',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -98,7 +96,6 @@ return array(
         array(
             'name' => 'messenger_income',
             'db_name' => 'messenger_income',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -106,7 +103,6 @@ return array(
         array(
             'name' => 'tree',
             'db_name' => 'site_tree',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'site_tree' => 'CREATE TABLE `site_tree` (

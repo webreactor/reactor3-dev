@@ -210,7 +210,7 @@ class ex_object
         }
     }
     
-    function store(&$form)
+    function store($form)
     {
         $data = $form->toDb();
         

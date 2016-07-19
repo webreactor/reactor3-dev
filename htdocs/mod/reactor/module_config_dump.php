@@ -314,7 +314,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'base_type',
             'db_name' => 'reactor_base_type',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_base_type' => 'CREATE TABLE `reactor_base_type` (
@@ -335,7 +334,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'config',
             'db_name' => 'reactor_config',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_config' => 'CREATE TABLE `reactor_config` (
@@ -353,7 +351,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'form',
             'db_name' => 'reactor_form',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -361,7 +358,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'help',
             'db_name' => 'reactor_help',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_help' => 'CREATE TABLE `reactor_help` (
@@ -378,7 +374,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'interface',
             'db_name' => 'reactor_interface',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_interface' => 'CREATE TABLE `reactor_interface` (
@@ -394,13 +389,12 @@ $data=$_db->matr(\'name\',\'name\');',
   `descrip` varchar(100) NOT NULL DEFAULT \'\',
   PRIMARY KEY (`pk_interface`),
   KEY `idx_name` (`fk_module`,`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
             'name' => 'interface_action',
             'db_name' => 'reactor_interface_action',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_interface_action' => 'CREATE TABLE `reactor_interface_action` (
@@ -421,13 +415,12 @@ $data=$_db->matr(\'name\',\'name\');',
   `confirm` tinyint(1) NOT NULL DEFAULT \'0\',
   PRIMARY KEY (`pk_action`),
   UNIQUE KEY `idx_name` (`fk_interface`,`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=155 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=143 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
             'name' => 'interface_define',
             'db_name' => 'reactor_interface_define',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_interface_define' => 'CREATE TABLE `reactor_interface_define` (
@@ -445,13 +438,12 @@ $data=$_db->matr(\'name\',\'name\');',
   `enum` text NOT NULL,
   PRIMARY KEY (`pk_define`),
   UNIQUE KEY `idx_name` (`fk_interface`,`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=74 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=73 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
             'name' => 'module',
             'db_name' => 'reactor_module',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_module' => 'CREATE TABLE `reactor_module` (
@@ -464,13 +456,12 @@ $data=$_db->matr(\'name\',\'name\');',
   `descrip` text NOT NULL,
   PRIMARY KEY (`pk_module`),
   UNIQUE KEY `idx_name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
             'name' => 'resource',
             'db_name' => 'reactor_resource',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_resource' => 'CREATE TABLE `reactor_resource` (
@@ -487,7 +478,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'table',
             'db_name' => 'reactor_table',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_table' => 'CREATE TABLE `reactor_table` (
@@ -495,7 +485,6 @@ $data=$_db->matr(\'name\',\'name\');',
   `name` varchar(100) NOT NULL DEFAULT \'\',
   `fk_module` int(11) NOT NULL DEFAULT \'0\',
   `db_name` varchar(30) NOT NULL DEFAULT \'\',
-  `rmp_data` tinyint(1) NOT NULL DEFAULT \'0\',
   `mlng` tinyint(1) NOT NULL DEFAULT \'0\',
   PRIMARY KEY (`pk_table`),
   UNIQUE KEY `idx_uname` (`name`,`fk_module`)
@@ -505,7 +494,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'tree_sup',
             'db_name' => 'reactor_tree_sup',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
                 'reactor_tree_sup' => 'CREATE TABLE `reactor_tree_sup` (
@@ -518,7 +506,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'ugroup',
             'db_name' => 'reactor_ugroup',
-            'rmp_data' => '1',
             'mlng' => '0',
             'creates' => array(
                 'reactor_ugroup' => 'CREATE TABLE `reactor_ugroup` (
@@ -532,7 +519,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'ugroup_action',
             'db_name' => 'reactor_ugroup_action',
-            'rmp_data' => '1',
             'mlng' => '0',
             'creates' => array(
                 'reactor_ugroup_action' => 'CREATE TABLE `reactor_ugroup_action` (
@@ -545,7 +531,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'up_module',
             'db_name' => 'reactor_up_module',
-            'rmp_data' => '0',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -553,7 +538,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'up_name',
             'db_name' => 'reactor_up_name',
-            'rmp_data' => '1',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -561,7 +545,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'up_value',
             'db_name' => 'reactor_up_value',
-            'rmp_data' => '1',
             'mlng' => '0',
             'creates' => array(
             ),
@@ -569,7 +552,6 @@ $data=$_db->matr(\'name\',\'name\');',
         array(
             'name' => 'user',
             'db_name' => 'reactor_user',
-            'rmp_data' => '1',
             'mlng' => '0',
             'creates' => array(
                 'reactor_user' => 'CREATE TABLE `reactor_user` (

@@ -205,7 +205,7 @@ class basic_object
         $this->fkey_value = $value;
     }
     
-    function store(&$form)
+    function store($form)
     {
         $data = $form->toDb();
         

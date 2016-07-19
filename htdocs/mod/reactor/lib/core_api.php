@@ -1,5 +1,7 @@
 <?php
 
+//namespace reactor;
+
 use mod\reactor\lib\UploadHandler\FileUploadHandler;
 
 require_once('UploadHandler/UploadHandler.php');
@@ -49,6 +51,7 @@ function reactor_ini_set($module, $name, $value)
     );
     
     require_once LIB_DIR . 'config_write.php';
+
     configCompile();
 }
 
@@ -69,6 +72,7 @@ function reactor_ini_set_array($array)
         return;
     }
     require_once LIB_DIR . 'config_write.php';
+
     configCompile();
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace webreactor\mod\site;
+namespace mod\site;
 
 class TestController
 {

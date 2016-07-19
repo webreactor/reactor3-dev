@@ -1,7 +1,6 @@
 *~
 *.bak
 *.log
-composer.phar
 /.idea/
 /etc/
 /var/

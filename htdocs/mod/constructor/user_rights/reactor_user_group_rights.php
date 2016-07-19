@@ -31,7 +31,7 @@ class reactor_user_group_rights extends basic_object
         return array('stucture' => $r, 'rights' => $_db->matr('fk_action', 'fk_ugroup'));
     }
     
-    function store(&$form)
+    function store($form)
     {
         global $_db;
         $_db->sql('delete from ' . T_REACTOR_UGROUP_ACTION . ' where fk_ugroup=' . $this->fk_value);

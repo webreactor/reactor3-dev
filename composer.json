@@ -13,7 +13,8 @@
     },
     "autoload":     {
         "psr-4": {
-            "webreactor\\mod\\": "htdocs/mod"
+            "reactor\\": "htdocs/mod/reactor/lib",
+            "mod\\":     "htdocs/mod"
         }
     },
     "autoload-dev": {
