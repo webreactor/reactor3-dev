@@ -190,7 +190,7 @@ function resourceCompile()
         $module[$t['pk_module']] = $t['name'];
     }
     
-    $_db->sql('select * from ' . T_REACTOR_RESOURCE);
+    $query = $_db->sql('select * from ' . T_REACTOR_RESOURCE);
     
     $rez = array();
     while ($t = $query->line()) {
