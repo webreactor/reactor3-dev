@@ -2,17 +2,33 @@
 
 namespace Reactor\Database\Exceptions;
 
-class DatabaseException extends \Exception {
-
+/**
+ * Class DatabaseException
+ *
+ * @package Reactor\Database\Exceptions
+ */
+class DatabaseException extends \Exception
+{
     protected $context;
-
-    public function __construct($message, $context = null) {
+    
+    /**
+     * DatabaseException constructor.
+     *
+     * @param string $message
+     * @param null   $context
+     */
+    public function __construct($message, $context = null)
+    {
         parent::__construct($message);
+        
         $this->context = $context;
     }
-
-    public function getContext() {
+    
+    /**
+     * @return null
+     */
+    public function getContext()
+    {
         return $this->context;
     }
-
 }
