@@ -26,7 +26,8 @@ class basic_object
     function onRestore()
     {
         global $_db;
-        $this->_db =& $_db;
+
+        $this->_db = &$_db;
     }
     
     function configure($table, $order = '', $fk_value = 0)
@@ -44,39 +45,49 @@ class basic_object
     
     function getList($page, $per_page, $where = '')
     {
-        $all       = 0;
-        $where_rez = ' where 1';
+        $where_arr = array(1);
+        $where_parameters = array();
+
         if ($this->fkey != '') {
-            $where_rez .= ' and `' . $this->fkey . '`="' . $this->fkey_value . '"';
+            $where_arr[] = sprintf('`%s` = ":fkey_value"', $this->fkey);
+            $where_parameters[':fkey_value'] = $this->fkey_value;
         }
+
         if ($where != '') {
-            $where_rez .= ' and ' . $where;
+            $where_arr[] = $where;
         }
-        if ($this->order != '') {
-            $where_rez .= ' order by ' . $this->order;
-        }
-        $data = $this->_db->pages(
-            'select * from ' . $this->table . $where_rez,
+
+        $order = $this->order != '' ? sprintf('ORDER BY %s', $this->order) : '';
+
+        $pages = $this->_db->pages(
+            sprintf(
+                'SELECT *
+                FROM %s
+                WHERE %s
+                %s',
+                T_REACTOR_USER,
+                implode(' AND ', $where_arr),
+                $order
+            ),
+            $where_parameters,
             $page,
-            $per_page,
-            $all,
-            $total_rows_count
+            $per_page
         );
-        
+
         return array(
-            'all'              => $all,
-            'total_rows_count' => $total_rows_count,
+            'all'              => $pages['total_pages'],
+            'total_rows_count' => $pages['total_rows'],
             'page'             => pool_get($this->_pool_id, 'name') . '_page',
             'per_page'         => $per_page,
             'now'              => $page,
-            'data'             => $data,
+            'data'             => $pages['data'],
         );
     }
     
     function getOne($pk = 0, $row = '*')
     {
-        $this->_db->sql('select ' . $row . ' from ' . $this->table . ' where `' . $this->pkey . '` = "' . $pk . '"');
-        $rez              = $this->_db->line($row);
+        $query = $this->_db->sql('select ' . $row . ' from ' . $this->table . ' where `' . $this->pkey . '` = "' . $pk . '"');
+        $rez              = $query->line($row);
         $this->pkey_value = $pk;
         if ($rez == 0) {
             $this->pkey_value = 0;
@@ -90,9 +101,9 @@ class basic_object
         if ($where != '') {
             $where = 'where ' . $where;
         }
-        $this->_db->sql('select ' . $rows . ' from ' . $this->table . ' ' . $where);
+        $query = $this->_db->sql('select ' . $rows . ' from ' . $this->table . ' ' . $where);
         
-        return $this->_db->matr();
+        return $query->matr();
     }
     
     function getSelect($row, $filter, $forceOne = 0, $forceFkey = 1)
@@ -111,9 +122,9 @@ class basic_object
         if ($this->fkey != '' && $forceFkey == 1) {
             $where_rez .= ' and `' . $this->fkey . '`="' . $this->fkey_value . '"';
         }
-        $this->_db->sql('select ' . $this->pkey . ', ' . $row . ' from ' . $this->table . $where_rez . ' limit 25');
+        $query = $this->_db->sql('select ' . $this->pkey . ', ' . $row . ' from ' . $this->table . $where_rez . ' limit 25');
         
-        return $this->_db->matr($this->pkey, $row);
+        return $query->matr($this->pkey, $row);
     }
     
     function delete($rule, $isStream = 0)
@@ -123,11 +134,11 @@ class basic_object
         } else {
             $where_exp = $rule;
         }
-        
-        $this->_db->sql('delete from ' . $this->table . ' where ' . $where_exp);
+
+        $query = $this->_db->sql('delete from ' . $this->table . ' where ' . $where_exp);
         $this->key = 0;
         
-        return $this->_db->affected_rows();
+        return $query->count();
     }
     
     function insert($data = 1)
@@ -149,7 +160,7 @@ class basic_object
             if (isset($data[$this->pkey])) {
                 return $data[$this->pkey];
             } else {
-                return $this->_db->last_id();
+                return $this->_db->lastId();
             }
         } else {
             return 0;
@@ -171,9 +182,9 @@ class basic_object
         
         $t = substr($t, 0, -1);
         
-        $this->_db->sql('update ' . $this->table . ' set ' . $t . ' where ' . $where_exp);
+        $query = $this->_db->sql('update ' . $this->table . ' set ' . $t . ' where ' . $where_exp);
         
-        return $this->_db->affected_rows();
+        return $query->count();
     }
     
     function replace($data = 1, $pk)
@@ -231,10 +242,10 @@ class basic_object
 //$order=$this->order;
         
         if ($this->fkey != '') {
-            $this->_db->sql(
+            $query = $this->_db->sql(
                 'select `' . $this->fkey . '` from ' . $this->table . ' where `' . $this->pkey . '`="' . $node_key . '"'
             );
-            $t = $this->_db->line();
+            $t = $query->line();
             if ($t == 0) {
                 return 0;
             }
@@ -265,10 +276,10 @@ class basic_object
         $order = str_replace('desc', '', $this->order);
 //$order=$this->order;
         if ($this->fkey != '') {
-            $this->_db->sql(
+            $query = $this->_db->sql(
                 'select `' . $this->fkey . '` from ' . $this->table . ' where `' . $this->pkey . '`="' . $node_key . '"'
             );
-            $t = $this->_db->line();
+            $t = $query->line();
             if ($t == 0) {
                 return 0;
             }

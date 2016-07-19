@@ -10,14 +10,14 @@ function userLogin($u, $p, $c)
     if ($u != '' && $p != '') {
         $u = htmlspecialchars(trim($u), ENT_QUOTES);
         $p = htmlspecialchars(trim($p), ENT_QUOTES);
-        $_db->sql('select * from ' . T_REACTOR_USER . ' where login="' . $u . '" and pass="' . $p . '" and active=1');
-        $_user = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_USER . ' where login="' . $u . '" and pass="' . $p . '" and active=1');
+        $_user = $query->line();
     } else {
         if (isset($_COOKIE['c_uid'])) {
             $c_uid = htmlspecialchars(trim($_COOKIE['c_uid']), ENT_QUOTES);
             if (!empty($c_uid)) {
-                $_db->sql('select * from ' . T_REACTOR_USER . ' where cookie="' . $c_uid . '" and active=1');
-                $_user = $_db->line();
+                $query = $_db->sql('select * from ' . T_REACTOR_USER . ' where cookie="' . $c_uid . '" and active=1');
+                $_user = $query->line();
             }
         }
     }
@@ -31,14 +31,14 @@ function userLogin($u, $p, $c)
     
     if ($_user == 0) {
         $_reactor['login_error'] = 1;
-        $_db->sql('select * from ' . T_REACTOR_USER . ' where login="guest"');
-        $_user = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_USER . ' where login="guest"');
+        $_user = $query->line();
         if (!headers_sent()) {
             setcookie('c_uid', 0, REACTOR_COOKIE_LIVE, SITE_URL);
         }
     } else {
         $cook = md5(uniqid(rand(), true));
-        $_db->sql(
+        $query = $_db->sql(
             'update ' . T_REACTOR_USER . ' set visited=' . time(
             ) . ', cookie="' . $cook . '" where pk_user=' . $_user['pk_user']
         );
@@ -47,8 +47,8 @@ function userLogin($u, $p, $c)
         }
     }
     
-    $_db->sql('select * from ' . T_REACTOR_UGROUP . ' where pk_ugroup=' . $_user['fk_ugroup']);
-    $_user['ugroup'] = $_db->line();
+    $query = $_db->sql('select * from ' . T_REACTOR_UGROUP . ' where pk_ugroup=' . $_user['fk_ugroup']);
+    $_user['ugroup'] = $query->line();
     
     $_user['system'] = SITE_URL;
     $_user['ip']     = $_SERVER['REMOTE_ADDR'];
@@ -60,8 +60,8 @@ function userLogin_light($pk_user)
 {
     global $_user, $_interfaces, $_db;
     
-    $_db->sql('select * from ' . T_REACTOR_USER . ' where pk_user=' . $pk_user . ' and active=1');
-    $_user = $_db->line();
+    $query = $_db->sql('select * from ' . T_REACTOR_USER . ' where pk_user=' . $pk_user . ' and active=1');
+    $_user = $query->line();
     
     if (empty($_user)) {
         $_user = resourceRestore('reactor_guest_user');
@@ -69,8 +69,8 @@ function userLogin_light($pk_user)
         return false;
     }
     
-    $_db->sql('select * from ' . T_REACTOR_UGROUP . ' where pk_ugroup=' . $_user['fk_ugroup']);
-    $_user['ugroup'] = $_db->line();
+    $query = $_db->sql('select * from ' . T_REACTOR_UGROUP . ' where pk_ugroup=' . $_user['fk_ugroup']);
+    $_user['ugroup'] = $query->line();
     
     $_interfaces = resourceRestore('reactor_interfaces_' . $_user['ugroup']['name']);
     

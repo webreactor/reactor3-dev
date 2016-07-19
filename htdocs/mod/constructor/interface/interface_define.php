@@ -17,9 +17,9 @@ class reactor_interface_define extends basic_object
     {
         global $_db;
 
-        $_db->sql('select fk_module from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $query = $_db->sql('select fk_module from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
 
-        $t = $_db->line();
+        $t = $query->line();
         
         return $t['fk_module'];
     }

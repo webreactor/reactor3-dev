@@ -63,40 +63,46 @@ class ex_object
     
     function getList($page, $per_page, $where = '')
     {
-        
-        $all       = 0;
-        $where_rez = keys_implode($this->fkeys_value, $this->fkeys);
+        $where_arr = array(keys_implode($this->fkeys_value, $this->fkeys));
+        $where_parameters = array();
+
         if ($where != '') {
-            $where_rez .= $where;
+            $where_arr[] = $where;
         }
-        if ($this->order != '') {
-            $where_rez .= ' order by ' . $this->order;
-        }
-        
-        $data = $this->_db->pages(
-            'select * from ' . $this->table . ' where ' . $where_rez,
+
+        $order = $this->order != '' ? sprintf('ORDER BY %s', $this->order) : '';
+
+        $pages = $this->_db->pages(
+            sprintf(
+                'SELECT *
+                FROM %s
+                WHERE %s
+                %s',
+                T_REACTOR_USER,
+                implode(' AND ', $where_arr),
+                $order
+            ),
+            $where_parameters,
             $page,
-            $per_page,
-            $all,
-            $total_rows_count
+            $per_page
         );
-        
+
         return array(
-            'all'              => $all,
-            'total_rows_count' => $total_rows_count,
+            'all'              => $pages['total_pages'],
+            'total_rows_count' => $pages['total_rows'],
             'page'             => pool_get($this->_pool_id, 'name') . '_page',
             'per_page'         => $per_page,
             'now'              => $page,
-            'data'             => $data,
+            'data'             => $pages['data'],
         );
     }
     
     function getOne($pk)
     {
-        $this->_db->sql('select * from ' . $this->table . ' where ' . keys_implode($pk, $this->pkeys));
+        $query = $this->_db->sql('select * from ' . $this->table . ' where ' . keys_implode($pk, $this->pkeys));
         $this->pkey_value = $pk;
         
-        return $this->_db->line();
+        return $query->line();
     }
     
     function getPage($where = '')
@@ -109,10 +115,10 @@ class ex_object
         if ($this->order != '') {
             $where_rez .= ' order by ' . $this->order;
         }
+
+        $query = $this->_db->sql('select * from ' . $this->table . ' ' . $where_rez);
         
-        $this->_db->sql('select * from ' . $this->table . ' ' . $where_rez);
-        
-        return $this->_db->matr();
+        return $query->matr();
     }
     
     function delete($pk, $isStream = 0)
@@ -130,10 +136,10 @@ class ex_object
         } else {
             $where_rez = $pk;
         }
+
+        $query = $this->_db->sql('delete from ' . $this->table . ' where ' . $where_rez);
         
-        $this->_db->sql('delete from ' . $this->table . ' where ' . $where_rez);
-        
-        return $this->_db->affected_rows();
+        return $query->count();
     }
     
     function insert($data)
@@ -158,7 +164,7 @@ class ex_object
             if (count($pk) > 0) {
                 return $pk;
             } else {
-                return $this->_db->last_id();
+                return $this->_db->lastId();
             }
         } else {
             return 0;
@@ -185,9 +191,9 @@ class ex_object
             $t .= '`' . $k . '`="' . $v . '",';
         }
         $t = substr($t, 0, -1);
-        $this->_db->sql('update ' . $this->table . ' set ' . $t . ' where ' . $where_rez);
+        $query = $this->_db->sql('update ' . $this->table . ' set ' . $t . ' where ' . $where_rez);
         
-        return $this->_db->affected_rows();
+        return $query->count();
     }
     
     function replace($data, $pk = 0)
@@ -233,13 +239,13 @@ class ex_object
         $order = str_replace('desc', '', $this->order);
         
         if (count($this->fkeys) > 0) {
-            $this->_db->sql(
+            $query = $this->_db->sql(
                 'select `' . $this->fkey . '` from ' . $this->table . ' where ' . keys_implode(
                     $pk,
                     $this->pkeys
                 )
             );
-            $t = $this->_db->line();
+            $t = $query->line();
             if ($t == 0) {
                 return 0;
             }
@@ -273,13 +279,13 @@ class ex_object
         $order = str_replace('desc', '', $this->order);
         
         if (count($this->fkeys) > 0) {
-            $this->_db->sql(
+            $query = $this->_db->sql(
                 'select `' . $this->fkey . '` from ' . $this->table . ' where ' . keys_implode(
                     $pk,
                     $this->pkeys
                 )
             );
-            $t = $this->_db->line();
+            $t = $query->line();
             if ($t == 0) {
                 return 0;
             }

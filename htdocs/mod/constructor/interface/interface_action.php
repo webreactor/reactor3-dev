@@ -17,9 +17,9 @@ class reactor_interface_action extends basic_object
     {
         global $_db;
 
-        $_db->sql('select fk_module from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $query = $_db->sql('select fk_module from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
 
-        $t = $_db->line();
+        $t = $query->line();
         
         return $t['fk_module'];
     }
@@ -27,15 +27,15 @@ class reactor_interface_action extends basic_object
     function addStandartActions()
     {
         global $_db;
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
-        $robj = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $robj = $query->line();
         $_db->sql(
             'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,0,' . $this->fkey_value . ',"getOne","Один элемент","getOne","inputGetNum(\'' . $robj['pkey'] . '\',0)","","",0,0,"",0)'
         );
         $_db->sql(
             'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,0,' . $this->fkey_value . ',"!getList","Список","getList","inputGetNum(\'' . $robj['name'] . '_page\',1),20/*,\'where\'*/","list.tpl","cp",0,0,"",0)'
         );
-        $fk_action = $_db->last_id();
+        $fk_action = $_db->lastId();
         $_db->sql(
             'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $fk_action . ',' . $this->fkey_value . ',"edit","Редактировать","_isForm","$this->_pool_id,inputGetStr(\'_so\',\'none\'),\'createForm\'","form.tpl","cp",1,0,"",0)'
         );
@@ -59,8 +59,8 @@ class reactor_interface_action extends basic_object
     function addUpDownActions()
     {
         global $_db;
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
-        $robj = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $robj = $query->line();
         $_db->sql(
             'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $this->fkey_value . ',"moveUp","Вверх","moveUp","inputGetNum(\'' . $robj['pkey'] . '\')","","",1,1,"",0)'
         );
@@ -73,8 +73,8 @@ class reactor_interface_action extends basic_object
     function addStandartJump()
     {
         global $_db;
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
-        $robj = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $robj = $query->line();
         $fkey = 'f' . substr($robj['pkey'], 1);
         $_db->sql(
             'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $this->fkey_value . ',"!jump","Перейти к ...","","","target interface","target action",1,1,"\'' . $fkey . '=\'.inputGetNum(\'' . $robj['pkey'] . '\')",0)'
@@ -84,8 +84,8 @@ class reactor_interface_action extends basic_object
     function addBasicObjConfigure()
     {
         global $_db;
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
-        $robj = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $robj = $query->line();
         if ($robj['configurators'] == '') {
             $_db->sql(
                 'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $this->fkey_value . ',"!' . $robj['name'] . '","","configure","_T_TABLE_NAME,\'_order_by\'","","",0,0,"",0)'
@@ -100,8 +100,8 @@ class reactor_interface_action extends basic_object
     function addIntSelect()
     {
         global $_db;
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
-        $robj = $_db->line();
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' where pk_interface=' . $this->fkey_value);
+        $robj = $query->line();
         $_db->sql(
             'insert into ' . T_REACTOR_INTERFACE_ACTION . ' (`pk_action`,`fk_interface`,`name`,`call`,`method`,`param`,`cptpl`,`cptpl_mod`,`public`,`handler`,`tpl_param`,`confirm`) values  (null,' . $this->fkey_value . ',"!getSelect","Интерактивный select","getSelect","_ROW,inputGetStr(\'filter\',\'\'),inputGetNum(\'getOne\',0)","","",0,0,"",0)'
         );

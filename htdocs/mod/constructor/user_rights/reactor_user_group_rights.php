@@ -10,25 +10,25 @@ class reactor_user_group_rights extends basic_object
         global $_db;
         $r = array();
         
-        $_db->sql('select * from ' . T_REACTOR_MODULE . ' order by name');
-        $r = $_db->matr('pk_module');
-        
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' order by name');
+        $query = $_db->sql('select * from ' . T_REACTOR_MODULE . ' order by name');
+        $r = $query->matr('pk_module');
+
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE . ' order by name');
         $tr  = array();
         $cnt = 0;
-        while ($t = $_db->line()) {
+        while ($t = $query->line()) {
             $r[$t['fk_module']]['interfaces'][$cnt] = $t;
             $tr[$t['pk_interface']]                 =& $r[$t['fk_module']]['interfaces'][$cnt];
             $cnt++;
         }
-        $_db->sql('select * from ' . T_REACTOR_INTERFACE_ACTION . ' order by `call`');
-        while ($t = $_db->line()) {
+        $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE_ACTION . ' order by `call`');
+        while ($t = $query->line()) {
             $tr[$t['fk_interface']]['actions'][] = $t;
         }
+
+        $query = $_db->sql('select * from ' . T_REACTOR_UGROUP_ACTION . ' where fk_ugroup=' . $fk);
         
-        $_db->sql('select * from ' . T_REACTOR_UGROUP_ACTION . ' where fk_ugroup=' . $fk);
-        
-        return array('stucture' => $r, 'rights' => $_db->matr('fk_action', 'fk_ugroup'));
+        return array('stucture' => $r, 'rights' => $query->matr('fk_action', 'fk_ugroup'));
     }
     
     function store($form)

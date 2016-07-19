@@ -50,9 +50,9 @@ class basic_tree extends basic_object
                 $rows .= ',`' . $this->fkey . '`';
             }
         }
-        $this->_db->sql('select ' . $rows . ' from ' . $this->table . ' ' . $t);
+        $query = $this->_db->sql('select ' . $rows . ' from ' . $this->table . ' ' . $t);
         
-        $this->img = $this->_db->matr($this->pkey);
+        $this->img = $query->matr($this->pkey);
         
         return 1;
     }
@@ -91,8 +91,8 @@ class basic_tree extends basic_object
     
     function delete($node_key, $isStream = 0)
     {
-        $this->_db->sql('select * from ' . $this->table . ' where `' . $this->pkey . '` = "' . $node_key . '"');
-        $t = $this->_db->line();
+        $query = $this->_db->sql('select * from ' . $this->table . ' where `' . $this->pkey . '` = "' . $node_key . '"');
+        $t = $query->line();
         if ($t == 0) {
             return 0;
         }
@@ -271,16 +271,16 @@ class basic_tree extends basic_object
 //levels
         $this->_db->sql('update ' . $this->table . ' set `' . $level . '`=1 where `' . $this->fkey . '`=0');
         do {
-            $this->_db->sql(
+            $query = $this->_db->sql(
                 'update ' . $this->table . ' a, ' . $this->table . ' b set a.`' . $level . '`=b.`' . $level . '`+1 where a.`' . $this->fkey . '`=b.`' . $this->pkey . '` and a.`' . $level . '` =0 and b.`' . $level . '` >0'
             );
-        } while ($this->_db->affected_rows() > 0);
+        } while ($query->count() > 0);
         
         if ($childs == '') {
             return 1;
         }
-        $this->_db->sql('select max(`' . $level . '`) as maxlevel from ' . $this->table);
-        $maxlevel = $this->_db->line();
+        $query = $this->_db->sql('select max(`' . $level . '`) as maxlevel from ' . $this->table);
+        $maxlevel = $query->line();
         $maxlevel = $maxlevel['maxlevel'];
 
 //first childs

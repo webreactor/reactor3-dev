@@ -6,9 +6,9 @@ class reactor_table extends basic_object
 {
     function getList($page, $per_page, $where = '')
     {
-        $this->_db->sql('select * from ' . T_REACTOR_MODULE);
+        $query = $this->_db->sql('select * from ' . T_REACTOR_MODULE);
 
-        $modules = $this->_db->matr('pk_module', 'name');
+        $modules = $query->matr('pk_module', 'name');
         
         $r = basic_object::getList($page, $per_page, $where);
         

@@ -11,7 +11,7 @@ class GroupRights
     
     public function getConfig()
     {
-        $this->_db->sql(
+        $query = $this->_db->sql(
             '
             SELECT fk_ugroup, i.name as `interface`, a.name as `action`
             FROM
@@ -21,7 +21,7 @@ class GroupRights
         '
         );
         
-        return $this->_db->matr();
+        return $query->matr();
     }
     
     public function load($data)
@@ -46,12 +46,12 @@ class GroupRights
         if (isset($this->cache[$interface]) && isset($this->cache[$interface][$action])) {
             return $this->cache[$interface][$action];
         }
-        $this->_db->sql(
+        $query = $this->_db->sql(
             'select pk_action from reactor_interface i
             join reactor_interface_action a on (i.pk_interface = a.fk_interface)
             where i.name = "' . $interface . '" and a.name = "' . $action . '"'
         );
-        $pk = $this->_db->line();
+        $pk = $query->line();
         if (!empty($pk)) {
             $pk = $pk['pk_action'];
         }

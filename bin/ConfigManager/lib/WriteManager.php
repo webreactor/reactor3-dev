@@ -21,8 +21,8 @@ class WriteManager
     
     protected function writeModules()
     {
-        $this->_db->sql('select pk_module, name from reactor_module order by name');
-        $modules = $this->_db->matr('pk_module', 'name');
+        $query = $this->_db->sql('select pk_module, name from reactor_module order by name');
+        $modules = $query->matr('pk_module', 'name');
         foreach ($modules as $pk_module => $module_name) {
             echo "Created config dump for {$module_name}\n";
             $this->writeToFile(

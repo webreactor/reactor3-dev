@@ -138,8 +138,8 @@ return array(
                     'necessary' => '0',
                     'default' => '',
                     'enum' => 'global $_db;
-$_db->sql(\'select `name` from \'.T_REACTOR_INTERFACE.\' order by name\');
-$data=$_db->matr(\'name\',\'name\');',
+$query = $_db->sql(\'select `name` from \'.T_REACTOR_INTERFACE.\' order by name\');
+$data=$query->matr(\'name\',\'name\');',
                 ),
                 array(
                     'base_type' => 'string',

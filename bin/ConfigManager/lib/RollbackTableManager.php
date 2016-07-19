@@ -88,16 +88,16 @@ class RollbackTableManager
     
     public function isTable($table_name)
     {
-        $this->_db->sql('show tables like "' . $table_name . '"');
+        $query = $this->_db->sql('show tables like "' . $table_name . '"');
         
-        return (bool) $this->_db->line();
+        return (bool) $query->line();
     }
     
     public function tableCreate($table_name)
     {
         if ($this->isTable($table_name)) {
-            $this->_db->sql('show create table `' . $table_name . '`');
-            $create_sql = $this->_db->line();
+            $query = $this->_db->sql('show create table `' . $table_name . '`');
+            $create_sql = $query->line();
             
             return $create_sql['Create Table'];
         }
@@ -107,8 +107,8 @@ class RollbackTableManager
     
     public function tableData($table_name)
     {
-        $this->_db->sql('select * from `' . $table_name . '`');
+        $query = $this->_db->sql('select * from `' . $table_name . '`');
         
-        return $this->_db->matr();
+        return $query->matr();
     }
 }

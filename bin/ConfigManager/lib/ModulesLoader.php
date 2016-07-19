@@ -23,9 +23,9 @@ class ModulesLoader
     
     protected function isTable($name)
     {
-        $this->_db->sql('show tables like "' . $name . '"');
+        $query = $this->_db->sql('show tables like "' . $name . '"');
         
-        return (bool) $this->_db->line();
+        return (bool) $query->line();
     }
     
     protected function loadTables($pk_module, $config)
@@ -108,7 +108,7 @@ class ModulesLoader
                         $this->_db->update(
                             'reactor_interface_action',
                             array('fk_action' => $parent_action),
-                            'pk_action=' . $current_action
+                            array('pk_action' => $current_action)
                         );
                     }
                 }
@@ -121,12 +121,12 @@ class ModulesLoader
         $data      = explode(';', $str);
         $interface = $data[0];
         $action    = $data[1];
-        $this->_db->sql(
+        $query = $this->_db->sql(
             'SELECT a.pk_action FROM reactor_interface i, reactor_interface_action a
             where i.pk_interface=a.fk_interface
             and i.name = "' . $interface . '" and a.name="' . $action . '"'
         );
-        $rez = $this->_db->line();
+        $rez = $query->line();
         if ($rez) {
             return $rez['pk_action'];
         }

@@ -5,10 +5,10 @@ function tablesCompile()
     reactor_trace('tablesCompile');
     global $_db, $_languages;
     
-    $_db->sql('select * from ' . T_REACTOR_MODULE);
+    $query = $_db->sql('select * from ' . T_REACTOR_MODULE);
     $module = array();
     
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         $module[$t['pk_module']] = $t;
     }
     
@@ -19,8 +19,8 @@ function tablesCompile()
     $buff = '// Last compilation ' . date("Y-m-d H:i:s") . "\n";
     fputs($fw, $buff);
     
-    $_db->sql('select * from ' . T_REACTOR_TABLE . ' order by fk_module');
-    while ($t = $_db->line()) {
+    $query = $_db->sql('select * from ' . T_REACTOR_TABLE . ' order by fk_module');
+    while ($t = $query->line()) {
         fputs(
             $fw,
             "define('T_" . strtoupper($module[$t['fk_module']]['name'] . '_' . $t['name']) . "','" . $t['db_name']
@@ -53,14 +53,14 @@ function groupInterfacesCompile($ugroup)
     
     $rez        = array();
     $interfaces = array();
-    $_db->sql('select fk_action from ' . T_REACTOR_UGROUP_ACTION . ' where fk_ugroup=' . $ugroup['pk_ugroup']);
-    $perm = $_db->matr('fk_action', 'fk_action');
+    $query = $_db->sql('select fk_action from ' . T_REACTOR_UGROUP_ACTION . ' where fk_ugroup=' . $ugroup['pk_ugroup']);
+    $perm = $query->matr('fk_action', 'fk_action');
     
-    $_db->sql(
+    $query = $_db->sql(
         'select i.pk_interface,i.name,i.configurators,i.class,i.source,i.pkey,i.constructor,m.name as module from ' . T_REACTOR_INTERFACE . ' i,' . T_REACTOR_MODULE . ' m where i.fk_module=m.pk_module'
     );
     
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         
         $interfaces[$t['pk_interface']] = $t['name'];
         unset($t['pk_interface']);
@@ -76,8 +76,8 @@ function groupInterfacesCompile($ugroup)
         }
     }
     
-    $_db->sql('select * from ' . T_REACTOR_INTERFACE_DEFINE . ' order by sort');
-    while ($t = $_db->line()) {
+    $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE_DEFINE . ' order by sort');
+    while ($t = $query->line()) {
         unset($t['pk_define']);
         $tt = $interfaces[$t['fk_interface']];
         unset($t['fk_interface']);
@@ -85,8 +85,8 @@ function groupInterfacesCompile($ugroup)
         $rez[$tt]['define'][$t['name']] = $t;
     }
     
-    $_db->sql('select * from ' . T_REACTOR_INTERFACE_ACTION . ' order by sort');
-    while ($t = $_db->line()) {
+    $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE_ACTION . ' order by sort');
+    while ($t = $query->line()) {
         if (isset($perm[$t['pk_action']]) || $ugroup['name'] == 'root') {
             $tt = $interfaces[$t['fk_interface']];
             unset($t['fk_interface']);
@@ -105,8 +105,8 @@ function groupInterfacesCompile($ugroup)
 function interfacesCompile()
 {
     global $_db;
-    $_db->sql('select * from ' . T_REACTOR_UGROUP);
-    $ugroups = $_db->matr();
+    $query = $_db->sql('select * from ' . T_REACTOR_UGROUP);
+    $ugroups = $query->matr();
     
     foreach ($ugroups as $t) {
         groupInterfacesCompile($t);
@@ -117,11 +117,11 @@ function autoexecCompile()
 {
     reactor_trace('autoexecCompile');
     global $_db;
-    $_db->sql('select * from ' . T_REACTOR_MODULE);
+    $query = $_db->sql('select * from ' . T_REACTOR_MODULE);
     
     $buff = '// Last compilation ' . date("Y-m-d H:i:s") . "\n";
     
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         if ($t['to_core'] != '') {
             $buff .= '// Module ' . $t['name'] . "\n";
             $buff .= $t['to_core'] . "\n";
@@ -137,14 +137,14 @@ function configCompile()
 {
     reactor_trace('configCompile');
     global $_db;
-    $_db->sql('select pk_module,name from ' . T_REACTOR_MODULE);
+    $query = $_db->sql('select pk_module,name from ' . T_REACTOR_MODULE);
     $module = array();
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         $module[$t['pk_module']] = $t['name'];
     }
     
-    $_db->sql('select *  from ' . T_REACTOR_CONFIG . ' order by `group`');
-    $t = $_db->matr();
+    $query = $_db->sql('select *  from ' . T_REACTOR_CONFIG . ' order by `group`');
+    $t = $query->matr();
     $r = array();
     foreach ($t as $item) {
         $r[$item['fk_module']][$item['group']][] = $item;
@@ -184,16 +184,16 @@ function resourceCompile()
     reactor_trace('resourceCompile');
     global $_db;
     
-    $_db->sql('select pk_module,name from ' . T_REACTOR_MODULE);
+    $query = $_db->sql('select pk_module,name from ' . T_REACTOR_MODULE);
     $module = array();
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         $module[$t['pk_module']] = $t['name'];
     }
     
     $_db->sql('select * from ' . T_REACTOR_RESOURCE);
     
     $rez = array();
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         $rez[$module[$t['fk_module']] . '_' . $t['name']] = $t;
     }
     
@@ -206,11 +206,11 @@ function baseTypeCompile()
     global $_db;
     $rez = array();
     
-    $_db->sql(
+    $query = $_db->sql(
         'select t.*, m.name as mod_name from ' . T_REACTOR_BASE_TYPE . ' t, ' . T_REACTOR_MODULE . ' m where t.fk_module=m.pk_module'
     );
     
-    while ($t = $_db->line()) {
+    while ($t = $query->line()) {
         unset($t['pk_base_type']);
         unset($t['fk_module']);
         unset($t['call']);
@@ -239,8 +239,8 @@ function guestUserCompile()
 function siteTreeCompile()
 {
     global $_db;
-    $_db->sql('select * from ' . T_SITE_TREE . ' order by sort');
-    $_tree               = $_db->matr();
+    $query = $_db->sql('select * from ' . T_SITE_TREE . ' order by sort');
+    $_tree               = $query->matr();
     $_site_tree_param    = array();
     $_site_nodes         = array();
     $_site_tree          = siteTreeCompile_r($_tree, 0, '', $_site_tree_param, $_site_nodes);

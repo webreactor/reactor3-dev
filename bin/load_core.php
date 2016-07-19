@@ -35,7 +35,6 @@ initRequest();
 $_RGET = $_GET;
 $_SGET = array();
 
-require LIB_DIR . 'db/mysql.php';
 require LIB_DIR . 'basic_object.php';
 require LIB_DIR . 'basic_tree.php';
 require LIB_DIR . 'content_adapter.php';
@@ -43,11 +42,20 @@ require LIB_DIR . 'reactor_interface.php';
 require LIB_DIR . 'local_user.php';
 include ETC_DIR . 'tables.php';
 
-$_db = new db_mysql(DB_USER, DB_PASS, DB_HOST, DB_BAZA);
-if (!$_db->link) {
-    die('database error');
-}//!!
-$_db->sql('set NAMES "utf8"');
+/**
+ * @var $_db \Reactor\Database\Interfaces\ConnectionInterface
+ */
+$_db = new \Reactor\Database\PDO\Connection(
+    sprintf(
+        'mysql:dbname=%s;host=%s',
+        DB_NAME,
+        DB_HOST
+    ),
+    DB_USER,
+    DB_PASS
+);
+
+$_db->sql('SET NAMES "utf8"');
 
 $_resource        = array();
 $_user            = restoreUser();

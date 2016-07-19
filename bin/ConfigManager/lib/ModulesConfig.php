@@ -12,8 +12,8 @@ class ModulesConfig
     function getConfig($pk_module)
     {
         $config = array();
-        $this->_db->sql('select * from reactor_module where pk_module = ' . $pk_module);
-        $module = $this->_db->line();
+        $query = $this->_db->sql('select * from reactor_module where pk_module = ' . $pk_module);
+        $module = $query->line();
         unset($module['pk_module']);
         $module['depend']           = '';
         $config['module']           = $module;
@@ -30,7 +30,7 @@ class ModulesConfig
     function actionRelations($pk_module)
     {
         $rez = array();
-        $this->_db->sql(
+        $query = $this->_db->sql(
             '
             SELECT
                 pi.name parent_interface, pa.name as parent_action, 
@@ -47,7 +47,7 @@ class ModulesConfig
                 and a.public = 3
                 and i.fk_module = ' . $pk_module
         );
-        $data = $this->_db->matr();
+        $data = $query->matr();
         foreach ($data as $rel) {
             $rez[$rel['parent_interface'] . ';' . $rel['parent_action']][] = $rel['interface'] . ';' . $rel['action'];
         }
@@ -58,8 +58,8 @@ class ModulesConfig
     function baseTypes($pk_parent)
     {
         $rez = array();
-        $this->_db->sql('select * from reactor_base_type where fk_module = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_base_type');
+        $query = $this->_db->sql('select * from reactor_base_type where fk_module = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_base_type');
         foreach ($collection as $pk => $item) {
             unset($item['pk_base_type']);
             unset($item['fk_module']);
@@ -73,8 +73,8 @@ class ModulesConfig
     {
         global $_languages;
         $rez = array();
-        $this->_db->sql('select * from reactor_table where fk_module = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_table');
+        $query = $this->_db->sql('select * from reactor_table where fk_module = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_table');
         foreach ($collection as $pk => $item) {
             unset($item['pk_table']);
             unset($item['fk_module']);
@@ -95,16 +95,16 @@ class ModulesConfig
     
     protected function isTable($name)
     {
-        $this->_db->sql('show tables like "' . $name . '"');
+        $query = $this->_db->sql('show tables like "' . $name . '"');
         
-        return (bool) $this->_db->line();
+        return (bool) $query->line();
     }
     
     function tableCreate($db_name)
     {
         if ($this->isTable($db_name)) {
-            $this->_db->sql('show create table `' . $db_name . '`');
-            $create_sql = $this->_db->line();
+            $query = $this->_db->sql('show create table `' . $db_name . '`');
+            $create_sql = $query->line();
             
             return $create_sql['Create Table'];
         }
@@ -129,8 +129,8 @@ class ModulesConfig
     function resources($pk_parent)
     {
         $rez = array();
-        $this->_db->sql('select * from reactor_resource where fk_module = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_resource');
+        $query = $this->_db->sql('select * from reactor_resource where fk_module = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_resource');
         foreach ($collection as $pk => $item) {
             unset($item['pk_resource']);
             unset($item['fk_module']);
@@ -143,8 +143,8 @@ class ModulesConfig
     function moduleConfig($pk_parent)
     {
         $rez = array();
-        $this->_db->sql('select * from reactor_config where fk_module = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_config');
+        $query = $this->_db->sql('select * from reactor_config where fk_module = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_config');
         foreach ($collection as $pk => $item) {
             unset($item['pk_config']);
             unset($item['fk_module']);
@@ -157,8 +157,8 @@ class ModulesConfig
     function interfaces($pk_parent)
     {
         $rez = array();
-        $this->_db->sql('select * from reactor_interface where fk_module = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_interface');
+        $query = $this->_db->sql('select * from reactor_interface where fk_module = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_interface');
         foreach ($collection as $pk => $item) {
             unset($item['pk_interface']);
             unset($item['fk_interface']);
@@ -174,8 +174,8 @@ class ModulesConfig
     function interfaceDefine($pk_parent)
     {
         $rez = array();
-        $this->_db->sql('select * from reactor_interface_define where fk_interface = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_define');
+        $query = $this->_db->sql('select * from reactor_interface_define where fk_interface = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_define');
         foreach ($collection as $pk => $property) {
             unset($property['fk_interface']);
             unset($property['pk_define']);
@@ -188,8 +188,8 @@ class ModulesConfig
     function interfaceActions($pk_parent)
     {
         $rez = array();
-        $this->_db->sql('select * from reactor_interface_action where fk_interface = ' . $pk_parent . ' order by name');
-        $collection = $this->_db->matr('pk_action');
+        $query = $this->_db->sql('select * from reactor_interface_action where fk_interface = ' . $pk_parent . ' order by name');
+        $collection = $query->matr('pk_action');
         foreach ($collection as $pk => $action) {
             unset($action['fk_interface']);
             unset($action['fk_action']);

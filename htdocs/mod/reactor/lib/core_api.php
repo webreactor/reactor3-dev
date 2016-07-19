@@ -412,6 +412,8 @@ function &resource($name)
             $resources = resourceRestore('reactor_resource');
             
             eval($resources[$name]['source']);
+
+            $data = null;
             
             if ($resources[$name]['store']) {
                 resourceStore($name, $data);

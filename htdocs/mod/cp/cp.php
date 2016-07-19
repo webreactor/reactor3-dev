@@ -96,15 +96,15 @@ class cp
     {
         global $_db, $_user;
         if ($_user['ugroup']['name'] != 'root') {
-            $_db->sql(
+            $query = $_db->sql(
                 'select a.* from ' . T_REACTOR_INTERFACE_ACTION . ' a,' . T_REACTOR_UGROUP_ACTION . ' g where a.public=3 and g.fk_action=a.pk_action and g.fk_ugroup=' . $_user['fk_ugroup'] . ' order by a.sort'
             );
         } else {
-            $_db->sql('select * from ' . T_REACTOR_INTERFACE_ACTION . ' where public=3 order by sort');
+            $query = $_db->sql('select * from ' . T_REACTOR_INTERFACE_ACTION . ' where public=3 order by sort');
         }
         
         $tree      = new basic_tree(T_REACTOR_INTERFACE_ACTION, 'pk_action', 'fk_action', 'sort');
-        $tree->img = $_db->matr('pk_action');
+        $tree->img = $query->matr('pk_action');
         
         return $tree;
     }
@@ -112,11 +112,11 @@ class cp
     function path()
     {
         global $Gekkon, $_db;
-        
-        $_db->sql(
+
+        $query = $_db->sql(
             'select a.pk_action,i.name as interface_name from ' . T_REACTOR_INTERFACE_ACTION . ' as a, ' . T_REACTOR_INTERFACE . ' as i where a.fk_interface=i.pk_interface and a.name="' . $this->action . '" and i.name="' . $this->interface_name . '"'
         );
-        $t = $_db->line();
+        $t = $query->line();
         
         $method_tree = new basic_tree(T_REACTOR_INTERFACE_ACTION, 'pk_action', 'fk_action', 'sort');
         $method_tree->createImage('', '`call`');
@@ -129,8 +129,8 @@ class cp
     function description($key)
     {
         global $_db;
-        $_db->sql('select description from ' . T_REACTOR_INTERFACE_ACTION . ' where pk_action=' . $key);
-        $t = $_db->line();
+        $query = $_db->sql('select description from ' . T_REACTOR_INTERFACE_ACTION . ' where pk_action=' . $key);
+        $t = $query->line();
         if ($t == 0) {
             return '';
         }
@@ -141,10 +141,10 @@ class cp
     function help($interface, $action)
     {
         global $_db;
-        $_db->sql(
+        $query = $_db->sql(
             'select pk_help from ' . T_REACTOR_HELP . ' where interface="' . $interface . '" and action="' . $action . '"'
         );
-        $t = $_db->line();
+        $t = $query->line();
         if ($t == 0) {
             return '';
         }

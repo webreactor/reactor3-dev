@@ -11,9 +11,9 @@ class SiteTreeConfig
     
     function getConfig()
     {
-        $this->_db->sql('select * from site_tree order by fk_site_tree, pk_site_tree');
+        $query = $this->_db->sql('select * from site_tree order by fk_site_tree, pk_site_tree');
         
-        return $this->buildTreeConfig($this->_db->matr());
+        return $this->buildTreeConfig($query->matr());
     }
     
     function buildTreeConfig($data, $fk_tree = 0)
