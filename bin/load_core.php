@@ -9,7 +9,7 @@ define('SITE_URL', '/');
 define('SITE_DIR', $_SERVER['DOCUMENT_ROOT'] . SITE_URL);
 
 require SITE_DIR . 'etc/base_config.php';
-require ETC_DIR . 'config.php';
+include ETC_DIR . 'config.php';
 require LIB_DIR . 'basic_api.php';
 require LIB_DIR . 'core_api.php';
 require SITE_DIR . 'vendor/autoload.php';
@@ -41,7 +41,7 @@ require LIB_DIR . 'basic_tree.php';
 require LIB_DIR . 'content_adapter.php';
 require LIB_DIR . 'reactor_interface.php';
 require LIB_DIR . 'local_user.php';
-require ETC_DIR . 'tables.php';
+include ETC_DIR . 'tables.php';
 
 $_db = new db_mysql(DB_USER, DB_PASS, DB_HOST, DB_BAZA);
 if (!$_db->link) {
@@ -62,7 +62,7 @@ if (!isset($_user['ip_allowed'])) {
     $_user = restoreUser();
 }
 
-require ETC_DIR . 'autoexec.php';
+include ETC_DIR . 'autoexec.php';
 
 if ($_user['login'] == 'root') {
     ini_set('error_log', SITE_DIR . '../root_php.log');
