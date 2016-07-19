@@ -65,7 +65,7 @@ class basic_object
                 FROM %s
                 WHERE %s
                 %s',
-                T_REACTOR_USER,
+                $this->table,
                 implode(' AND ', $where_arr),
                 $order
             ),
