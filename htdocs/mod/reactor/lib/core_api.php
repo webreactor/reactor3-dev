@@ -403,18 +403,19 @@ $_resource = array();
 function &resource($name)
 {
     global $_reactor, $_db, $Gekkon, $_user, $_resource;
+
     clearstatcache();
+
     if (!isset($_resource[$name])) {
         if (file_exists(RES_DIR . $name)) {
             $_resource[$name] = resourceRestore($name);
         } else {
-            
             $resources = resourceRestore('reactor_resource');
-            
-            eval($resources[$name]['source']);
 
             $data = null;
             
+            eval($resources[$name]['source']);
+
             if ($resources[$name]['store']) {
                 resourceStore($name, $data);
             }
