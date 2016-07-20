@@ -345,7 +345,7 @@ $data=$query->matr(\'name\',\'name\');',
   `descrip` varchar(255) NOT NULL DEFAULT \'\',
   PRIMARY KEY (`pk_config`),
   UNIQUE KEY `idx_name` (`name`,`fk_module`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
@@ -488,7 +488,7 @@ $data=$query->matr(\'name\',\'name\');',
   `mlng` tinyint(1) NOT NULL DEFAULT \'0\',
   PRIMARY KEY (`pk_table`),
   UNIQUE KEY `idx_uname` (`name`,`fk_module`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
