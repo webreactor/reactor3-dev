@@ -301,4 +301,23 @@ class basic_object
         
         return 1;
     }
+
+    /**
+     * Because we cannot serialize or unserialize PDO instances
+     *
+     * @return array
+     */
+    public function __sleep()
+    {
+        unset($this->_db);
+
+        return array_keys((array) $this);
+    }
+
+    public function __wakeup()
+    {
+        global $_db;
+
+        $this->_db = &$_db;
+    }
 }
