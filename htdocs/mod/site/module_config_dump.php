@@ -62,7 +62,7 @@ return array(
             ),
             '_actions' => array(
                 array(
-                    'sort' => '0',
+                    'sort' => '4',
                     'name' => 'testAction',
                     'call' => '',
                     'description' => '',

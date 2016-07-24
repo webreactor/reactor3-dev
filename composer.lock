@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webreactor/reactor4-dev.git",
-                "reference": "ad800d0446aa130da1275aa8f9bb66b7f5de2932"
+                "reference": "df8765ea52c3cbbd5c964341b51d2c5e8a8b8bed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webreactor/reactor4-dev/zipball/ad800d0446aa130da1275aa8f9bb66b7f5de2932",
-                "reference": "ad800d0446aa130da1275aa8f9bb66b7f5de2932",
+                "url": "https://api.github.com/repos/webreactor/reactor4-dev/zipball/df8765ea52c3cbbd5c964341b51d2c5e8a8b8bed",
+                "reference": "df8765ea52c3cbbd5c964341b51d2c5e8a8b8bed",
                 "shasum": ""
             },
             "require": {
@@ -92,7 +92,7 @@
                 "source": "https://github.com/webreactor/reactor4-dev/tree/master",
                 "issues": "https://github.com/webreactor/reactor4-dev/issues"
             },
-            "time": "2016-07-19 23:22:45"
+            "time": "2016-07-24 18:39:23"
         }
     ],
     "packages-dev": [],

@@ -4,7 +4,7 @@ class socket_client
 {
     var $log;
     var $socket;
-    
+
     function socket_client()
     {
         $this->log    = array();
@@ -12,10 +12,10 @@ class socket_client
         $this->socket = null;
         $this->log[]  = 'ok';
     }
-    
+
     function connect($server, $port)
     {
-        
+
         $this->log[]  = 'connect to ' . $server . ' ' . $port;
         $this->socket = fsockopen($server, $port);
         stream_set_timeout($this->socket, 2);
@@ -25,30 +25,30 @@ class socket_client
         } else {
             $this->log[] = 'failed';
         }
-        
+
         return $this->socket;
     }
-    
+
     function put($str)
     {
         $this->log[] = 'put&lt;' . $str;
         fwrite($this->socket, $str . "\r\n");
     }
-    
+
     function get()
     {
         $str         = fgets($this->socket);
         $this->log[] = 'get&gt;' . $str;
-        
+
         return $str;
     }
-    
+
     function write($str)
     {
         $this->log[] = 'write&lt;' . $str;
         fwrite($this->socket, $str);
     }
-    
+
     function read($len = 1024)
     {
         $str = '';
@@ -57,10 +57,10 @@ class socket_client
         }
 //$str=fread($this->socket,$len);
         $this->log[] = 'read' . $len . '&gt;' . $str;
-        
+
         return $str;
     }
-    
+
     function close()
     {
         fclose($this->socket);

@@ -40,33 +40,33 @@ class syn_file
     {
         $this->fh = fopen($file_name, $t);
     }
-    
+
     function write($data)
     {
         fwrite($this->fh, $data);
     }
-    
+
     function read($len)
     {
         return fread($this->fh, $len);
     }
-    
+
     function gets()
     {
         return fgets($this->fh);
     }
-    
+
     function close()
     {
         fclose($this->fh);
     }
-    
+
     function seek($offset = false, $type = SEEK_CUR)
     {
         if ($offset === false) {
             return ftell($this->fh);
         }
-        
+
         return fseek($this->fh, $offset, $type);
     }//SEEK_SET
 }
@@ -91,7 +91,7 @@ class syn_extract extends syn_file
             $this->tar_read();
         }
     }
-    
+
     function header_parce()
     {
         $rez = array();
@@ -105,7 +105,7 @@ class syn_extract extends syn_file
         if (strlen($raw) != 512) {
             return false;
         }
-        
+
         $rez['name']     = rtrim(substr($raw, 0, 100));
         $rez['mode']     = rtrim(substr($raw, 100, 8));
         $rez['uid']      = rtrim(substr($raw, 108, 8));
@@ -125,7 +125,7 @@ class syn_extract extends syn_file
         $rez['devmajor'] = rtrim(substr($raw, 329, 8));
         $rez['devminor'] = rtrim(substr($raw, 337, 8));
         $rez['prefix']   = rtrim(substr($raw, 345, 155));
-        
+
         $check = substr($raw, 0, 148) . '        ' . substr($raw, 156);
         $crc   = 0;
         for ($i = 0; $i < 512; $i++) {
@@ -134,10 +134,10 @@ class syn_extract extends syn_file
         if ($crc != $rez['chksum']) {
             return false;
         }
-        
+
         return $rez;
     }
-    
+
     function file_handle($header)
     {
         $file = $this->settings['dir'] . $header['prefix'] . $header['name'];
@@ -151,7 +151,7 @@ class syn_extract extends syn_file
             $rest = $header['size'];
             while ($rest > 0) {
                 $rest = $rest - 100000;
-                
+
                 if ($rest > 0) {
                     fwrite($f, $this->read(100000));
                 } else {
@@ -161,19 +161,19 @@ class syn_extract extends syn_file
                 }
             }
             fclose($f);
-            
+
             if (!isset($_SERVER['WINDIR'])) {
                 @chmod($file, $this->settings['file_chmod']);
             }
             @touch($file, $header['mtime']);
         }
-        
+
         $t = $this->seek() % 512;
         if ($t > 0) {
             $this->seek(512 - $t);
         }
     }
-    
+
     function dir_handle($header)
     {
         $dir = $this->settings['dir'] . $header['prefix'] . $header['name'];
@@ -187,7 +187,7 @@ class syn_extract extends syn_file
             }
         }
     }
-    
+
     function tar_read()
     {
         while ($header = $this->header_parce()) {
@@ -202,7 +202,7 @@ class syn_extract extends syn_file
         }
         $this->close();
     }
-    
+
     function msg($mgs)
     {
         if ($this->settings['verbose'] == 1) {
@@ -230,7 +230,7 @@ class syn_create extends syn_file
             $this->error = 1;
         } else {
             syn_file::syn_file($file, 'w');
-            
+
             $this->header_def = array(
                 'name'     => '',
                 'mode'     => '',
@@ -250,15 +250,15 @@ class syn_create extends syn_file
                 'prefix'   => str_pad('', 155, _SYN_NULL, STR_PAD_RIGHT),
                 'pad'      => str_repeat(_SYN_NULL, 12),
             );
-            
+
             $this->tar_create_r('');
             $this->write(str_pad('', 512, _SYN_NULL, STR_PAD_RIGHT));
         }
     }
-    
+
     function header_encode($header)
     {
-        
+
         if (strlen($header['name']) > 100) {
             $header['prefix'] = substr($header['name'], 100);
             $header['name']   = substr($header['name'], 0, 0);
@@ -269,7 +269,7 @@ class syn_create extends syn_file
         } else {
             $header['prefix'] = $this->header_def['prefix'];
         }
-        
+
         $rez_header = array_merge(
             $this->header_def,
             array(
@@ -281,18 +281,18 @@ class syn_create extends syn_file
                 'prefix'   => $header['prefix'],
             )
         );
-        
+
         $check = implode('', $rez_header);
         $crc   = 0;
         for ($i = 0; $i < 512; $i++) {
             $crc += ord($check[$i]);
         }
-        
+
         $rez_header['chksum'] = str_pad(decoct($crc), 6, '0', STR_PAD_LEFT) . _SYN_NULL . ' ';
-        
+
         return implode('', $rez_header);
     }
-    
+
     function file_handle($file)
     {
         if ($file == $this->settings['file']) {
@@ -308,7 +308,7 @@ class syn_create extends syn_file
                 return;
             }
             $finfo = fstat($f);
-            
+
             $header = $this->header_encode(
                 array(
                     'name'     => $file,
@@ -318,15 +318,15 @@ class syn_create extends syn_file
                     'typeflag' => '0',
                 )
             );
-            
+
             $this->write($header);
-            
+
             while (!feof($f)) {
                 $t = fread($f, 100000);
                 $this->write($t);
             }
             $t = $finfo['size'] % 512;
-            
+
             if ($t > 0) {
                 $this->write(str_pad('', 512 - $t, _SYN_NULL, STR_PAD_RIGHT));
             }
@@ -334,11 +334,11 @@ class syn_create extends syn_file
             $this->msg(syn_format_size($finfo['size']));
         }
     }
-    
+
     function dir_handle($dir)
     {
         $this->msg("\n[DIR] " . $dir);
-        
+
         $header = $this->header_encode(
             array(
                 'name'     => $dir . '/',
@@ -348,10 +348,10 @@ class syn_create extends syn_file
                 'typeflag' => '5',
             )
         );
-        
+
         $this->write($header);
     }
-    
+
     function tar_create_r($path)
     {
         if ($dh = opendir($this->settings['dir'] . $path)) {
@@ -372,7 +372,7 @@ class syn_create extends syn_file
             $this->error = 1;
         }
     }
-    
+
     function msg($mgs)
     {
         if ($this->settings['verbose'] == 1) {
@@ -494,7 +494,7 @@ function syn_format_size($size)
         default:
             $suffix = 'B';
     }
-    
+
     return round($size, 2) . $suffix;
 }
 

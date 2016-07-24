@@ -6,10 +6,6 @@ use mod\reactor\lib\UploadHandler\FileUploadHandler;
 
 require_once('UploadHandler/UploadHandler.php');
 require_once('UploadHandler/FileUploadHandler.php');
-/*
-version 1.2.6
-reactor core api library
-*/
 
 //----------------------------------------------------------------------------------------
 //core support functions
@@ -18,7 +14,7 @@ function initModule($mod_name)
 {
     global $_reactor, $Gekkon;
     reactor_trace('initModule ' . $mod_name);
-    
+
     array_push($_reactor['module']['stack'], $_reactor['module']['name']);
     $_reactor['module']['name'] = $mod_name;
     $_reactor['module']['url']  = MOD_URL . $mod_name . '/';
@@ -30,13 +26,13 @@ function uninitModule()
 {
     global $_reactor, $Gekkon;
     reactor_trace('uninitModule ' . $_reactor['module']['name']);
-    
+
     $mod_name                   = array_pop($_reactor['module']['stack']);
     $_reactor['module']['name'] = $mod_name;
     $_reactor['module']['url']  = MOD_URL . $mod_name . '/';
     $_reactor['module']['dir']  = MOD_DIR . $mod_name . '/';
     $Gekkon->template_path      = $mod_name . '/tpl/';
-    
+
     return $mod_name;
 }
 
@@ -45,11 +41,19 @@ function reactor_ini_set($module, $name, $value)
     if (constant(strtoupper($module . '_' . $name)) == $value) {
         return;
     }
+
     global $_db;
+
     $_db->sql(
-        'update ' . T_REACTOR_CONFIG . ' c,' . T_REACTOR_MODULE . ' m set c.`value`="' . $value . '" where c.fk_module=m.pk_module and m.`name`="' . $module . '" and c.`name`="' . $name . '"'
+        'UPDATE
+            ' . T_REACTOR_CONFIG . ' c,
+            ' . T_REACTOR_MODULE . ' m
+        SET c.`value` = "' . $value . '"
+        WHERE c.fk_module = m.pk_module
+        AND m.`name` = "' . $module . '"
+        AND c.`name` = "' . $name . '"'
     );
-    
+
     require_once LIB_DIR . 'config_write.php';
 
     configCompile();
@@ -63,9 +67,17 @@ function reactor_ini_set_array($array)
         if (constant(strtoupper($ini['module'] . '_' . $ini['name'])) == $ini['value']) {
             continue;
         }
+
         $up = 1;
+
         $_db->sql(
-            'update ' . T_REACTOR_CONFIG . ' c,' . T_REACTOR_MODULE . ' m set c.`value`="' . $ini['value'] . '" where c.fk_module=m.pk_module and m.`name`="' . $ini['module'] . '" and c.`name`="' . $ini['name'] . '"'
+            'UPDATE
+                ' . T_REACTOR_CONFIG . ' c,
+                ' . T_REACTOR_MODULE . ' m
+            SET c.`value` = "' . $ini['value'] . '"
+            WHERE c.fk_module = m.pk_module
+            AND m.`name` = "' . $ini['module'] . '"
+            AND c.`name` = "' . $ini['name'] . '"'
         );
     }
     if ($up == 0) {
@@ -80,30 +92,30 @@ function stop($msg = '')
 {
     global $Gekkon, $_log;
     reactor_trace($_log .= ' stop ' . $msg);
-    
+
     initModule('site');
     if ($msg != '') {
         global $_reactor;
         $_reactor['show']['interface'] = '';
         $_reactor['show']['action']    = '';
         $_reactor['show']['module']    = 'site';
-        
+
         if (substr($msg, 0, 3) == '404') {
             $_reactor['show']['template'] = '404.tpl';
-            
+
             if (!headers_sent()) {
                 header('HTTP/1.1 404 Not Found');
             }
         } else {
             $_reactor['show']['template'] = 'message.tpl';
         }
-        
+
         $Gekkon->register('msg', $msg);
         $Gekkon->display('index.tpl');
     } else {
         header('Location: ' . SITE_URL);
     }
-    
+
     die();
 }
 
@@ -135,18 +147,18 @@ function admin_error($v)
 function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_module = '')
 {
     global $Gekkon;
-    
+
     reactor_trace('start execute ' . $name_or_pool_id . '->' . $action_name . ' to ' . $tpl_module . '/' . $template);
     $data = 0;
     if ($name_or_pool_id != '') {
         $object = new reactor_interface($name_or_pool_id);
-        
+
         if ($action_name != '') {
             $null = '';
             $_obj =& $object->get('action');
             if (!isset($_obj[$action_name])) {
                 reactor_trace('undefined action');
-                
+
                 return 0;
             }
             $data = $object->action($action_name, $null);
@@ -156,7 +168,7 @@ function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_
             $Gekkon->data['exec_pool_id'] = $object->_pool_id;
         }
     }
-    
+
     if ($tpl_module != '') {
         initModule($tpl_module);
     }
@@ -166,14 +178,14 @@ function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_
     if ($tpl_module != '') {
         uninitModule();
     }
-    
+
     if ($name_or_pool_id != '' && $action_name != '') {
         $Gekkon->data['exec_data']    = $_save_data;
         $Gekkon->data['exec_pool_id'] = $_save_pool_id;
     }
-    
+
     reactor_trace('end execute');
-    
+
     return $data;
 }
 
@@ -182,7 +194,7 @@ function pool_new()
     static $_global_pool_cnt = 0;
     $_global_pool_cnt++;
     $GLOBALS['_pool'][$_global_pool_cnt] = '';
-    
+
     return $_global_pool_cnt;
 }
 
@@ -194,7 +206,7 @@ function &pool_get($_pool_id, $name = '')
     if ($name == '') {
         return $GLOBALS['_pool'][$_pool_id];
     }
-    
+
     return $GLOBALS['_pool'][$_pool_id][$name];
 }
 
@@ -211,7 +223,7 @@ function &pool_create_content_adapter($_pool_id)
     $i_ca = new reactor_interface('content_adapter');
     $ca   =& $GLOBALS['_pool'][$i_ca->_pool_id]['object'];
     $ca->configure($GLOBALS['_pool'][$_pool_id]['define']);
-    
+
     return $ca;
 }
 
@@ -224,7 +236,7 @@ function &tryGetForm($_so)
         $form =& $form_container->get('object');
         $form_container->store($form->form_session);
     }
-    
+
     return $form;
 }
 
@@ -239,30 +251,30 @@ function handleForm($_so = '', $interface = 'none', $action = 'none')
         $object         = new reactor_interface($interface);
         $form_container = new reactor_interface($object->action($action, $_reactor));
     }
-    
+
     $form =& $form_container->get('object');
-    
+
     if (get_magic_quotes_gpc() && isset($_POST)) {
         $data = arrayMapRecursive('stripslashes', $_POST);
     } else {
         $data = $_POST;
     }
-    
+
     /*$data=preg_replace('/[\x00-\x10\x0B\x0C\x0E-\x1F]/', '', $data);
     $data=preg_replace('/[\xA0]/', ' ', $data);*/
-    
+
     $form->fromForm($data);
-    
+
     if (count($form->error) == 0) {
         if ($object == 'none') {
             $object = new reactor_interface();
             $object->restore($form->stored_id);
         }
-        
+
         if (!$object->action($form->action, $form)) {
             $form->error['_error_on_action'] = 1;
         }
-        
+
         if (count($form->error) == 0) {
             if (is_array($form->forvard_url)) {
                 header('Location: ' . compileUrl($form->forvard_url));
@@ -274,9 +286,9 @@ function handleForm($_so = '', $interface = 'none', $action = 'none')
             $object->store($form->stored_id);
         }
     }
-    
+
     $fs = $form_container->store($form->form_session);
-    
+
     if (is_array($form->return_url)) {
         $ret        = $form->return_url;
         $ret['_so'] = $fs;
@@ -288,7 +300,7 @@ function handleForm($_so = '', $interface = 'none', $action = 'none')
             header('Location: ' . $form->return_url . '?_so=' . $fs);
         }
     }
-    
+
     die();
 }
 
@@ -296,43 +308,43 @@ function createForm($pool_id, $action, $callback, $param = array())
 {
     global $_RGET, $_reactor;
     $container = new reactor_interface($pool_id);
-    
+
     $form = new reactor_interface('content_adapter');
-    
+
     $fo =& $form->get('object');
-    
+
     $fo->action = $action;
-    
+
     $fo->cancel_url  = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'];
     $fo->return_url  = ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SERVER['HTTP_REFERER']) || $_reactor['show']['name'] == 'ajax_request') ? $_SERVER['HTTP_REFERER'] : $_RGET;
     $fo->forvard_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'];
-    
+
     $form_data = $container->action($callback, $param);
-    
+
     if ($form_data != 0) {
         $fo->data = $form_data;
     }
-    
+
     $fo->configure(pool_get($pool_id, 'define'));
-    
+
     $fo->stored_id = $container->store();
     $form->store($fo->form_session);
-    
+
     return $form->_pool_id;
 }
 
 function isForm($pool_id, $form_session = 'none', $callback, $param = array())
 {
     $container = new reactor_interface($pool_id);
-    
+
     $form = new reactor_interface();
     if ($form_session != 'none' && $form->isStored($form_session)) {
         $form->restore($form_session);
         $form->store($form_session);
-        
+
         return $form->_pool_id;
     }
-    
+
     return $container->action($callback, $param);
 }
 
@@ -348,7 +360,7 @@ function &restoreUser()
             $_user = $_SESSION['_user'];
         }
         $_SESSION['_user'] =& $_user;
-        
+
         if ($_user['system'] != SITE_URL) {
             $_RGET['logout'] = 1;
         }
@@ -362,7 +374,7 @@ function &restoreUser()
             $_user = resourceRestore('reactor_guest_user');
         }
     }
-    
+
     if (isset($_POST['logout']) || isset($_RGET['logout'])) {
         if (!isset($_POST['cookie'])) {
             $_POST['cookie'] = 0;
@@ -374,25 +386,25 @@ function &restoreUser()
             $_POST['password'] = '';
         }
         userLogin($_POST['login'], $_POST['password'], $_POST['cookie']);
-        
+
         if (!headers_sent()) {
             if ($_user['login'] != 'guest') {
                 if (session_id() == '') {
                     session_start();
                 }
-                
+
                 $_SESSION['_user'] =& $_user;
             }
-            
+
             if (!isset($_RGET['logout'])) {
                 header('Location: ' . $_SERVER['REQUEST_URI']);
                 die();
             }
         }
     }
-    
+
     unset($_RGET['logout']);
-    
+
     return $_user;
 }
 
@@ -413,17 +425,17 @@ function &resource($name)
             $resources = resourceRestore('reactor_resource');
 
             $data = null;
-            
+
             eval($resources[$name]['source']);
 
             if ($resources[$name]['store']) {
                 resourceStore($name, $data);
             }
-            
+
             $_resource[$name] = $data;
         }
     }
-    
+
     return $_resource[$name];
 }
 
@@ -438,7 +450,7 @@ function resourceStore($name, &$data)
 function resourceRestore($name)
 {
     reactor_trace('resourceRestore - ' . $name);
-    
+
     return unserialize(file_get_contents(RES_DIR . $name));
 }
 
@@ -453,7 +465,7 @@ function resourceClear($name)
 function getStrChars($str)
 {
     $str = preg_replace('/[^\w\pP\pL\s\$]/uis', ' ', $str);
-    
+
     return htmlspecialchars($str, ENT_QUOTES);
 }
 
@@ -468,7 +480,7 @@ function inputGetStr($name, $def = false, $stop = '')
     } else {
         $test = '';
     }
-    
+
     if ($test == '') {
         if ($def !== false) {
             $test = $def;
@@ -476,9 +488,9 @@ function inputGetStr($name, $def = false, $stop = '')
             stop($stop);
         }
     }
-    
+
     $_SGET[$name] = getStrChars($test);
-    
+
     return $_SGET[$name];
 }
 
@@ -493,7 +505,7 @@ function inputGetNum($name, $def = '', $stop = '')
     } else {
         $test = '';
     }
-    
+
     if ($test == '') {
         if ($def !== false) {
             $test = $def;
@@ -504,7 +516,7 @@ function inputGetNum($name, $def = '', $stop = '')
     if (!is_numeric($test)) {
         stop($stop);
     }
-    
+
     return $_SGET[$name] = intval($test);
 }
 
@@ -519,7 +531,7 @@ function inputGetPath($name, $def = array())
     } else {
         $test = $def;
     }
-    
+
     return $_SGET[$name] = array_map('getStrChars', $test);
 }
 
@@ -531,7 +543,7 @@ function handleUploadedFile($_file, $_newname = '')
     if ($_FILES[$_file]['size'] == 0) {
         return 0;
     }
-    
+
     return saveFile($_FILES[$_file]['tmp_name'], true);
 }
 
@@ -542,11 +554,11 @@ function initRequest()
 {
     global $_languages, $_reactor;
     header('Content-Type: text/html; charset=utf-8');
-    
+
     if (get_magic_quotes_gpc()) {
         $_GET = arrayMapRecursive('stripslashes', $_GET);
     }
-    
+
     setlocale(LC_CTYPE, $_languages[$_reactor['language']] . '.UTF8');
     mb_internal_encoding('UTF-8');
 }
@@ -562,22 +574,22 @@ function initRequestIndex()
     if (substr($url, -5) == '.html') {
         $url = substr($url, 1, -5);
     }
-    
+
     $_RGET = $_GET + parseUrl($url);
-    
+
     if (isset($_RGET['lng'])) {
         $_reactor['language']     = $_RGET['lng'];
         $_reactor['language_url'] = $_RGET['lng'] . '/';
     }
-    
+
     if (isset($_RGET['_ref'])) {
         $_SERVER['HTTP_REFERER'] = $_RGET['_ref'];
     }
-    
+
     //$mtime=$_reactor['show']['modified'];
     //if($mtime!='none')
     //httpModified($mtime);
-    
+
     return $_RGET;
 }
 
@@ -590,7 +602,7 @@ function httpModified($mtime)
     $gmdate_mod = gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
     header('Cache-Control: must-revalidate');
     header('Last-Modified: ' . $gmdate_mod);
-    
+
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
         if ($gmdate_mod == $_SERVER['HTTP_IF_MODIFIED_SINCE']) {
             header('HTTP/1.0 304 Not Modified');
@@ -610,31 +622,31 @@ function urlHeaderEnc($data)
 
 function urlHeader($str)
 {
-    
+
     if (substr($str[2], 0, 11) == 'javascript:') {
         return $str[0];
     }
-    
+
     if (substr($str[2], 0, 7) == 'http://') {
         return $str[0];
     }
-    
+
     if (substr($str[2], 0, 7) == 'mailto:') {
         return $str[0];
     }
-    
+
     if ($str[2][0] == '/') {
         return $str[0];
     }
-    
+
     if ($str[2][0] == '#') {
         return $str[0];
     }
-    
+
     $r = $str[1];
-    
+
     $t = strpos($str[2], '?');
-    
+
     if ($t !== false) {
         $str[2] = preg_replace_callback('/{[^}]+}/Uis', 'urlHeaderEnc', $str[2]);
         parse_str(substr($str[2], $t + 1), $m);
@@ -647,22 +659,22 @@ function urlHeader($str)
     } else {
         $m = array('show' => $str[2]);
     }
-    
+
     if (substr($m['show'], -1, 1) != '/') {
         $m['show'] .= '/';
     }
-    
+
     if (!isset($m['lng'])) {
         $m['lng'] = '{$_reactor.language_url}';
     }
-    
+
     $url = compileUrl($m);
     if ($str[3] == '"' || $str[3] == "'") {
         $r .= '"' . $url . '"';
     } else {
         $r .= '"' . $url . '"' . $str[3];
     }
-    
+
     return $r;
 }
 
@@ -670,7 +682,7 @@ function arrToUrl($a)
 {
     global $_RGET;
     $r = array_merge($_RGET, $a);
-    
+
     return compileUrl($r);
 }
 
@@ -687,47 +699,47 @@ function parseUrl($str)
 function parseAurl($str)
 {
     global $_languages, $_site_tree, $_reactor;
-    
+
     $r                    = array();
     $tree_i               = &$_site_tree['index'];
     $_reactor['path']     = array();
     $_reactor['path'][]   = $_site_tree['nodes'][$tree_i['#key']];
     $_reactor['path_url'] = '';
-    
+
     if ($str == '' || $str == 'index') {
         $_reactor['show'] = $_site_tree['nodes'][$tree_i['#key']];
-        
+
         return $r;
     }
-    
+
     $i   = 0;
     $str = explode('/', $str);
-    
+
     if (isset($_languages[$str[0]])) {
         $r['lng'] = $str[0];
         $i        = 1;
     }
-    
+
     $j = 0;
     $c = count($str);
     for (; $i < $c; $i++) {
         if (isset($tree_i[$str[$i]])) {
             $j = 0;
-            
+
             $tree_i = &$tree_i[$str[$i]];
             $_reactor['path_url'] .= $str[$i] . '/';
             $_reactor['path'][] = $_site_tree['nodes'][$tree_i['#key']]; //did #key points on node with minimal parameters set or what?
         } else {
             $param_pool = &$_site_tree['param']['/' . $_reactor['path_url']];
-            
+
             $param = $param_pool[$param_pool['max']];
             $cnt   = $param_pool['max'];
-            
+
             if ($j >= $cnt) {
                 $_reactor['show'] = $_site_tree['nodes'][$_site_tree['index']['404']['#key']];
                 stop('404');
             }
-            
+
             $r[$param[$j]] = $str[$i];
             if ($param[$j][0] == '_') {
                 $r[$param[$j]] = array();
@@ -744,21 +756,21 @@ function parseAurl($str)
             $j++;
         }
     }
-    
+
     $r['show'] = $_reactor['path_url'];
-    
+
     $param_pool = &$_site_tree['param']['/' . $_reactor['path_url']];
-    
+
     while (!isset($param_pool[$j]) && $j < $param_pool['max']) {
         $j++;
     }
     if (!isset($param_pool[$j])) {
         $j = $param_pool['min'];
     }
-    
+
     $_reactor['show']   = $_site_tree['nodes'][$param_pool[$j]['key']];
     $_reactor['path'][] = $_reactor['show'];
-    
+
     return $r;
 }
 
@@ -766,7 +778,7 @@ function compileAurl($data)
 {
     global $_reactor, $_site_tree;
     $url = SITE_URL;
-    
+
     if (isset($data['lng'])) {
         if ($data['lng'] == '{$_reactor.language_url}') {
             $url .= $data['lng'];
@@ -777,7 +789,7 @@ function compileAurl($data)
     } else {
         $url .= $_reactor['language_url'];
     }
-    
+
     if (isset($data['show'])) {
         if ($data['show'] == 'index/') {
             $data['show'] = '';
@@ -790,13 +802,13 @@ function compileAurl($data)
         $url .= $_reactor['path_url'];
         $show = '/' . $_reactor['path_url'];
     }
-    
+
     if (!isset($_site_tree['param'][$show])) {
         reactor_error('undefined show [' . $show . '] in site_tree');
     }
     $param_pool =& $_site_tree['param'][$show];
     $param      = $param_pool[$param_pool['max']];
-    
+
     foreach ($param as $item) {
         if (isset($data[$item])) {
             if ($item[0] == '_' && is_array($data[$item])) {
@@ -807,7 +819,7 @@ function compileAurl($data)
             unset($data[$item]);
         }
     }
-    
+
     $url .= '?';
     foreach ($data as $k => $v) {
         if (is_array($v)) //handle array in GET param
@@ -840,7 +852,7 @@ function compileAurl($data)
         }
     }
     $url = substr($url, 0, -1);
-    
+
     //$url.=rawurlencode_array($data);
     return $url;
 }
@@ -848,13 +860,13 @@ function compileAurl($data)
 function compileSurl($data)
 {
     $url = SITE_URL . 'index.php?';
-    
+
     foreach ($data as $k => $v) {
         if ($v != '') {
             $url .= $k . '=' . $v . '&';
         }
     }
-    
+
     return substr($url, 0, -1);
 }
 
@@ -874,14 +886,14 @@ function saveFile($file_path, $with_dir)
     if (!$result) {
         return 0;
     }
-    
+
     return ($with_dir ? $new_file['path'] : $new_file['name']);
 }
 
 function getRelativePath($filename, $encode = true)
 {
     $encoded_file_name = $encode ? rawurlencode($filename) : $filename;
-    
+
     return getDirForFileName($filename) . '/' . $encoded_file_name;
 }
 
@@ -890,7 +902,7 @@ function getDirForFileName($filename)
     if (strlen($filename) < 11) {
         return '';
     }
-    
+
     $dir = $filename[7] . $filename[8];
     if (!is_dir(FILE_DIR . $dir)) {
         mkdir(FILE_DIR . $dir);
@@ -899,7 +911,7 @@ function getDirForFileName($filename)
     if (!is_dir(FILE_DIR . $dir)) {
         mkdir(FILE_DIR . $dir);
     }
-    
+
     return $dir;
 }
 
@@ -907,6 +919,6 @@ function getNewFileName()
 {
     $_newname = str_replace('.', '', uniqid('', true));
     $dir      = getDirForFileName($_newname);
-    
+
     return array('path' => $dir . '/' . $_newname, 'name' => $_newname);
 }

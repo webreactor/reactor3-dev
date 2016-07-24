@@ -18,13 +18,12 @@ function configManagerAutoload($class_name)
 
 spl_autoload_register('configManagerAutoload');
 
+define('SITE_URL', '/');
 define('SITE_DIR', MANAGED_APP_DIR);
 include MANAGED_APP_DIR . 'etc/base_config.php';
-require SITE_DIR . 'vendor/autoload.php';
+include MANAGED_APP_DIR . 'etc/tables.php';
+require MANAGED_APP_DIR . 'vendor/autoload.php';
 
-/**
- * @var $_db \Reactor\Database\Interfaces\ConnectionInterface
- */
 $_db = new \Reactor\Database\PDO\Connection(
     sprintf(
         'mysql:dbname=%s;host=%s',

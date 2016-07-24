@@ -42,9 +42,6 @@ require LIB_DIR . 'reactor_interface.php';
 require LIB_DIR . 'local_user.php';
 include ETC_DIR . 'tables.php';
 
-/**
- * @var $_db \Reactor\Database\Interfaces\ConnectionInterface
- */
 $_db = new \Reactor\Database\PDO\Connection(
     sprintf(
         'mysql:dbname=%s;host=%s',

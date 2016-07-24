@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @todo remove
+ */
+
 //vers ion 1
 function keys_implode(&$values, &$keys)
 {
@@ -10,7 +14,7 @@ function keys_implode(&$values, &$keys)
         }
     }
     $values = $where_rez;
-    
+
     return ' ' . implode(' and ', $where_rez) . ' ';
 }
 
@@ -24,17 +28,17 @@ class ex_object
     var $order;
     var $_db;
     var $_pool_id;
-    
+
     function ex_object($table = '', $pkey = '', $order = '')
     {
         $this->table = '`' . $table . '`';
-        
+
         if ($pkey != '') {
             $this->pkeys = array($pkey);
         } else {
             $this->pkeys = array();
         }
-        
+
         $this->pkeys_value = array();
         $this->fkeys       = array();
         $this->fkeys_value = array();
@@ -42,13 +46,13 @@ class ex_object
         $this->_pool_id    = 'none';
         $this->onRestore();
     }
-    
+
     function onRestore()
     {
         global $_db;
         $this->_db =& $_db;
     }
-    
+
     function configure($table, $order = '', $fk_value = 0)
     {
         $_container  =& pool_get($this->_pool_id);
@@ -60,10 +64,10 @@ class ex_object
             $this->fkeys_value = $fk_value;
         }
     }
-    
+
     function getList($page, $per_page, $where = '')
     {
-        $where_arr = array(keys_implode($this->fkeys_value, $this->fkeys));
+        $where_arr        = array(keys_implode($this->fkeys_value, $this->fkeys));
         $where_parameters = array();
 
         if ($where != '') {
@@ -96,19 +100,21 @@ class ex_object
             'data'             => $pages['data'],
         );
     }
-    
+
     function getOne($pk)
     {
-        $query = $this->_db->sql('select * from ' . $this->table . ' where ' . keys_implode($pk, $this->pkeys));
+        $query            = $this->_db->sql(
+            'select * from ' . $this->table . ' where ' . keys_implode($pk, $this->pkeys)
+        );
         $this->pkey_value = $pk;
-        
+
         return $query->line();
     }
-    
+
     function getPage($where = '')
     {
         $where_rez = keys_implode($this->fkeys_value, $this->fkeys);
-        
+
         if ($where != '') {
             $where_rez .= $where;
         }
@@ -117,13 +123,13 @@ class ex_object
         }
 
         $query = $this->_db->sql('select * from ' . $this->table . ' ' . $where_rez);
-        
+
         return $query->matr();
     }
-    
+
     function delete($pk, $isStream = 0)
     {
-        
+
         if ($isStream == 0) {
             if ($pk == 0) {
                 $where_rez = keys_implode($this->pkeys_value, $this->pkeys);
@@ -138,15 +144,15 @@ class ex_object
         }
 
         $query = $this->_db->sql('delete from ' . $this->table . ' where ' . $where_rez);
-        
+
         return $query->count();
     }
-    
+
     function insert($data)
     {
         $rows   = array();
         $values = array();
-        
+
         if ($this->_db->sql(
             'insert into ' . $this->table . ' (`' . implode(
                 '`, `',
@@ -160,7 +166,7 @@ class ex_object
                     $pk[$item] = $data[$item];
                 }
             }
-            
+
             if (count($pk) > 0) {
                 return $pk;
             } else {
@@ -170,7 +176,7 @@ class ex_object
             return 0;
         }
     }
-    
+
     function update($data, $pk = 0, $isStream = 0)
     {
         if ($isStream == 0) {
@@ -185,17 +191,17 @@ class ex_object
         } else {
             $where_rez = $pk;
         }
-        
+
         $t = '';
         foreach ($data as $k => $v) {
             $t .= '`' . $k . '`="' . $v . '",';
         }
-        $t = substr($t, 0, -1);
+        $t     = substr($t, 0, -1);
         $query = $this->_db->sql('update ' . $this->table . ' set ' . $t . ' where ' . $where_rez);
-        
+
         return $query->count();
     }
-    
+
     function replace($data, $pk = 0)
     {
         if ($pk == 0) {
@@ -215,29 +221,29 @@ class ex_object
             return 0;
         }
     }
-    
+
     function store($form)
     {
         $data = $form->toDb();
-        
+
         $data += $this->fkeys_value;
-        
+
         if (count($this->pkeys_value) == 0) {
             $this->pkey_value = $this->insert($data);
         } else {
             $this->update($data, $this->pkey_value);
         }
-        
+
         return $this->pkey_value;
     }
-    
+
     function moveUp($node_key)
     {
         if ($this->order == '') {
             return 0;
         }
         $order = str_replace('desc', '', $this->order);
-        
+
         if (count($this->fkeys) > 0) {
             $query = $this->_db->sql(
                 'select `' . $this->fkey . '` from ' . $this->table . ' where ' . keys_implode(
@@ -245,7 +251,7 @@ class ex_object
                     $this->pkeys
                 )
             );
-            $t = $query->line();
+            $t     = $query->line();
             if ($t == 0) {
                 return 0;
             }
@@ -260,24 +266,24 @@ class ex_object
                 $this->pkeys
             )
         );
-        
+
         $this->_db->sql('set @a:=0');
         $where = '';
         if (count($this->fkeys) > 0) {
             $where = 'where ' . keys_implode($t, $this->fkeys);
         }
         $this->_db->sql('update ' . $this->table . ' set ' . $order . '=(@a:=@a+2) ' . $where . ' order by ' . $order);
-        
+
         return 1;
     }
-    
+
     function moveDown($pk)
     {
         if ($this->order == '') {
             return 0;
         }
         $order = str_replace('desc', '', $this->order);
-        
+
         if (count($this->fkeys) > 0) {
             $query = $this->_db->sql(
                 'select `' . $this->fkey . '` from ' . $this->table . ' where ' . keys_implode(
@@ -285,7 +291,7 @@ class ex_object
                     $this->pkeys
                 )
             );
-            $t = $query->line();
+            $t     = $query->line();
             if ($t == 0) {
                 return 0;
             }
@@ -300,14 +306,14 @@ class ex_object
                 $this->pkeys
             )
         );
-        
+
         $this->_db->sql('set @a:=0');
         $where = '';
         if (count($this->fkeys) > 0) {
             $where = 'where ' . keys_implode($t, $this->fkeys);
         }
         $this->_db->sql('update ' . $this->table . ' set ' . $order . '=(@a:=@a+2) ' . $where . ' order by ' . $order);
-        
+
         return 1;
     }
 }

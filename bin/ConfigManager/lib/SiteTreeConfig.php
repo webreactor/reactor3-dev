@@ -1,22 +1,30 @@
 <?php
 
+use \Reactor\Database\PDO\Connection;
+
 class SiteTreeConfig
 {
     public $_db;
-    
-    function __construct($_db)
+
+    public function __construct(Connection $_db = null)
     {
         $this->_db = $_db;
     }
-    
-    function getConfig()
+
+    public function getConfig()
     {
-        $query = $this->_db->sql('select * from site_tree order by fk_site_tree, pk_site_tree');
-        
+        $query = $this->_db->sql(
+            'SELECT *
+            FROM site_tree
+            ORDER BY
+                fk_site_tree,
+                pk_site_tree'
+        );
+
         return $this->buildTreeConfig($query->matr());
     }
-    
-    function buildTreeConfig($data, $fk_tree = 0)
+
+    public function buildTreeConfig($data, $fk_tree = 0)
     {
         $rez = array();
         foreach ($data as $node) {
@@ -28,7 +36,7 @@ class SiteTreeConfig
                 $rez[]      = $node;
             }
         }
-        
+
         return $rez;
     }
 }

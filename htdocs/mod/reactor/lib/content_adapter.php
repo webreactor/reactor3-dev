@@ -17,7 +17,7 @@ class content_adapter
     var $forvard_url;
     var $cancel_url;
     var $_pool_id;
-    
+
     function content_adapter($_name_pool_so = '')
     {
         global $_interfaces;
@@ -27,19 +27,19 @@ class content_adapter
         $this->error   = array();
         $this->_take   = array();
         $this->_drop   = array();
-        
+
         $this->_pool_id     = 0;
         $this->form_session = uniqid('', true);
-        
+
         if ($_name_pool_so != '') {
             if (isset($_interfaces[$_name_pool_so])) {
                 $this->configure($_interfaces[$_name_pool_so]['define']);
-                
+
                 return;
             }
             if (isset($_SESSION['_stored_interface'][$_name_pool_so])) {
                 $this->restore($_SESSION['_stored_interface'][$_name_pool_so]['define']);
-                
+
                 return;
             }
             if (isset($GLOBALS['_pool'][$_name_pool_so]['define'])) {
@@ -49,14 +49,14 @@ class content_adapter
             }
         }
     }
-    
+
     function testField($class, $value)
     {
         $test = new $class;
-        
+
         return $test->fromForm($value);
     }
-    
+
     function drop($fields = 'none')
     {
         $this->_drop = $fields;
@@ -64,7 +64,7 @@ class content_adapter
             $this->_drop = array();
         }
     }
-    
+
     function take($fields = 'none')
     {
         $this->_take = $fields;
@@ -72,60 +72,60 @@ class content_adapter
             $this->_take = array();
         }
     }
-    
+
     function configure($define)
     {
         global $_base_types;
         reactor_trace('content_adapter->configure');
-        
+
         if ($this->_pool_id == 0) {
             $this->_pool_id                              = pool_new();
             $GLOBALS['_pool'][$this->_pool_id]           = array();
             $GLOBALS['_pool'][$this->_pool_id]['object'] =& $this;
         }
-        
+
         foreach ($define as $key => $item) {
             $this->define[$key] = $item;
-            
+
             $data = '';
             if ($item['default'] != '') {
                 eval($item['default']);
             }
             $this->define[$key]['default'] = $data;
-            
+
             if (!isset($this->data[$key])) {
                 $this->data[$key] = $data;
             }
-            
+
             $data = '';
             if ($item['enum'] != '') {
                 eval($item['enum']);
             }
             $this->define[$key]['enum'] = $data;
-            
+
             $data = array();
             if ($item['base_type_param'] != '') {
                 eval($item['base_type_param']);
             }
-            
+
             $this->define[$key]['base_type_param'] = $data;
-            
+
             $this->handler[$key] = new $_base_types[$item['base_type']]['type']($key);
         }
         $this->onRestore();
     }
-    
+
     function onRestore()
     {
         foreach ($this->handler as $k => $v) {
             $this->handler[$k]->_pool_id = $this->_pool_id;
         }
     }
-    
+
     function fromForm($src)
     {
         global $_base_types;
-        
+
         $this->error = array();
         foreach ($this->define as $item) {
             if ($_base_types[$item['base_type']]['handle'] == 0) {
@@ -138,23 +138,23 @@ class content_adapter
                     }
                 }
             }
-            
+
             if ($_base_types[$item['base_type']]['handle'] == 1) {
                 unset($this->data[$item['name']]);
             }
-            
+
             //if($_base_types[$item['base_type']]['handle']==2)
             //do nothing for label
-            
+
         }
-        
+
         foreach ($this->define as $item) {
             if ($_base_types[$item['base_type']]['handle'] == 3) {
                 $this->data[$item['name']] = $this->validate($item['default'], $item);
             }
         }
     }
-    
+
     function validate(&$value, &$item)
     {
         global $_base_types;
@@ -164,43 +164,43 @@ class content_adapter
                 $value[$k] = $this->validate($v, $item);
             }
         } else {
-            
+
             $value = arrayMapRecursive('trim', $value);
-            
+
             if (is_array($value)) {
                 if ($type['check_array'] == 0) {
                     $value                      = $item['default'];
                     $this->error[$item['name']] = 'check_array';
-                    
+
                     return $value;
                 }
             }
-            
+
             if ($this->_necessary_r($value, $item['default']) > 0 && $item['necessary'] == 1) {
                 $this->error[$item['name']] = 'necessary';
-                
+
                 return $value;
             }
-            
+
             if ($item['enum'] != '' && $type['check_enum'] == 1) {
                 if ($this->_enum_check_r($value, $item['default'], $item['enum']) > 0) {
                     $this->error[$item['name']] = 'check_enum';
-                    
+
                     return $value;
                 }
             }
-            
+
             if (!$this->handler[$item['name']]->fromForm($value)) {
                 $this->error[$item['name']] = 'base_type';
                 $value                      = $item['default'];
-                
+
                 return $value;
             }
         }
-        
+
         return $value;
     }
-    
+
     function _necessary_r(&$value, &$def)
     {
         $r = 0;
@@ -214,10 +214,10 @@ class content_adapter
                 $value = $def;
             }
         }
-        
+
         return $r;
     }
-    
+
     function _enum_check_r(&$value, &$def, &$enum)
     {
         $r = 0;
@@ -231,20 +231,20 @@ class content_adapter
                 $value = $def;
             }
         }
-        
+
         return $r;
     }
-    
+
     function toDB($data = 'none')
     {
-        
+
         if ($data != 'none') {
             return arrayMapRecursive('addslashes', $data);
         }
-        
+
         return $this->convertTo('DB');
     }
-    
+
     function convertTo($to, $data = 'none')
     {
         reactor_trace('content_adapter->convertTo' . $to);
@@ -252,7 +252,7 @@ class content_adapter
         if ($data == 'none') {
             $data = $this->data;
         }
-        
+
         if (count($this->_take) > 0) {
             foreach ($data as $key => $item) {
                 if (!in_array($key, $this->_take)) {
@@ -274,10 +274,10 @@ class content_adapter
                 }
             }
         }
-        
+
         return $data;
     }
-    
+
     function convertTo_r($to, &$obj, &$item, $value)
     {
         global $_base_types;
@@ -288,37 +288,37 @@ class content_adapter
         } else {
             $value = $obj->$to($value);
         }
-        
+
         return $value;
     }
-    
+
     function toForm($data = 'none')
     {
         ;
-        
+
         return $this->convertTo('Form', $data);
     }
-    
+
     function arrayToHTML(&$data)
     {
         foreach ($data as $k => $v) {
             $data[$k] = $this->toHTML($v);
         }
-        
+
         return $data;
     }
-    
+
     function toHTML($data = 'none')
     {
         $data = $this->convertTo('HTML', $data);
-        
+
         foreach ($this->define as $key => $item) {
             if ($item['enum'] != '' && isset($data[$key])) {
                 $data[$key . '_save'] = $data[$key];
                 @$data[$key] = $item['enum'][$data[$key]];
             }
         }
-        
+
         return $data;
     }
 }
