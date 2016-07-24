@@ -30,7 +30,7 @@ class base_type
 
     function toDB($value)
     {
-        return arrayMapRecursive('addslashes', $value);
+        return $value;
     }
 
     function get($name)

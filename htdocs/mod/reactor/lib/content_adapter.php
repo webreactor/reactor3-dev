@@ -235,13 +235,8 @@ class content_adapter
         return $r;
     }
 
-    function toDB($data = 'none')
+    function toDB()
     {
-
-        if ($data != 'none') {
-            return arrayMapRecursive('addslashes', $data);
-        }
-
         return $this->convertTo('DB');
     }
 
