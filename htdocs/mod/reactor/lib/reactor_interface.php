@@ -103,12 +103,6 @@ class reactor_interface
 
         reactor_trace($_SESSION['_stored_interface'][$id]['name'] . '->restore ' . $id);
 
-        if ($cls['source'] != '') {
-            initModule($cls['module']);
-            require_once $_reactor['module']['dir'] . $cls['source'];
-            uninitModule($cls['module']);
-        }
-
         if ($this->_pool_id == 0) {
             $this->_pool_id = pool_new();
         }

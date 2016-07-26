@@ -423,8 +423,6 @@ function &resource($name)
 
             $data = null;
 
-            eval($resources[$name]['source']);
-
             if ($resources[$name]['store']) {
                 resourceStore($name, $data);
             }

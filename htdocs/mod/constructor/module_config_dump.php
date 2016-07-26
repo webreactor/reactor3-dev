@@ -522,18 +522,6 @@ return array(
                     'default' => '',
                     'enum' => '',
                 ),
-                array(
-                    'base_type' => 'code_line',
-                    'base_type_param' => '',
-                    'sort' => '6',
-                    'name' => 'source',
-                    'call' => 'Источник',
-                    'description' => '',
-                    'inlist' => '0',
-                    'necessary' => '0',
-                    'default' => '',
-                    'enum' => '',
-                ),
             ),
             '_actions' => array(
                 array(
@@ -2328,7 +2316,7 @@ $data=$query->matr(\'pk_ugroup\',\'name\');',
         ),
         array(
             'name' => 'site_tree',
-            'class' => 'mod\\constructor\site_tree',
+            'class' => 'mod\\constructor\\site_tree',
             'pkey' => 'pk_site_tree',
             'configurators' => 'fk_site_tree',
             'constructor' => '',

@@ -72,7 +72,6 @@ class config_write
             i.name,
             i.configurators,
             i.class,
-            i.source,
             i.pkey,
             i.constructor,
             m.name AS module
