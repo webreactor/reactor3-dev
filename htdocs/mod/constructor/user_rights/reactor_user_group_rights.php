@@ -9,7 +9,7 @@ class reactor_user_group_rights extends basic_object
 {
     public $fk_value;
 
-    public function getOne($fk)
+    public function getOne($fk = 0, $row = '*')
     {
         $this->fk_value = $fk;
 
@@ -33,13 +33,13 @@ class reactor_user_group_rights extends basic_object
             $cnt++;
         }
 
-        $query = $_db->sql('SELECT * FROM ' . T_REACTOR_INTERFACE_ACTION . ' ORDER BY `CALL`');
+        $query = $_db->sql('SELECT * FROM ' . T_REACTOR_INTERFACE_ACTION . ' ORDER BY `call`');
 
         while ($t = $query->line()) {
             $tr[$t['fk_interface']]['actions'][] = $t;
         }
 
-        $query = $_db->select(T_REACTOR_UGROUP_ACTION, array('fk_ugroup', $fk));
+        $query = $_db->select(T_REACTOR_UGROUP_ACTION, array('fk_ugroup' => $fk));
 
         return array(
             'stucture' => $r,
@@ -49,7 +49,7 @@ class reactor_user_group_rights extends basic_object
 
     public function store($form)
     {
-        $this->_db->delete(T_REACTOR_UGROUP_ACTION, array('fk_ugroup', $this->fk_value));
+        $this->_db->delete(T_REACTOR_UGROUP_ACTION, array('fk_ugroup' => $this->fk_value));
 
         $data = $form->toDb();
 

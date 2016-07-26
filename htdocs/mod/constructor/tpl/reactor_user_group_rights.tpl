@@ -1,11 +1,13 @@
 <!--set initModule('cp')-->
 <script>
 function select_checkers_from_module(matr,val)
-{for(i in rights_array[matr])
+{
+for(i in rights_array[matr])
 {
 select_checkers_from_interface(matr,i,val);
 document.getElementById('input_checker_'+matr+'_'+i).checked=val;
-}}
+}
+}
 
 function select_checkers_from_interface(matr,i,val)
 {
@@ -19,7 +21,7 @@ var rights_array=new Array();
 <!--set $mcnt =0-->
 <!--foreach from=$data.stucture item=$module-->
 <div style="padding:10px 30px;">
-<label for="input_checker_{$mcnt}" style="font-size:30px;"><input name="input_checker_{$mcnt}" type="checkbox" style="width:20px !important;" value="{$action.pk_action}" id="input_checker_{$mcnt}" onChange="select_checkers_from_module({$mcnt},this.checked)"/>{$module.name}</label>
+<label for="input_checker_{$mcnt}" style="font-size:30px;"><input name="input_checker_{$mcnt}" type="checkbox" style="width:20px !important;" value="{$module.pk_module}" id="input_checker_{$mcnt}" onChange="select_checkers_from_module({$mcnt},this.checked)"/>{$module.name}</label>
 </div>
 <script>
 rights_array[{$mcnt}]=new Array();
@@ -30,7 +32,7 @@ rights_array[{$mcnt}]=new Array();
 <!--if $module.interfaces.isset()-->
 	<!--foreach from=$module.interfaces item=$interface-->
 	<div style="padding:10px 60px;">
-	<label for="input_checker_{$mcnt}_{$icnt}" style="font-size:20px;"><input name="input_checker_{$mcnt}_{$icnt}" type="checkbox" style="width:20px !important;" value="{$action.pk_action}" id="input_checker_{$mcnt}_{$icnt}" onChange="select_checkers_from_interface({$mcnt},{$icnt},this.checked)"/>{$interface.name}</label>
+	<label for="input_checker_{$mcnt}_{$icnt}" style="font-size:20px;"><input name="input_checker_{$mcnt}_{$icnt}" type="checkbox" style="width:20px !important;" value="{$interface.pk_interface}" id="input_checker_{$mcnt}_{$icnt}" onChange="select_checkers_from_interface({$mcnt},{$icnt},this.checked)"/>{$interface.name}</label>
 	</div>
 	<script>
 	rights_array[{$mcnt}][{$icnt}]=new Array();
