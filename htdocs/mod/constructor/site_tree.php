@@ -1,6 +1,10 @@
 <?php
 
-require_once LIB_DIR . 'config_write.php';
+namespace mod\constructor;
+
+use reactor\basic_object;
+use reactor\basic_tree;
+use reactor\config_write;
 
 class site_tree extends basic_tree
 {
@@ -8,7 +12,7 @@ class site_tree extends basic_tree
     {
         $r = basic_object::store($form);
 
-        siteTreeCompile();
+        config_write::siteTreeCompile();
 
         return $r;
     }

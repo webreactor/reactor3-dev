@@ -1,6 +1,9 @@
 <?php
 
-require_once LIB_DIR . 'config_write.php';
+namespace mod\constructor\user_rights;
+
+use reactor\basic_object;
+use reactor\config_write;
 
 class reactor_user_group_rights extends basic_object
 {
@@ -25,7 +28,7 @@ class reactor_user_group_rights extends basic_object
         while ($t = $query->line()) {
             $r[$t['fk_module']]['interfaces'][$cnt] = $t;
 
-            $tr[$t['pk_interface']] =& $r[$t['fk_module']]['interfaces'][$cnt];
+            $tr[$t['pk_interface']] = &$r[$t['fk_module']]['interfaces'][$cnt];
 
             $cnt++;
         }
@@ -60,8 +63,8 @@ class reactor_user_group_rights extends basic_object
             );
         }
 
-        guestUserCompile();
-        interfacesCompile();
+        config_write::guestUserCompile();
+        config_write::interfacesCompile();
 
         return 1;
     }

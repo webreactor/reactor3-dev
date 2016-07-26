@@ -9,18 +9,18 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/webreactor/reactor4-dev"
+            "url":  "https://github.com/webreactor/reactor4-dev"
         }
     ],
     "require":      {
-        "php": ">=5.3",
+        "php":                     ">=5.4",
         "webreactor/reactor4-dev": "@dev"
     },
     "require-dev":  {
     },
     "autoload":     {
         "psr-4": {
-            "Reactor\\": "htdocs/mod/reactor/lib",
+            "reactor\\": "htdocs/mod/reactor/lib",
             "mod\\":     "htdocs/mod"
         }
     },

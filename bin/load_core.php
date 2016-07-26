@@ -12,7 +12,6 @@ require SITE_DIR . 'etc/base_config.php';
 include ETC_DIR . 'config.php';
 require LIB_DIR . 'basic_api.php';
 require LIB_DIR . 'core_api.php';
-require SITE_DIR . 'vendor/autoload.php';
 
 $_reactor = array(
     'language'     => REACTOR_DEF_LANGUAGE,
@@ -25,20 +24,20 @@ $_site_tree = resourceRestore('reactor_site_tree');
 require LIB_DIR . 'Gekkon/Gekkon.php';
 
 $Gekkon                   = new Gekkon();
-$Gekkon->data['_SERVER']  =& $_SERVER;
-$Gekkon->data['_reactor'] =& $_reactor;
+$Gekkon->data['_SERVER']  = &$_SERVER;
+$Gekkon->data['_reactor'] = &$_reactor;
 $Gekkon->data['SITE_URL'] = SITE_URL;
 $Gekkon->data['FILE_URL'] = FILE_URL;
-$Gekkon->data['_user']    =& $_user;
+$Gekkon->data['_user']    = &$_user;
 
 initRequest();
 $_RGET = $_GET;
 $_SGET = array();
 
-require LIB_DIR . 'basic_object.php';
-require LIB_DIR . 'basic_tree.php';
-require LIB_DIR . 'content_adapter.php';
-require LIB_DIR . 'reactor_interface.php';
+//require LIB_DIR . 'basic_object.php';
+//require LIB_DIR . 'basic_tree.php';
+//require LIB_DIR . 'content_adapter.php';
+//require LIB_DIR . 'reactor_interface.php';
 require LIB_DIR . 'local_user.php';
 include ETC_DIR . 'tables.php';
 
@@ -60,8 +59,8 @@ $_base_types      = resourceRestore('reactor_base_types');
 $_interfaces      = resourceRestore('reactor_interfaces_' . $_user['ugroup']['name']);
 $GLOBALS['_pool'] = array();
 
-$Gekkon->data['_interfaces'] =& $_interfaces;
-$Gekkon->data['_SGET']       =& $_SGET;
+$Gekkon->data['_interfaces'] = &$_interfaces;
+$Gekkon->data['_SGET']       = &$_SGET;
 
 if (!isset($_user['ip_allowed'])) {
     $_user = restoreUser();

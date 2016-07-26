@@ -11,8 +11,7 @@ return array(
     'interfaces' => array(
         array(
             'name' => 'site',
-            'class' => 'basic_tree',
-            'source' => '',
+            'class' => 'reactor\\basic_tree',
             'pkey' => 'pk_site_tree',
             'configurators' => 'fk_site_tree',
             'constructor' => '',
@@ -53,7 +52,6 @@ return array(
         array(
             'name' => 'TestController',
             'class' => 'mod\\site\\TestController',
-            'source' => '',
             'pkey' => '',
             'configurators' => '',
             'constructor' => '',

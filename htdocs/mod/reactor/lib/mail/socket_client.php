@@ -2,8 +2,8 @@
 
 class socket_client
 {
-    var $log;
-    var $socket;
+    public $log;
+    public $socket;
 
     function socket_client()
     {

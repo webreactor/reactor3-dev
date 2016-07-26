@@ -1,30 +1,20 @@
 <?php
 
-function configuratorsUrl($configurators)
-{
-    global $_RGET;
-    $r = '';
-//print_r($configurators);die();
-    foreach ($configurators as $item) {
-        if (isset($_RGET[$item])) {
-            $r .= $item . '=' . $_RGET[$item] . '&';
-        }
-    }
-    if (isset($_RGET['cp_wild'])) {
-        $r .= 'cp_wild=1&';
-    }
+namespace mod\cp;
 
-    return $r;
-}
+use reactor\basic_tree;
+use reactor\reactor_interface;
 
 class cp
 {
-    var $action;
-    var $interface_name;
+    public $action;
+    public $interface_name;
+    public $_pool_id;
 
-    function show($interface_name, $action_name)
+    public function show($interface_name, $action_name)
     {
         global $_user;
+
         if ($_user['login'] != 'root') {
             ini_set('error_log', SITE_DIR . '../cp.log');
             error_log($_SERVER['REMOTE_ADDR'] . ' [' . $_user['login'] . '] > ' . $_SERVER['REQUEST_URI']);
@@ -32,7 +22,9 @@ class cp
 
         $this->interface_name = $interface_name;
         $this->action         = $action_name;
+
         global $Gekkon, $_interfaces, $_reactor;
+
         $object = new reactor_interface($interface_name);
 
         $_obj_data = $object->get();
@@ -41,10 +33,11 @@ class cp
             $Gekkon->display('login.tpl');
             die();
         }
-        $_action =& $_obj_data['action'][$action_name];
+        
+        $_action = &$_obj_data['action'][$action_name];
 
-        $configurators                 = configuratorsUrl($object->get('configurators'));
-        $Gekkon->data['configurators'] =& $configurators;
+        $configurators                 = $this->configuratorsUrl($object->get('configurators'));
+        $Gekkon->data['configurators'] = &$configurators;
         $Gekkon->data['cp_pool_id']    = $this->_pool_id;
         $Gekkon->data['exec_pool_id']  = $object->_pool_id;
         $Gekkon->data['main_pool_id']  = $object->_pool_id;
@@ -92,7 +85,7 @@ class cp
         return $data;
     }
 
-    function menu()
+    public function menu()
     {
         global $_db, $_user;
 
@@ -125,7 +118,7 @@ class cp
         return $tree;
     }
 
-    function path()
+    public function path()
     {
         global $_db;
 
@@ -157,7 +150,7 @@ class cp
         return $method_tree->pathToNode($t['pk_action']);
     }
 
-    static function description($key)
+    public static function description($key)
     {
         global $_db;
 
@@ -172,7 +165,7 @@ class cp
         return $t['description'];
     }
 
-    function help($interface, $action)
+    public function help($interface, $action)
     {
         global $_db;
 
@@ -185,5 +178,23 @@ class cp
         }
 
         return $t['pk_help'];
+    }
+
+    protected function configuratorsUrl($configurators)
+    {
+        global $_RGET;
+        $r = '';
+
+        foreach ($configurators as $item) {
+            if (isset($_RGET[$item])) {
+                $r .= $item . '=' . $_RGET[$item] . '&';
+            }
+        }
+
+        if (isset($_RGET['cp_wild'])) {
+            $r .= 'cp_wild=1&';
+        }
+
+        return $r;
     }
 }

@@ -3,11 +3,11 @@
 //version 1.1
 class mailer
 {
-    var $text;
-    var $server;
-    var $boundary;
-    var $from;
-    var $ans;
+    public $text;
+    public $server;
+    public $boundary;
+    public $from;
+    public $ans;
 
     function mailer($server, $from, $user = '', $pass = '')
     {

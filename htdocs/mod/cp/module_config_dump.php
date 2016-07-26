@@ -11,8 +11,7 @@ return array(
     'interfaces' => array(
         array(
             'name' => 'cp',
-            'class' => 'cp',
-            'source' => 'cp.php',
+            'class' => 'mod\\cp\\cp',
             'pkey' => '',
             'configurators' => '',
             'constructor' => '',

@@ -3,12 +3,12 @@
 //version 3.1.6 - reactor edition
 class Gekkon
 {
-    var $template_path;
-    var $bin_path;
-    var $gekkon_path;
-    var $data;
-    var $plugin;
-    var $ukey;
+    public $template_path;
+    public $bin_path;
+    public $gekkon_path;
+    public $data;
+    public $plugin;
+    public $ukey;
 
 //constructor
     function Gekkon()
@@ -20,7 +20,7 @@ class Gekkon
         $this->data         = array();
         $this->plugin       = array();
         $this->ukey         = 0;
-        $this->data['ukey'] =& $this->ukey;
+        $this->data['ukey'] = &$this->ukey;
     }
 
     function get_ukey()
@@ -48,7 +48,7 @@ class Gekkon
 
     function registers($name, &$value)
     {
-        $this->data[$name] =& $value;
+        $this->data[$name] = &$value;
     }
 
     function fullTemplatePath($template_name)

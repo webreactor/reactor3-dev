@@ -8,5 +8,5 @@
 <!--set $_path [ $item.pk_action ]=1-->
 <!--/foreach-->
 
-<!--set $act_description = cp::description( $item.pk_action )-->
+<!--set $act_description = mod\cp\cp::description( $item.pk_action )-->
 </div>

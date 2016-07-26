@@ -42,17 +42,17 @@ function decode_to_utf8(&$str, $charset)
 
 class pop3 extends socket_client
 {
-    var $data;
-    var $text;
-    var $html;
-    var $inline;
-    var $attachment;
-    var $srv;
-    var $login;
-    var $pwd;
-    var $last_reply;
-    var $error;
-    var $header;
+    public $data;
+    public $text;
+    public $html;
+    public $inline;
+    public $attachment;
+    public $srv;
+    public $login;
+    public $pwd;
+    public $last_reply;
+    public $error;
+    public $header;
     
     function pop3($srv, $login, $pwd)
     {

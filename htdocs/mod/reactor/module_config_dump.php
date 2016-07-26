@@ -4,15 +4,14 @@ return array(
         'name' => 'reactor',
         'install' => '',
         'uninstall' => '',
-        'to_core' => 'include LIB_DIR.\'ca_base_types.php\';',
+        'to_core' => '',
         'depend' => '',
         'descrip' => 'reactor modules',
     ),
     'interfaces' => array(
         array(
             'name' => 'content_adapter',
-            'class' => 'content_adapter',
-            'source' => '',
+            'class' => 'reactor\\content_adapter',
             'pkey' => '',
             'configurators' => '',
             'constructor' => '',
@@ -108,8 +107,7 @@ return array(
         ),
         array(
             'name' => 'reactor_help',
-            'class' => 'basic_object',
-            'source' => '',
+            'class' => 'reactor\\basic_object',
             'pkey' => 'pk_help',
             'configurators' => '',
             'constructor' => '',

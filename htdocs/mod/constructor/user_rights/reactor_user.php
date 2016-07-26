@@ -1,10 +1,14 @@
 <?php
 
+namespace mod\constructor\user_rights;
+
+use reactor\basic_object;
+
 class reactor_user extends basic_object
 {
     function getList($page, $per_page, $filter = '', $fk_ugroup = 0)
     {
-        $_ca =& pool_create_content_adapter($this->_pool_id);
+        $_ca = &pool_create_content_adapter($this->_pool_id);
 
         $where_arr        = array(1);
         $where_parameters = array();

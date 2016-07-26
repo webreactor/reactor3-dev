@@ -1,8 +1,8 @@
 <?php
 
-//namespace reactor;
-
 use mod\reactor\lib\UploadHandler\FileUploadHandler;
+use reactor\config_write;
+use reactor\reactor_interface;
 
 require_once('UploadHandler/UploadHandler.php');
 require_once('UploadHandler/FileUploadHandler.php');
@@ -54,9 +54,7 @@ function reactor_ini_set($module, $name, $value)
         AND c.`name` = "' . $name . '"'
     );
 
-    require_once LIB_DIR . 'config_write.php';
-
-    configCompile();
+    config_write::configCompile();
 }
 
 function reactor_ini_set_array($array)
@@ -83,9 +81,8 @@ function reactor_ini_set_array($array)
     if ($up == 0) {
         return;
     }
-    require_once LIB_DIR . 'config_write.php';
 
-    configCompile();
+    config_write::configCompile();
 }
 
 function stop($msg = '')
@@ -155,7 +152,7 @@ function execute($name_or_pool_id = '', $action_name = '', $template = '', $tpl_
 
         if ($action_name != '') {
             $null = '';
-            $_obj =& $object->get('action');
+            $_obj = &$object->get('action');
             if (!isset($_obj[$action_name])) {
                 reactor_trace('undefined action');
 
@@ -221,7 +218,7 @@ function &pool_create_content_adapter($_pool_id)
         reactor_error('undefined _pool_id ' . $_pool_id . ' in pool_get_content_adapter');
     }
     $i_ca = new reactor_interface('content_adapter');
-    $ca   =& $GLOBALS['_pool'][$i_ca->_pool_id]['object'];
+    $ca   = &$GLOBALS['_pool'][$i_ca->_pool_id]['object'];
     $ca->configure($GLOBALS['_pool'][$_pool_id]['define']);
 
     return $ca;
@@ -233,7 +230,7 @@ function &tryGetForm($_so)
     $form           = 0;
     if ($form_container->isStored($_so)) {
         $form_container->restore($_so);
-        $form =& $form_container->get('object');
+        $form = &$form_container->get('object');
         $form_container->store($form->form_session);
     }
 
@@ -252,7 +249,7 @@ function handleForm($_so = '', $interface = 'none', $action = 'none')
         $form_container = new reactor_interface($object->action($action, $_reactor));
     }
 
-    $form =& $form_container->get('object');
+    $form = &$form_container->get('object');
 
     if (get_magic_quotes_gpc() && isset($_POST)) {
         $data = arrayMapRecursive('stripslashes', $_POST);
@@ -311,7 +308,7 @@ function createForm($pool_id, $action, $callback, $param = array())
 
     $form = new reactor_interface('content_adapter');
 
-    $fo =& $form->get('object');
+    $fo = &$form->get('object');
 
     $fo->action = $action;
 
@@ -359,7 +356,7 @@ function &restoreUser()
         if (isset($_SESSION['_user'])) {
             $_user = $_SESSION['_user'];
         }
-        $_SESSION['_user'] =& $_user;
+        $_SESSION['_user'] = &$_user;
 
         if ($_user['system'] != SITE_URL) {
             $_RGET['logout'] = 1;
@@ -393,7 +390,7 @@ function &restoreUser()
                     session_start();
                 }
 
-                $_SESSION['_user'] =& $_user;
+                $_SESSION['_user'] = &$_user;
             }
 
             if (!isset($_RGET['logout'])) {
@@ -806,7 +803,7 @@ function compileAurl($data)
     if (!isset($_site_tree['param'][$show])) {
         reactor_error('undefined show [' . $show . '] in site_tree');
     }
-    $param_pool =& $_site_tree['param'][$show];
+    $param_pool = &$_site_tree['param'][$show];
     $param      = $param_pool[$param_pool['max']];
 
     foreach ($param as $item) {

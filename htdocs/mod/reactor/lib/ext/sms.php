@@ -2,11 +2,11 @@
 
 class sms_sender
 {
-    var $login;
-    var $pass;
-    var $from;
-    var $host;
-    var $messages = array();
+    public $login;
+    public $pass;
+    public $from;
+    public $host;
+    public $messages = array();
 
     function sms_sender($login, $pass, $from, $host)
     {

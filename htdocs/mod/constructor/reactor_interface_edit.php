@@ -1,6 +1,9 @@
 <?php
 
-require_once LIB_DIR . 'config_write.php';
+namespace mod\constructor;
+
+use reactor\basic_object;
+use reactor\config_write;
 
 class reactor_interface_edit extends basic_object
 {
@@ -8,7 +11,7 @@ class reactor_interface_edit extends basic_object
     {
         $t = basic_object::store($form);
 
-        interfacesCompile();
+        config_write::interfacesCompile();
 
         return $t;
     }
