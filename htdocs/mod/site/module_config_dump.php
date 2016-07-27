@@ -62,7 +62,7 @@ return array(
             ),
             '_actions' => array(
                 array(
-                    'sort' => '0',
+                    'sort' => '4',
                     'name' => 'testAction',
                     'call' => '',
                     'description' => '',
@@ -79,27 +79,6 @@ return array(
         ),
     ),
     'tables' => array(
-        array(
-            'name' => 'mailer_data',
-            'db_name' => 'site_mailer_data',
-            'mlng' => '0',
-            'creates' => array(
-            ),
-        ),
-        array(
-            'name' => 'messenger_buffer',
-            'db_name' => 'messenger_buffer',
-            'mlng' => '0',
-            'creates' => array(
-            ),
-        ),
-        array(
-            'name' => 'messenger_income',
-            'db_name' => 'messenger_income',
-            'mlng' => '0',
-            'creates' => array(
-            ),
-        ),
         array(
             'name' => 'tree',
             'db_name' => 'site_tree',
@@ -128,12 +107,6 @@ return array(
         ),
     ),
     'config' => array(
-        array(
-            'name' => 'recall_manager',
-            'group' => '',
-            'value' => '38',
-            'descrip' => 'Дежурный менеджер обратной связи',
-        ),
     ),
     'resources' => array(
     ),

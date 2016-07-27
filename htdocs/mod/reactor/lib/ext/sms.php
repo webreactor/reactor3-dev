@@ -7,7 +7,7 @@ class sms_sender
     var $from;
     var $host;
     var $messages = array();
-    
+
     function sms_sender($login, $pass, $from, $host)
     {
         $this->login = $login;
@@ -15,7 +15,7 @@ class sms_sender
         $this->from  = $from;
         $this->host  = $host;
     }
-    
+
     function prepare_phone($str)
     {
         $num_chars = '';
@@ -43,10 +43,10 @@ class sms_sender
         } else {
             return 0;
         }
-        
+
         return $num_chars;
     }
-    
+
     function add_sms($to, $text)
     {
         $to = $this->prepare_phone($to);
@@ -55,7 +55,7 @@ class sms_sender
         }
         $this->messages[] = array('to' => $to, 'text' => $text);
     }
-    
+
     function send($to = '', $text = '')
     {
         ini_set('error_log', SITE_DIR . '../sms.log');
@@ -63,11 +63,11 @@ class sms_sender
         if ($to != '' && $text != '') {
             $this->add_sms($to, $text);
         }
-        
+
         if (empty($this->messages)) {
             return 0;
         }
-        
+
         $req = '<?xml version="1.0" encoding="utf-8" ?>' . "\r\n";
         $req .= '<package login="' . $this->login . '" password="' . $this->pass . '">' . "\r\n";
         $req .= "\t<message>\r\n";
@@ -80,7 +80,7 @@ class sms_sender
         }
         $req .= "\t</message>\r\n";
         $req .= '</package>';
-        
+
         $h = fsockopen($this->host, 80);
         if ($h) {
             $answer = '';
@@ -90,20 +90,20 @@ class sms_sender
                 'Content-Length: ' . strlen($req) . "\r\n" .
                 'Connection: close' . "\r\n" .
                 "\r\n" . $req;
-            
+
             error_log($post);
-            
+
             fwrite($h, $post);
             while (!feof($h)) {
                 $answer .= fgets($h, 1024);
             }
             fclose($h);
-            
+
             $answer = explode("\r\n\r\n", $answer);
             if (stripos($answer[0], 'chunked') !== false) {
                 $answer[1] = http_chunked_decode($answer[1]);
             }
-            
+
             error_log('-------- answer:');
             error_log(print_r($answer, true));
         }

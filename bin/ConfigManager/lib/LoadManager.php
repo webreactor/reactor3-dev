@@ -1,12 +1,14 @@
 <?php
 
+use \Reactor\Database\PDO\Connection;
+
 class LoadManager
 {
     protected $_db;
     protected $mod_dir;
     protected $group_rights_file;
-    
-    public function __construct($_db, $mod_dir)
+
+    public function __construct(Connection $_db = null, $mod_dir = null)
     {
         $this->_db               = $_db;
         $this->mod_dir           = $mod_dir;
@@ -16,7 +18,7 @@ class LoadManager
         $this->group_rights      = new GroupRights($_db);
         $this->group_rights_file = $mod_dir . 'user_group_rights.php';
     }
-    
+
     public function load()
     {
         $rights = $this->group_rights->getConfig();
@@ -25,7 +27,7 @@ class LoadManager
         $this->group_rights->load($rights);
         $this->loadTree();
     }
-    
+
     protected function loadTree()
     {
         $tree_config_file = $this->mod_dir . 'site/site_tree_config_dump.php';
@@ -34,7 +36,7 @@ class LoadManager
             $this->site_tree->load($data);
         }
     }
-    
+
     protected function loadModules($mod_dir)
     {
         $mod_action_relations   = array();
@@ -49,15 +51,15 @@ class LoadManager
             $this->modules->loadActionRelations($action_relations);
         }
     }
-    
+
     protected function loadModule($file)
     {
         $config = $this->loadFile($file);
         $this->modules->load($config);
-        
+
         return $config['action_relations'];
     }
-    
+
     protected function getModulesList($dir)
     {
         $rez = array();
@@ -69,14 +71,14 @@ class LoadManager
             }
             closedir($dh);
         }
-        
+
         return $rez;
     }
-    
+
     public function loadFile($file)
     {
         echo "Loading file $file\n";
-        
+
         return require $file;
     }
 }

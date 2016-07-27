@@ -789,9 +789,9 @@ return array(
                     'necessary' => '0',
                     'default' => '',
                     'enum' => 'global $_db;
-$_db->sql(\'select pk_action,concat(i.name,">",a.call) as calling from \'.T_REACTOR_INTERFACE_ACTION.\' a,\'.T_REACTOR_INTERFACE.\' i where a.fk_interface=i.pk_interface and public>0 order by pk_interface,a.call\');
+$query = $_db->sql(\'select pk_action,concat(i.name,">",a.call) as calling from \'.T_REACTOR_INTERFACE_ACTION.\' a,\'.T_REACTOR_INTERFACE.\' i where a.fk_interface=i.pk_interface and public>0 order by pk_interface,a.call\');
 
-$data=$_db->matr(\'pk_action\',\'calling\');
+$data=$query->matr(\'pk_action\',\'calling\');
 $data[0]=\'----------\';',
                 ),
                 array(
@@ -1137,8 +1137,8 @@ $data[0]=\'----------\';',
                     'necessary' => '1',
                     'default' => '$data=\'string\';',
                     'enum' => 'global $_db;
-$_db->sql(\'select * from \'.T_REACTOR_BASE_TYPE.\' order by `call`\');
-$data=$_db->matr(\'name\',\'call\');',
+$query = $_db->sql(\'select * from \'.T_REACTOR_BASE_TYPE.\' order by `call`\');
+$data=$query->matr(\'name\',\'call\');',
                 ),
                 array(
                     'base_type' => 'code',
@@ -1895,8 +1895,8 @@ $data=reactor_ver();',
                     'necessary' => '1',
                     'default' => '',
                     'enum' => 'global $_db;
-$_db->sql(\'select * from \'.T_REACTOR_UGROUP);
-$data=$_db->matr(\'pk_ugroup\',\'name\');',
+$query = $_db->sql(\'select * from \'.T_REACTOR_UGROUP);
+$data=$query->matr(\'pk_ugroup\',\'name\');',
                 ),
                 array(
                     'base_type' => 'code_line',
@@ -2407,8 +2407,8 @@ $data=$_db->matr(\'pk_ugroup\',\'name\');',
                     'necessary' => '0',
                     'default' => '',
                     'enum' => 'global $_db;
-$_db->sql(\'select * from \'.T_REACTOR_INTERFACE.\' order by name\');
-$data=$_db->matr(\'name\',\'name\');
+$query = $_db->sql(\'select * from \'.T_REACTOR_INTERFACE.\' order by name\');
+$data=$query->matr(\'name\',\'name\');
 $data[\'\']=\'----empty----\';',
                 ),
                 array(
@@ -2422,8 +2422,8 @@ $data[\'\']=\'----empty----\';',
                     'necessary' => '0',
                     'default' => '',
                     'enum' => 'global $_db;
-$_db->sql(\'select * from \'.T_REACTOR_MODULE.\' order by name\');
-$data=$_db->matr(\'name\',\'name\');
+$query = $_db->sql(\'select * from \'.T_REACTOR_MODULE.\' order by name\');
+$data=$query->matr(\'name\',\'name\');
 $data[\'\']=\'----empty----\';',
                 ),
                 array(

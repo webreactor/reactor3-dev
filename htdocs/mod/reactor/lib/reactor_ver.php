@@ -23,7 +23,7 @@ function reactor_ver()
             }
         }
     }
-    
+
     return trim($rez);
 }
 
@@ -35,7 +35,7 @@ function reactor_item_ver($file)
     if (preg_match('/version\s+(\d+(\.\d+)*)/uis', $str, $match)) {
         return $match[1];
     }
-    
+
     return '';
 }
 
@@ -49,14 +49,14 @@ function reactor_ver_depend($check, &$log)
     foreach ($t[1] as $k => $item) {
         $check_match[$t[1][$k]] = $t[2][$k];
     }
-    
+
     preg_match_all('/\s*([^=\s]+)\s*=\s*(\d+(\.\d+)*)/is', reactor_ver(), $t);
-    
+
     $match = array();
     foreach ($t[1] as $k => $item) {
         $match[$t[1][$k]] = $t[2][$k];
     }
-    
+
     $r   = 1;
     $log = array();
     foreach ($check_match as $k => $item) {
@@ -74,7 +74,7 @@ function reactor_ver_depend($check, &$log)
             $r                 = 0;
         }
     }
-    
+
     return $r;
 }
 
@@ -85,6 +85,6 @@ function cleen_ver($str)
     if (isset($t[1])) {
         $str .= $t[1];
     }
-    
+
     return $str;
 }

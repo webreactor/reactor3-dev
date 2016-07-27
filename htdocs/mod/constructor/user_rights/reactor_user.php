@@ -5,59 +5,87 @@ class reactor_user extends basic_object
     function getList($page, $per_page, $filter = '', $fk_ugroup = 0)
     {
         $_ca =& pool_create_content_adapter($this->_pool_id);
-        
-        $all       = 0;
-        $where_rez = ' where 1 ';
+
+        $where_arr        = array(1);
+        $where_parameters = array();
+
         if ($filter != '') {
-            $where_rez .= ' and login like "%' . addslashes($filter) . '%" ';
+            $where_arr[]                = 'login LIKE "%:login%"';
+            $where_parameters[':login'] = addslashes($filter);
         }
+
         if ($fk_ugroup != 0) {
-            $where_rez .= ' and fk_ugroup=' . $fk_ugroup . ' ';
+            $where_arr[]                    = 'fk_ugroup = :fk_ugroup';
+            $where_parameters[':fk_ugroup'] = $fk_ugroup;
         }
-        $data = $this->_db->pagess(
-            'select * from ' . T_REACTOR_USER . ' ' . $where_rez . ' order by login',
+
+        $pages = $this->_db->pages(
+            sprintf(
+                'SELECT *
+                FROM %s
+                WHERE %s
+                ORDER BY login',
+                T_REACTOR_USER,
+                implode(' AND ', $where_arr)
+            ),
+            $where_parameters,
             $page,
-            $per_page,
-            $all,
-            $total_rows_count
+            $per_page
         );
-        
+
         return array(
-            'all'              => $all,
-            'total_rows_count' => $total_rows_count,
+            'all'              => $pages['total_pages'],
+            'total_rows_count' => $pages['total_rows'],
             'page'             => pool_get($this->_pool_id, 'name') . '_page',
             'per_page'         => $per_page,
             'now'              => $page,
-            'data'             => $data,
+            'data'             => $pages['data'],
             'fk_ugroup_enum'   => $_ca->define['fk_ugroup']['enum'],
         );
     }
-    
+
     function getSelectGroup($row, $filter, $fk_ugroup = 1, $forceOne = 0, $forceFkey = 1)
     {
         if ($forceOne == 1) {
             return $this->getOne($filter, $row);
         }
+
         $where_rez = array();
-        $filter    = explode(' ', $filter);
+
+        $filter = explode(' ', $filter);
+
         foreach ($filter as $word) {
-            $where_rez[] = '`' . $row . '` like "%' . $word . '%"';
+            $where_rez[] = '`' . $row . '` LIKE "%' . $word . '%"';
         }
-        
-        $where_rez = ' where (' . implode(' and ', $where_rez) . ')';
-        
+
+        $where_rez = ' WHERE (' . implode(' AND ', $where_rez) . ')';
+
         if ($this->fkey != '' && $forceFkey == 1) {
-            $where_rez .= ' and `' . $this->fkey . '`="' . $this->fkey_value . '"';
+            $where_rez .= ' AND `' . $this->fkey . '` = "' . $this->fkey_value . '"';
         }
-        
+
         if ($fk_ugroup != 0) {
-            $this->_db->sql(
-                'select ' . $this->pkey . ', ' . $row . ' from ' . $this->table . $where_rez . ' and `fk_ugroup`="' . $fk_ugroup . '" limit 25'
+            $query = $this->_db->sql(
+                'SELECT
+                    ' . $this->pkey . ',
+                    ' . $row . '
+                FROM ' . $this->table . '
+                ' . $where_rez . '
+                AND `fk_ugroup` = :fk_ugroup
+                LIMIT 25',
+                array(':fk_ugroup' => $fk_ugroup)
             );
         } else {
-            $this->_db->sql('select ' . $this->pkey . ', ' . $row . ' from ' . $this->table . $where_rez . ' limit 25');
+            $query = $this->_db->sql(
+                'SELECT
+                    ' . $this->pkey . ',
+                    ' . $row . '
+                FROM ' . $this->table . '
+                ' . $where_rez . '
+                LIMIT 25'
+            );
         }
-        
-        return $this->_db->matr($this->pkey, $row);
+
+        return $query->matr($this->pkey, $row);
     }
 }

@@ -6,14 +6,21 @@
         "framework"
     ],
     "license":      "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/webreactor/reactor4-dev"
+        }
+    ],
     "require":      {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "webreactor/reactor4-dev": "@dev"
     },
     "require-dev":  {
     },
     "autoload":     {
         "psr-4": {
-            "reactor\\": "htdocs/mod/reactor/lib",
+            "Reactor\\": "htdocs/mod/reactor/lib",
             "mod\\":     "htdocs/mod"
         }
     },

@@ -18,15 +18,23 @@ function configManagerAutoload($class_name)
 
 spl_autoload_register('configManagerAutoload');
 
+define('SITE_URL', '/');
 define('SITE_DIR', MANAGED_APP_DIR);
-require MANAGED_APP_DIR . 'etc/base_config.php';
-require LIB_DIR . 'db/mysql.php';
+include MANAGED_APP_DIR . 'etc/base_config.php';
+include MANAGED_APP_DIR . 'etc/tables.php';
+require MANAGED_APP_DIR . 'vendor/autoload.php';
 
-$_db = new db_mysql(DB_USER, DB_PASS, DB_HOST, DB_BAZA);
-if (!$_db->link) {
-    die('database error');
-}
-$_db->sql('set NAMES "utf8"');
+$_db = new \Reactor\Database\PDO\Connection(
+    sprintf(
+        'mysql:dbname=%s;host=%s',
+        DB_NAME,
+        DB_HOST
+    ),
+    DB_USER,
+    DB_PASS
+);
+
+$_db->sql('SET NAMES "utf8"');
 
 function reactor_error($msg)
 {

@@ -14,15 +14,15 @@ class FileUploadHandler extends UploadHandler
             $this->initialize();
         }
     }
-    
+
     protected function get_download_url($file_name, $version = null, $direct = false)
     {
         $url               = parent::get_download_url($file_name, $version, $direct);
         $encoded_file_name = rawurlencode($file_name);
-        
+
         return str_replace($encoded_file_name, getRelativePath($file_name), $url);
     }
-    
+
     protected function handle_file_upload(
         $uploaded_file,
         $name,
@@ -39,7 +39,7 @@ class FileUploadHandler extends UploadHandler
             $file->name = $new_name;
             $file->url  = $this->get_download_url($new_name);
         }
-        
+
         return $file;
     }
 }

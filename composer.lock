@@ -4,13 +4,103 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c8950c901e8fad674ff8d67847211d2f",
-    "content-hash": "1670f86adbf78954e791a7791cda08fc",
-    "packages": [],
+    "hash": "bb7a944c0de8d4d307161ded9b242637",
+    "content-hash": "8c5ba6c69eb5915f7ed43e705df90649",
+    "packages": [
+        {
+            "name": "symfony/yaml",
+            "version": "v3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "3df409958a646dad2bc5046c3fb671ee24a1a691"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/3df409958a646dad2bc5046c3fb671ee24a1a691",
+                "reference": "3df409958a646dad2bc5046c3fb671ee24a1a691",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "https://symfony.com",
+            "time": "2015-12-26 13:39:53"
+        },
+        {
+            "name": "webreactor/reactor4-dev",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webreactor/reactor4-dev.git",
+                "reference": "df8765ea52c3cbbd5c964341b51d2c5e8a8b8bed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webreactor/reactor4-dev/zipball/df8765ea52c3cbbd5c964341b51d2c5e8a8b8bed",
+                "reference": "df8765ea52c3cbbd5c964341b51d2c5e8a8b8bed",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/yaml": "3.0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Reactor\\": "Reactor/",
+                    "Mod\\": "Mod/",
+                    "ReactorGenerated\\": "var/bin_generated/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Maxim Popov",
+                    "email": "toecto@gmail.com"
+                }
+            ],
+            "description": "Dev repo for Reactor4",
+            "support": {
+                "source": "https://github.com/webreactor/reactor4-dev/tree/master",
+                "issues": "https://github.com/webreactor/reactor4-dev/issues"
+            },
+            "time": "2016-07-24 18:39:23"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "webreactor/reactor4-dev": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

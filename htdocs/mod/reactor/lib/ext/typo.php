@@ -27,7 +27,7 @@ function typo_savetag_decode($match)
     if ($t[0] != '%') {
         return '<%' . $match[1] . '>';
     }
-    
+
     return '<' . substr($t, 1) . '>';
 }
 
@@ -36,45 +36,45 @@ function typo_nbsp($match)
     $match_t = trim(preg_replace('/<[^>]+>/u', '', $match[0]));
     //if(substr($match_t,-1,1)=='.')return $match[0];
     $match_t = preg_replace('/[\s\()-]/u', '', $match_t);
-    
+
     $t = mb_strlen($match_t);
     if ($t > 0 && $t < 4) {
         $match[0] = $match[1] . '&nbsp;';
     }
-    
+
     return $match[0];
 }
 
 function typo($text, $settings = 'none')
 {
-    
+
     if ($text == '') {
         return '';
     }
-    
+
     $config = array(
         'cleen_utf' => true,
     );
-    
+
     if ($settings != 'none') {
         $config = $settings + $config;
     }
-    
+
     $spec_chars_normalaize = array(
         '&quot;' => '"',
         '&#34;'  => '"',
         '&#034;' => '"',
-        
+
         '&#39;'  => "'",
         '&#039;' => "'",
-        
+
         '&#160;'            => '&nbsp;',
         '&#xA0;'            => '&nbsp;',
         chr(194) . chr(160) => '&nbsp;',
-        
+
         '&mdash;'                      => '&#151;',
         chr(226) . chr(128) . chr(148) => '&#151;',
-        
+
         '«' => '&laquo;',
         '»' => '&raquo;',
         '„' => '&bdquo;',
@@ -83,47 +83,47 @@ function typo($text, $settings = 'none')
         "‘" => '&lsquo;',
         "’" => '&rsquo;',
     );
-    
+
     $spec_chars_good = array(
         '&quot;' => '"',
         '&#34;'  => '"',
         '&#034;' => '"',
-        
+
         '&#39;'  => "'",
         '&#039;' => "'",
-        
+
         '&lsquo;' => "‘",
         '&rsquo;' => "’",
-        
+
         '&ldquo;' => '“',
         '&#147;'  => '“',
         '&#x93;'  => '“',
-        
+
         '&rdquo;' => '”',
         '&#148;'  => '”',
         '&#x94;'  => '”',
-        
+
         '&bdquo;' => '„',
-        
+
         '&mdash;' => chr(226) . chr(128) . chr(148),
         '&#151;'  => chr(226) . chr(128) . chr(148),
-        
+
         '&laquo;' => '«',
         '&#171;'  => '«',
         '&#xAB;'  => '«',
-        
+
         '&raquo;' => '»',
         '&#187;'  => '»',
         '&#xBB;'  => '»',
-        
+
         '&nbsp;'   => chr(194) . chr(160),
         '&#160;'   => chr(194) . chr(160),
         '&#xA0;'   => chr(194) . chr(160),
         '&#x202f;' => ' ',
-        
+
         //'&#8209;'=>chr(226).chr(128).chr(145),
         //'-'=>chr(226).chr(128).chr(145),
-        
+
         '&copy;'   => '©',
         '&#169;'   => '©',
         '&reg;'    => '®',
@@ -132,7 +132,7 @@ function typo($text, $settings = 'none')
         '&#153;'   => '™',
         '&hellip;' => '…',
     );
-    
+
     $symbols = array(
         '(c)'  => '&#169;',
         '(r)'  => '&#174;',
@@ -150,22 +150,22 @@ function typo($text, $settings = 'none')
     $text = strtr($text, $spec_chars_normalaize);
 
 //Кавычки
-    
+
     $text = preg_replace('/([^\w])"([^"]*[^\d])"([^\w])/Usu', '\1&laquo;\2&raquo;\3', ' ' . $text . ' '); //russian
     $text = preg_replace('/([^\w])"([^"]*\d"[^"]+)"([^\w])/Usu', '\1&laquo;\2&raquo;\3', $text); //russian
     $text = preg_replace('/([^\w])"([^"]*[^\d])"([^\w])/Usu', '\1&laquo;\2&raquo;\3', $text); //russian
     $text = preg_replace('/([^\w])"([^"]*)"([^\w])/Usu', '\1&laquo;\2&raquo;\3', $text); //russian
-    
+
     $text = preg_replace('/(&laquo;)\s+/Uus', '\1', $text);
     $text = preg_replace('/\s+(&raquo;)/Uus', '\1', $text);
 
 //$text=preg_replace('/&laquo;(.*)&laquo;(.*)&raquo;(.*)&raquo;/Usu', '&laquo;\1&bdquo;\2&ldquo;\3&raquo;', $text); //russian
-    
+
     $text = preg_replace('/([^\w])\'([^\']*)\'([^\w])/Usu', '\1&lsquo;\2&rsquo;\3', $text);
 
 //Пробелы у пунктуации - иногда лучше отключать
     $text = preg_replace('/\s+([\.,;:\!\?])(\s+)/u', '\1\2', $text);
-    
+
     $text = trim($text);
 
 //Много тире
@@ -220,14 +220,14 @@ function typo($text, $settings = 'none')
 //language part
 //back nbsp
     $text = preg_replace('/\s+(бы|ли|же)([\s\W])/u', '&nbsp;\1\2', $text);
-    
+
     if ($config['cleen_utf']) {
         $text = strtr($text, $spec_chars_good);
     }
 
 //nbsp
 //$text=preg_replace_callback('/([^\s]+)[ \t]+/u', 'typo_nbsp', $text);
-    
+
     if ($config['cleen_utf']) {
         $text = str_replace('&nbsp;', chr(194) . chr(160), $text);
     }
@@ -241,7 +241,7 @@ function typo($text, $settings = 'none')
 
 //Восстанавливаем нужное2
     $text = preg_replace_callback('/<%([^>]+)>/u', 'typo_savetag_decode', $text);
-    
+
     return $text;
 }
 
@@ -306,30 +306,30 @@ function post_typo($text)
         '\1',
         $text
     );
-    
+
     /**/
-    
+
     return $text;
 }
 
 function unpost_typo($text)
 {
     $text = preg_replace('/<nobr class="typo">(.+)<\/nobr>/Uu', '\1', $text);
-    
+
     $text = str_replace('<span class="hbrace typo">(</span>', '(', $text);
-    
+
     $text = str_replace('<span class="hlaquo-s typo">«</span>', '«', $text);
     $text = str_replace('<span class="hlaquo-s typo">&laquo;</span>', '&laquo;', $text);
-    
+
     $text = str_replace('<span class="hbdquo typo">„</span>', '„', $text);
     $text = str_replace('<span class="hbdquo typo">&bdquo;</span>', '&bdquo;', $text);
-    
+
     $text = str_replace('<wbr class="typo"><span class="slaquo-s typo"> </span> ', ' ', $text);
     $text = str_replace('<wbr class="typo"><span class="sbrace typo"> </span> ', ' ', $text);
     $text = str_replace('<wbr class="typo"><span class="sbdquo typo"> </span> ', ' ', $text);
     $text = str_replace('<span class="slaquo-s typo"> </span>', '', $text);
-    
+
     /**/
-    
+
     return $text;
 }

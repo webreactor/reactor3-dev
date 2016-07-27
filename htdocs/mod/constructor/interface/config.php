@@ -9,7 +9,7 @@ class reactor_config extends basic_object
         $t = basic_object::store($form);
 
         configCompile();
-        
+
         return $t;
     }
 }

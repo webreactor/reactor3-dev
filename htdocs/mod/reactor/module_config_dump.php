@@ -138,8 +138,8 @@ return array(
                     'necessary' => '0',
                     'default' => '',
                     'enum' => 'global $_db;
-$_db->sql(\'select `name` from \'.T_REACTOR_INTERFACE.\' order by name\');
-$data=$_db->matr(\'name\',\'name\');',
+$query = $_db->sql(\'select `name` from \'.T_REACTOR_INTERFACE.\' order by name\');
+$data=$query->matr(\'name\',\'name\');',
                 ),
                 array(
                     'base_type' => 'string',
@@ -345,14 +345,7 @@ $data=$_db->matr(\'name\',\'name\');',
   `descrip` varchar(255) NOT NULL DEFAULT \'\',
   PRIMARY KEY (`pk_config`),
   UNIQUE KEY `idx_name` (`name`,`fk_module`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8',
-            ),
-        ),
-        array(
-            'name' => 'form',
-            'db_name' => 'reactor_form',
-            'mlng' => '0',
-            'creates' => array(
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
@@ -368,7 +361,7 @@ $data=$_db->matr(\'name\',\'name\');',
   `title` varchar(100) NOT NULL DEFAULT \'\',
   `topic` text NOT NULL,
   PRIMARY KEY (`pk_help`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
@@ -488,7 +481,7 @@ $data=$_db->matr(\'name\',\'name\');',
   `mlng` tinyint(1) NOT NULL DEFAULT \'0\',
   PRIMARY KEY (`pk_table`),
   UNIQUE KEY `idx_uname` (`name`,`fk_module`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8',
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8',
             ),
         ),
         array(
@@ -526,27 +519,6 @@ $data=$_db->matr(\'name\',\'name\');',
   `fk_action` int(11) NOT NULL DEFAULT \'0\',
   PRIMARY KEY (`fk_ugroup`,`fk_action`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8',
-            ),
-        ),
-        array(
-            'name' => 'up_module',
-            'db_name' => 'reactor_up_module',
-            'mlng' => '0',
-            'creates' => array(
-            ),
-        ),
-        array(
-            'name' => 'up_name',
-            'db_name' => 'reactor_up_name',
-            'mlng' => '0',
-            'creates' => array(
-            ),
-        ),
-        array(
-            'name' => 'up_value',
-            'db_name' => 'reactor_up_value',
-            'mlng' => '0',
-            'creates' => array(
             ),
         ),
         array(
