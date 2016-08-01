@@ -46,18 +46,10 @@ class reactor_interface
         return $GLOBALS['_pool'][$this->_pool_id][$name];
     }
 
-    public function see_at($_pool_id)
-    {
-        if (!isset($GLOBALS['_pool'][$_pool_id])) {
-            reactor_error('undefined pool_id ' . $interface_name);
-        }
-        
-        $this->_pool_id = $_pool_id;
-    }
-
     public function configure($interface_name)
     {
-        global $_interfaces, $_reactor;
+        global $_interfaces;
+
         if ($this->_pool_id == 0) {
             $this->_pool_id = pool_new();
         }
@@ -103,6 +95,14 @@ class reactor_interface
 
         reactor_trace($_SESSION['_stored_interface'][$id]['name'] . '->restore ' . $id);
 
+        if ($cls['source'] != '') {
+            initModule($cls['module']);
+
+            require_once $_reactor['module']['dir'] . $cls['source'];
+
+            uninitModule();
+        }
+
         if ($this->_pool_id == 0) {
             $this->_pool_id = pool_new();
         }
@@ -144,8 +144,6 @@ class reactor_interface
 
     public function action($action_name, &$param)
     {
-        global $_RGET, $_SGET, $_db, $_reactor, $_user;
-
         $_data = &$GLOBALS['_pool'][$this->_pool_id];
 
         reactor_trace('start action ' . $_data['name'] . '->' . $action_name);

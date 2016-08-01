@@ -14,10 +14,16 @@ function &resource($name)
         } else {
             $resources = resourceRestore('reactor_resource');
 
-            $data = null;
+            if (!isset($data)) {
+                $data = null;
+            }
 
-            if ($resources[$name]['store']) {
-                resourceStore($name, $data);
+            if (isset($resources[$name])) {
+                eval($resources[$name]['source']);
+
+                if ($resources[$name]['store']) {
+                    resourceStore($name, $data);
+                }
             }
 
             $_resource[$name] = $data;

@@ -68,17 +68,17 @@ class config_write
 
         $query = $_db->sql(
             'SELECT
-            i.pk_interface,
-            i.name,
-            i.configurators,
-            i.class,
-            i.pkey,
-            i.constructor,
-            m.name AS module
-        FROM
-            ' . T_REACTOR_INTERFACE . ' i,
-            ' . T_REACTOR_MODULE . ' m
-        WHERE i.fk_module = m.pk_module'
+                i.pk_interface,
+                i.name,
+                i.configurators,
+                i.class,
+                i.pkey,
+                i.constructor,
+                m.name AS module
+            FROM
+                ' . T_REACTOR_INTERFACE . ' i,
+                ' . T_REACTOR_MODULE . ' m
+            WHERE i.fk_module = m.pk_module'
         );
 
         while ($t = $query->line()) {
