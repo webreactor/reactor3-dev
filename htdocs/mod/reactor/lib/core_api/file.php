@@ -61,3 +61,16 @@ function getNewFileName()
 
     return array('path' => $dir . '/' . $_newname, 'name' => $_newname);
 }
+
+function handleUploadedFile($_file)
+{
+    if (!isset($_FILES[$_file])) {
+        return 0;
+    }
+
+    if ($_FILES[$_file]['size'] == 0) {
+        return 0;
+    }
+
+    return saveFile($_FILES[$_file]['tmp_name'], true);
+}

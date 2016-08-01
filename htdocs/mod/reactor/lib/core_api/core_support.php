@@ -133,8 +133,7 @@ function reactor_trace($msg)
     }
 }
 
-function reactor_error($msg, $lvl = 0)
+function reactor_error($msg)
 {
     error_log($msg);
-//    die();
 }

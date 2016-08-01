@@ -4,7 +4,6 @@
 
 function createPreview($file_src, $file_dest, $size_x, $size_y = 0, $ex = 'out')
 {
-    global $_error;
     $t  = getimagesize($file_src);
     $us = 0;
 
@@ -22,8 +21,6 @@ function createPreview($file_src, $file_dest, $size_x, $size_y = 0, $ex = 'out')
     }
 
     if (!$us) {
-        $_error['image'] = 1;
-
         return 0;
     }
 
