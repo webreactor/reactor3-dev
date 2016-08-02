@@ -116,8 +116,9 @@ return array(
         array(
             'name' => 'reactor_interfaces',
             'store' => '0',
-            'source' => '$query = $_db->sql(\'select pk_interface,name from \'.T_REACTOR_INTERFACE);
-$data=$query->matr(\'pk_interface\',\'name\');',
+            'source' => 'global $_db;
+$query = $_db->sql(\'SELECT pk_interface, name FROM \' . T_REACTOR_INTERFACE);
+$data = $query->matr(\'pk_interface\', \'name\');',
         ),
     ),
     'base_types' => array(

@@ -231,7 +231,7 @@ class Gekkon
         $tag['name'] = trim($arr[1]);
         $tag['arg']  = trim($arr[2]);
         if ($tag['name'][0] == '/') {
-            reactor_error('Gekkon: compile error, dont open tag bloc - ' . $arr[1] . $arr[2], 1);
+            reactor_error('Gekkon: compile error, dont open tag bloc - ' . $arr[1] . $arr[2]);
         }
 
         if (!isset($this->plugin[$tag['name']])) {
@@ -276,7 +276,7 @@ class Gekkon
                 }
             }
             if ($f != 0) {
-                reactor_error('Gekkon: compile error: Dont close tag ' . $tag['name'], 1);
+                reactor_error('Gekkon: compile error: Dont close tag ' . $tag['name']);
             }
 
             $tag['inner'] = substr($str, $tag_pos + $tag_len, $now - $tag_pos - $tag_len);
