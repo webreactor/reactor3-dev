@@ -2,9 +2,9 @@
 
 class retailrocket
 {
-    var $partnerId;
-    var $socket;
-    var $error;
+    public $partnerId;
+    public $socket;
+    public $error;
 
     const base_url_api = '/api/1.0/Recomendation/';
 

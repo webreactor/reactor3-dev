@@ -35,13 +35,13 @@ function encode_field($fld)
 
 class smtp extends socket_client
 {
-    var $srv;
-    var $login;
-    var $pwd;
-    var $last_reply;
-    var $letter;
-    var $text;
-    var $header_fields
+    public $srv;
+    public $login;
+    public $pwd;
+    public $last_reply;
+    public $letter;
+    public $text;
+    public $header_fields
         = array(
             'from',
             'date',

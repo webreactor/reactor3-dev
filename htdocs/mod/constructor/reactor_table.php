@@ -1,6 +1,9 @@
 <?php
 
-require_once LIB_DIR . 'config_write.php';
+namespace mod\constructor;
+
+use reactor\basic_object;
+use reactor\config_write;
 
 class reactor_table extends basic_object
 {
@@ -23,7 +26,7 @@ class reactor_table extends basic_object
     {
         $r = basic_object::store($form);
 
-        tablesCompile();
+        config_write::tablesCompile();
 
         return $r;
     }

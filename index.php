@@ -28,6 +28,7 @@ if ($url[strlen($url) - 1] != '/') {
     }
 }
 
+require 'vendor/autoload.php';
 require 'bin/load_core.php';
 
 $_RGET = initRequestIndex();
@@ -37,8 +38,10 @@ if (strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
     die();
 }
 
+global $_reactor;
+
 if ($_reactor['show']['interface'] != '') {
-    $object = new reactor_interface();
+    $object = new \reactor\reactor_interface();
 
     if (isset($_RGET['_so']) && $_reactor['show']['interface'] == 'null') {
         $object->restore($_RGET['_so']);
@@ -50,12 +53,17 @@ if ($_reactor['show']['interface'] != '') {
     $Gekkon->register('main_pool_id', $object->_pool_id);
 
     if ($_reactor['show']['action'] != '') {
-        $_action =& $object->get('action');
+        $_action = &$object->get('action');
         if (!isset($_action[$_reactor['show']['action']])) {
             initModule('cp');
             $Gekkon->display('login.tpl');
             die();
         }
+
+//        var_dump($object);
+//        var_dump($_reactor['module']);
+//        var_dump($object->action($_reactor['show']['action'], $null));
+//        die();
 
         $data = $object->action($_reactor['show']['action'], $null);
         $Gekkon->registers('exec_data', $data);

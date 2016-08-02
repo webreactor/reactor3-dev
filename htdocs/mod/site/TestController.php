@@ -2,6 +2,9 @@
 
 namespace mod\site;
 
+
+use mod\constructor\reactor_base_type;
+
 class TestController
 {
     public function testAction()
@@ -13,5 +16,8 @@ class TestController
         $query = $_db->select(T_REACTOR_INTERFACE);
 
         var_dump($query->matr('pk_interface', 'name'));
+
+        new reactor_base_type();
+        
     }
 }

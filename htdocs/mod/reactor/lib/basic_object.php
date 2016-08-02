@@ -1,5 +1,7 @@
 <?php
 
+namespace reactor;
+
 class basic_object
 {
     public $table;
@@ -33,7 +35,7 @@ class basic_object
 
     public function configure($table, $order = '', $fk_value = 0)
     {
-        $_container       =& pool_get($this->_pool_id);
+        $_container       = &pool_get($this->_pool_id);
         $this->pkey       = $_container['pkey'];
         $this->table      = $table;
         $this->pkey_value = 0;

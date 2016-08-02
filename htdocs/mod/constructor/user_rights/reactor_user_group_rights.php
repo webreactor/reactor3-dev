@@ -1,12 +1,15 @@
 <?php
 
-require_once LIB_DIR . 'config_write.php';
+namespace mod\constructor\user_rights;
+
+use reactor\basic_object;
+use reactor\config_write;
 
 class reactor_user_group_rights extends basic_object
 {
     public $fk_value;
 
-    public function getOne($fk)
+    public function getOne($fk = 0, $row = '*')
     {
         $this->fk_value = $fk;
 
@@ -25,18 +28,18 @@ class reactor_user_group_rights extends basic_object
         while ($t = $query->line()) {
             $r[$t['fk_module']]['interfaces'][$cnt] = $t;
 
-            $tr[$t['pk_interface']] =& $r[$t['fk_module']]['interfaces'][$cnt];
+            $tr[$t['pk_interface']] = &$r[$t['fk_module']]['interfaces'][$cnt];
 
             $cnt++;
         }
 
-        $query = $_db->sql('SELECT * FROM ' . T_REACTOR_INTERFACE_ACTION . ' ORDER BY `CALL`');
+        $query = $_db->sql('SELECT * FROM ' . T_REACTOR_INTERFACE_ACTION . ' ORDER BY `call`');
 
         while ($t = $query->line()) {
             $tr[$t['fk_interface']]['actions'][] = $t;
         }
 
-        $query = $_db->select(T_REACTOR_UGROUP_ACTION, array('fk_ugroup', $fk));
+        $query = $_db->select(T_REACTOR_UGROUP_ACTION, array('fk_ugroup' => $fk));
 
         return array(
             'stucture' => $r,
@@ -46,7 +49,7 @@ class reactor_user_group_rights extends basic_object
 
     public function store($form)
     {
-        $this->_db->delete(T_REACTOR_UGROUP_ACTION, array('fk_ugroup', $this->fk_value));
+        $this->_db->delete(T_REACTOR_UGROUP_ACTION, array('fk_ugroup' => $this->fk_value));
 
         $data = $form->toDb();
 
@@ -60,8 +63,8 @@ class reactor_user_group_rights extends basic_object
             );
         }
 
-        guestUserCompile();
-        interfacesCompile();
+        config_write::guestUserCompile();
+        config_write::interfacesCompile();
 
         return 1;
     }

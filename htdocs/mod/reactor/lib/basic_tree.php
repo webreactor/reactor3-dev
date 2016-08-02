@@ -1,6 +1,7 @@
 <?php
 
-//version 3.1.0
+namespace reactor;
+
 class basic_tree extends basic_object
 {
     public $img;
@@ -215,7 +216,7 @@ class basic_tree extends basic_object
         }
 
         $r = array();
-        $t =& $r;
+        $t = &$r;
         foreach ($path as $k => $p) {
             foreach ($this->img as $nk => $node) {
                 if ($node[$this->fkey] == $p[$this->fkey]) {
@@ -224,7 +225,7 @@ class basic_tree extends basic_object
                     //if($nk==$k)$tt=&$t[$nk]['in'];
                 }
             }
-            $t =& $t[$p[$this->pkey]]['in'];
+            $t = &$t[$p[$this->pkey]]['in'];
         }
 
         return $r;

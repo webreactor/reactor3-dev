@@ -1,26 +1,27 @@
 <?php
 
-//version 2.2.5
+namespace reactor;
 
 class content_adapter
 {
-    var $define;
-    var $data;
-    var $error;
-    var $handler;
-    var $_take;
-    var $_drop;
-    var $stored_id;
-    var $form_session;
-    var $action;
-    var $return_url;
-    var $forvard_url;
-    var $cancel_url;
-    var $_pool_id;
+    public $define;
+    public $data;
+    public $error;
+    public $handler;
+    public $_take;
+    public $_drop;
+    public $stored_id;
+    public $form_session;
+    public $action;
+    public $return_url;
+    public $forvard_url;
+    public $cancel_url;
+    public $_pool_id;
 
-    function content_adapter($_name_pool_so = '')
+    public function __construct($_name_pool_so = '')
     {
         global $_interfaces;
+
         $this->define  = array();
         $this->handler = array();
         $this->data    = array();
@@ -37,11 +38,13 @@ class content_adapter
 
                 return;
             }
+
             if (isset($_SESSION['_stored_interface'][$_name_pool_so])) {
                 $this->restore($_SESSION['_stored_interface'][$_name_pool_so]['define']);
 
                 return;
             }
+
             if (isset($GLOBALS['_pool'][$_name_pool_so]['define'])) {
                 $this->configure($GLOBALS['_pool'][$_name_pool_so]['define']);
             } else {
@@ -60,6 +63,7 @@ class content_adapter
     function drop($fields = 'none')
     {
         $this->_drop = $fields;
+
         if ($fields == 'none') {
             $this->_drop = array();
         }
@@ -68,6 +72,7 @@ class content_adapter
     function take($fields = 'none')
     {
         $this->_take = $fields;
+
         if ($fields == 'none') {
             $this->_take = array();
         }
@@ -76,21 +81,24 @@ class content_adapter
     function configure($define)
     {
         global $_base_types;
+
         reactor_trace('content_adapter->configure');
 
         if ($this->_pool_id == 0) {
             $this->_pool_id                              = pool_new();
             $GLOBALS['_pool'][$this->_pool_id]           = array();
-            $GLOBALS['_pool'][$this->_pool_id]['object'] =& $this;
+            $GLOBALS['_pool'][$this->_pool_id]['object'] = &$this;
         }
 
         foreach ($define as $key => $item) {
             $this->define[$key] = $item;
 
             $data = '';
+
             if ($item['default'] != '') {
                 eval($item['default']);
             }
+
             $this->define[$key]['default'] = $data;
 
             if (!isset($this->data[$key])) {
@@ -98,20 +106,26 @@ class content_adapter
             }
 
             $data = '';
+
             if ($item['enum'] != '') {
                 eval($item['enum']);
             }
+
             $this->define[$key]['enum'] = $data;
 
             $data = array();
+
             if ($item['base_type_param'] != '') {
                 eval($item['base_type_param']);
             }
 
             $this->define[$key]['base_type_param'] = $data;
 
-            $this->handler[$key] = new $_base_types[$item['base_type']]['type']($key);
+            $class_name = 'reactor\\base_type\\' . $_base_types[$item['base_type']]['type'];
+
+            $this->handler[$key] = new $class_name($key);
         }
+
         $this->onRestore();
     }
 
@@ -127,12 +141,14 @@ class content_adapter
         global $_base_types;
 
         $this->error = array();
+
         foreach ($this->define as $item) {
             if ($_base_types[$item['base_type']]['handle'] == 0) {
                 if (isset($src[$item['name']])) {
                     $this->data[$item['name']] = $this->validate($src[$item['name']], $item);
                 } else {
                     $this->data[$item['name']] = $item['default'];
+
                     if ($item['necessary'] == 1) {
                         $this->error[$item['name']] = 'none';
                     }
@@ -145,7 +161,6 @@ class content_adapter
 
             //if($_base_types[$item['base_type']]['handle']==2)
             //do nothing for label
-
         }
 
         foreach ($this->define as $item) {
@@ -158,18 +173,20 @@ class content_adapter
     function validate(&$value, &$item)
     {
         global $_base_types;
-        $type =& $_base_types[$item['base_type']];
+
+        $type = &$_base_types[$item['base_type']];
+
         if (is_array($value) && $type['check_array'] == 1) {
             foreach ($value as $k => $v) {
                 $value[$k] = $this->validate($v, $item);
             }
         } else {
-
             $value = arrayMapRecursive('trim', $value);
 
             if (is_array($value)) {
                 if ($type['check_array'] == 0) {
-                    $value                      = $item['default'];
+                    $value = $item['default'];
+
                     $this->error[$item['name']] = 'check_array';
 
                     return $value;
@@ -192,7 +209,8 @@ class content_adapter
 
             if (!$this->handler[$item['name']]->fromForm($value)) {
                 $this->error[$item['name']] = 'base_type';
-                $value                      = $item['default'];
+
+                $value = $item['default'];
 
                 return $value;
             }
@@ -204,13 +222,15 @@ class content_adapter
     function _necessary_r(&$value, &$def)
     {
         $r = 0;
+
         if (is_array($value)) {
             foreach ($value as $k => $v) {
                 $r += $this->_necessary_r($value[$k], $def);
             }
         } else {
             if ($value == '') {
-                $r     = 1;
+                $r = 1;
+
                 $value = $def;
             }
         }
@@ -221,13 +241,15 @@ class content_adapter
     function _enum_check_r(&$value, &$def, &$enum)
     {
         $r = 0;
+
         if (is_array($value)) {
             foreach ($value as $k => $v) {
                 $r += $this->_enum_check_r($value[$k], $def, $enum);
             }
         } else {
             if (!isset($enum[$value])) {
-                $r     = 1;
+                $r = 1;
+
                 $value = $def;
             }
         }
@@ -243,7 +265,9 @@ class content_adapter
     function convertTo($to, $data = 'none')
     {
         reactor_trace('content_adapter->convertTo' . $to);
+
         $to = 'to' . $to;
+
         if ($data == 'none') {
             $data = $this->data;
         }
@@ -289,8 +313,6 @@ class content_adapter
 
     function toForm($data = 'none')
     {
-        ;
-
         return $this->convertTo('Form', $data);
     }
 
@@ -310,6 +332,7 @@ class content_adapter
         foreach ($this->define as $key => $item) {
             if ($item['enum'] != '' && isset($data[$key])) {
                 $data[$key . '_save'] = $data[$key];
+
                 @$data[$key] = $item['enum'][$data[$key]];
             }
         }
